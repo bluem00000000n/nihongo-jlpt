@@ -5,6 +5,7 @@ import { CustomRoleplayScenario, UserStats, ComprehensiveReport, DialogueCorrect
 import { defaultRoleplayScenarios } from '@/data/roleplay';
 import { speechService } from '@/utils/speech';
 import { generateSessionReport } from '@/utils/reportManager';
+import { MicrophonePermissionModal } from '@/components/MicrophonePermissionModal';
 import {
   Briefcase,
   Plane,
@@ -43,6 +44,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isMicOn, setIsMicOn] = useState(false);
+  const [isPermissionModalOpen, setIsPermissionModalOpen] = useState(false);
   const [corrections, setCorrections] = useState<DialogueCorrectionItem[]>([]);
   const [finalReport, setFinalReport] = useState<ComprehensiveReport | null>(null);
 
@@ -184,20 +186,31 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
     });
   };
 
-  // Mic Toggle
-  const toggleMic = () => {
+  // Mic Toggle with Permission Check
+  const toggleMic = async () => {
     if (typeof window === 'undefined') return;
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    if (!SpeechRecognition) {
-      alert('이 브라우저는 음성 인식을 지원하지 않습니다. Chrome 브라우저를 권장합니다.');
-      return;
-    }
 
     if (isMicOn) {
       recognitionRef.current?.stop();
       setIsMicOn(false);
+      return;
+    }
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach((t) => t.stop());
+      } catch (err: any) {
+        setIsPermissionModalOpen(true);
+        return;
+      }
+    }
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      setIsPermissionModalOpen(true);
       return;
     }
 
@@ -211,17 +224,32 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         setInputText(text);
         setIsMicOn(false);
       };
-      rec.onerror = () => setIsMicOn(false);
+      rec.onerror = (e: any) => {
+        setIsMicOn(false);
+        if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+          setIsPermissionModalOpen(true);
+        }
+      };
       rec.onend = () => setIsMicOn(false);
       recognitionRef.current = rec;
       rec.start();
     } catch {
       setIsMicOn(false);
+      setIsPermissionModalOpen(true);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-w-md mx-auto pb-10">
+      <MicrophonePermissionModal
+        isOpen={isPermissionModalOpen}
+        onClose={() => setIsPermissionModalOpen(false)}
+        onGranted={() => {
+          setIsPermissionModalOpen(false);
+          toggleMic();
+        }}
+        featureName="맞춤형 상황극 음성 대화"
+      />
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

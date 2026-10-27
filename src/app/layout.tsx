@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,9 +12,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: "#FAF9F5",
+};
+
 export const metadata: Metadata = {
   title: "nihongo-jlpt (日本語) - 대화하며 JLPT 1급(N1) 합격까지",
   description: "대화하며 JLPT 1급(N1) 합격까지! 실시간 AI 대화 미션, 구술 모의고사, 급수별 핵심 문법, 3단계 섀도잉, 코토모 음성 통화 통합 학습 앱",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "nihongo-jlpt",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

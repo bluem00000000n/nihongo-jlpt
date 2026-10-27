@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { UserStats, ComprehensiveReport, DialogueCorrectionItem } from '@/types';
 import { speechService } from '@/utils/speech';
 import { generateSessionReport } from '@/utils/reportManager';
+import { MicrophonePermissionModal } from '@/components/MicrophonePermissionModal';
 import {
   Phone,
   PhoneOff,
@@ -22,6 +23,7 @@ import {
   Footprints,
   RotateCcw,
   Zap,
+  ShieldAlert,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -41,6 +43,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isAiSpeaking, setIsAiSpeaking] = useState<boolean>(false);
   const [isUserSpeaking, setIsUserSpeaking] = useState<boolean>(false);
+  const [isPermissionModalOpen, setIsPermissionModalOpen] = useState<boolean>(false);
 
   // Call history and real-time corrections collected for report
   const [sessionTurns, setSessionTurns] = useState<number>(0);
@@ -72,6 +75,38 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Pre-flight microphone permission check for Apple & Android
+  const checkMicAndStartCall = async () => {
+    if (typeof window === 'undefined') return;
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Stop audio tracks so hardware mic indicator resets
+        stream.getTracks().forEach((track) => track.stop());
+
+        // Audio Context unlock for iOS Safari
+        try {
+          const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+          if (AudioCtx) {
+            const ctx = new AudioCtx();
+            if (ctx.state === 'suspended') {
+              await ctx.resume();
+            }
+          }
+        } catch {}
+
+        // Permission is clean, start call
+        handleStartCall();
+      } catch (err: any) {
+        console.warn('Microphone permission check failed:', err);
+        setIsPermissionModalOpen(true);
+      }
+    } else {
+      setIsPermissionModalOpen(true);
+    }
+  };
+
   // Start Hands-free Call
   const handleStartCall = () => {
     setCallState('calling');
@@ -88,7 +123,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
       speakAI(greetingJp, greetingKr);
       startHandsFreeRecognition();
-    }, 1600);
+    }, 1500);
   };
 
   // Speak AI
@@ -106,7 +141,10 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
-    if (!SpeechRecognition) return;
+    if (!SpeechRecognition) {
+      setIsPermissionModalOpen(true);
+      return;
+    }
 
     try {
       const recognition = new SpeechRecognition();
@@ -125,7 +163,12 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         }
       };
 
-      recognition.onerror = () => {};
+      recognition.onerror = (event: any) => {
+        if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          setIsPermissionModalOpen(true);
+        }
+      };
+
       recognition.onend = () => {
         if (callState === 'connected' && !isMuted) {
           try {
@@ -138,6 +181,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
       recognition.start();
     } catch (e) {
       console.error(e);
+      setIsPermissionModalOpen(true);
     }
   };
 
@@ -178,53 +222,61 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
               id: `cor-${Date.now()}`,
               originalText: data.correction.originalText,
               improvedJapanese: data.correction.improvedJapanese,
-              reading: data.correction.reading,
-              koreanMeaning: data.correction.koreanMeaning,
-              feedbackPoint: data.correction.feedbackPoint,
-              timestamp: formatTimer(callDuration),
+              reading: data.correction.reading || '',
+              koreanMeaning: data.correction.koreanMeaning || '',
+              feedbackPoint: data.correction.explanation || data.correction.feedbackPoint || '원어민 뉘앙스 교정',
+              timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             };
           }
         }
       } catch (e) {
-        console.warn('API error in hands-free, using fallback:', e);
+        console.error('LLM API error during call:', e);
       }
     }
 
-    // Smart fallback if no API or error
+    // Fallback response generator if API empty
     if (!replyJp) {
       const lower = userText.toLowerCase();
-
-      // Check for common learner mistakes to give instant verbal correction
-      if (userText.includes('ご飯を食べました') || userText.includes('食べた')) {
-        replyJp = 'いいですね！美味しいものを食べると元気が出ますよね。何を食べたんですか？';
-        replyKr = '좋네요! 맛있는 걸 먹으면 힘이 나죠. 무엇을 드셨나요?';
-      } else if (lower.includes('힘들') || userText.includes('疲れた') || userText.includes('忙しい')) {
-        replyJp = 'そうなんですね…本当にお疲れ様でした！無理しないで、休める時はゆっくり休んでくださいね。';
-        replyKr = '그렇군요… 정말 수고 많으셨어요! 무리하지 마시고 쉴 수 있을 땐 푹 쉬세요.';
-      } else if (userText.length < 5) {
-        replyJp = 'なるほど！もっと詳しく教えてくれますか？ドライブや散歩中ですか？';
-        replyKr = '그렇군요! 조금 더 자세히 이야기해 주실 수 있나요? 지금 드라이브나 산책 중이신가요?';
+      if (lower.includes('元気') || lower.includes('げんき') || lower.includes('おつかれ') || lower.includes('좋아')) {
+        replyJp = 'それは良かったです！散歩中ですか？それとも運転中ですか？気をつけてお話ししましょうね。';
+        replyKr = '다행이네요! 산책 중이신가요, 아니면 운전 중이신가요? 안전에 유의하며 이야기 나눠요.';
+      } else if (lower.includes('仕事') || lower.includes('つかれた') || lower.includes('힘들')) {
+        replyJp = '今日もお仕事大変お疲れ様でした。温かいお茶でも飲んで、ゆっくり休んでくださいね。';
+        replyKr = '오늘도 일하시느라 정말 고생 많으셨어요. 따뜻한 차라도 드시면서 편히 쉬세요.';
         itemCorrection = {
           id: `cor-${Date.now()}`,
           originalText: userText,
-          improvedJapanese: `${userText}と思います。`,
-          reading: '...to omoimasu.',
-          koreanMeaning: '...라고 생각합니다.',
-          feedbackPoint: '짧게 끊어 말하기보다 문장 끝에 「〜と思います(~라고 생각해요)」를 붙이면 훨씬 자연스러운 원어민 억양이 됩니다.',
-          timestamp: formatTimer(callDuration),
+          improvedJapanese: '仕事で少し疲れました。',
+          reading: 'しごとですこしつかれました。',
+          koreanMeaning: '일 때문에 조금 피곤했습니다.',
+          feedbackPoint: '피곤함을 표현할 때는 〜で疲れました 또는 〜て大変でした 형식을 쓰면 자연스럽습니다.',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
       } else {
-        replyJp = 'うんうん、よく分かりました！とても自然な話し方ですね。他にはどんなことに興味がありますか？';
-        replyKr = '응응, 잘 이해했어요! 아주 자연스러운 말투네요. 그 밖에는 어떤 것에 관심이 있으신가요?';
+        replyJp = 'なるほど！とても自然な日本語ですね。次は今週末のご予定について教えていただけますか？';
+        replyKr = '그렇군요! 매우 자연스러운 일본어예요. 다음은 이번 주말 계획에 대해 말씀해 주시겠어요?';
       }
     }
 
     if (itemCorrection) {
-      setSessionCorrections((prev) => [...prev, itemCorrection!]);
       setLatestCorrection(itemCorrection);
+      setSessionCorrections((prev) => [...prev, itemCorrection!]);
     }
 
+    // AI replies via voice
     await speakAI(replyJp, replyKr);
+  };
+
+  // Toggle Mute
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (!isMuted && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {}
+    } else if (isMuted && callState === 'connected') {
+      startHandsFreeRecognition();
+    }
   };
 
   // End Hands-free Call & Generate Report
@@ -251,255 +303,276 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     setFinalReport(report);
     onAddXP(50);
     confetti({
-      particleCount: 80,
-      spread: 80,
+      particleCount: 60,
+      spread: 70,
     });
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner explaining Hands-Free Voice Call */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-emerald-400 text-emerald-950 text-xs font-black uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                <Headphones className="w-3.5 h-3.5" />
+    <div className="space-y-4 max-w-md mx-auto pb-10">
+      {/* Microphone Permission Modal */}
+      <MicrophonePermissionModal
+        isOpen={isPermissionModalOpen}
+        onClose={() => setIsPermissionModalOpen(false)}
+        onGranted={() => {
+          setIsPermissionModalOpen(false);
+          handleStartCall();
+        }}
+        featureName="핸즈프리 보이스 통화"
+      />
+
+      {/* Top Mobile Card: Introduction & Context */}
+      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/60 flex items-center justify-center">
+              <Headphones className="w-4 h-4" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-tight">
                 콜 모드 (Hands-Free)
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-xs font-bold">
-                화면 터치 0회 · 100% 음성 통화
+              </h2>
+              <span className="text-[11px] text-stone-500 dark:text-stone-400">
+                운전 · 산책 중 100% 음성 전화 통화
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-              운전이나 산책하며 실제 전화하듯 말로만 주고받는 모드
-            </h2>
-            <p className="text-xs sm:text-sm text-emerald-100 max-w-xl leading-relaxed">
-              스마트폰을 주머니에 넣고 이어폰만 꽂으세요. 말을 멈추면 AI가 자동으로 인지하여 원어민 목소리로 대답하며, 통화가 끝나면 <strong>종합 교정 리포트</strong>를 제공합니다.
-            </p>
           </div>
 
           <button
             onClick={onOpenAISettings}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-xs font-bold transition-all shadow-md shrink-0"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-[11px] font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-200"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
-            <span>AI 엔진 설정 ({stats.aiSettings?.provider === 'built_in' ? '내장' : stats.aiSettings?.provider})</span>
+            <Zap className="w-3 h-3 text-amber-500" />
+            <span>{stats.aiSettings?.provider === 'built_in' ? '내장 AI' : stats.aiSettings?.provider}</span>
           </button>
         </div>
 
-        {/* Feature Icons Bar */}
-        <div className="mt-5 pt-4 border-t border-white/20 grid grid-cols-3 gap-2 text-center text-xs font-bold text-emerald-100">
-          <div className="flex items-center justify-center gap-1.5">
-            <Car className="w-4 h-4 text-emerald-300" />
-            <span>차량 운전 중 회화</span>
+        {/* 3 Practical situations */}
+        <div className="grid grid-cols-3 gap-2 pt-1 border-t border-stone-100 dark:border-stone-800/80 text-center">
+          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
+            <Car className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">차량 운전</span>
           </div>
-          <div className="flex items-center justify-center gap-1.5">
-            <Footprints className="w-4 h-4 text-emerald-300" />
-            <span>출퇴근 산책 중 통화</span>
+          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
+            <Footprints className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">산책 · 조깅</span>
           </div>
-          <div className="flex items-center justify-center gap-1.5">
-            <FileText className="w-4 h-4 text-emerald-300" />
-            <span>종료 후 종합 피드백</span>
+          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
+            <FileText className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">종합 리포트</span>
           </div>
         </div>
       </div>
 
-      {/* Main Hands-Free Calling Interface */}
-      <div className="max-w-lg mx-auto">
-        <div className="bg-slate-900 text-white rounded-[40px] border-4 border-slate-800 shadow-2xl p-6 sm:p-8 flex flex-col justify-between min-h-[580px] relative overflow-hidden">
-          {/* Top Phone Info */}
-          <div className="flex items-center justify-between text-xs text-slate-400 pb-2">
-            <span className="font-semibold">Hands-Free Call</span>
-            <div className="flex items-center gap-2">
-              <Radio className={`w-3.5 h-3.5 ${callState === 'connected' ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`} />
-              <span>{callState === 'connected' ? '음성 감지 중' : '대기 중'}</span>
-            </div>
+      {/* Main Calling Card (Crafted with phone-like elegance) */}
+      <div className="bg-[#1C1B19] text-white rounded-3xl border border-stone-800 shadow-xl p-5 flex flex-col justify-between min-h-[480px] relative overflow-hidden">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-0 right-0 w-44 h-44 bg-rose-900/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-44 h-44 bg-emerald-900/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Top Info Bar */}
+        <div className="flex items-center justify-between text-xs text-stone-400 relative z-10">
+          <div className="flex items-center gap-1.5">
+            <Radio className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
+            <span className="font-mono font-medium tracking-tight">VOICE CALL</span>
           </div>
 
-          {/* Central Call Visualizer Orb */}
-          <div className="text-center my-auto space-y-5">
-            <div className="relative inline-block">
-              {/* Pulsing Visualizer Waves when AI or User talks */}
-              {callState === 'connected' && (
-                <div
-                  className={`w-40 h-40 rounded-full blur-2xl absolute -inset-6 transition-all duration-300 ${
-                    isAiSpeaking
-                      ? 'bg-emerald-500/30 animate-pulse scale-125'
-                      : 'bg-indigo-500/20 animate-ping opacity-40'
-                  }`}
-                />
-              )}
+          <div className="px-2.5 py-1 rounded-full bg-stone-800/80 border border-stone-700/60 text-[11px] font-mono text-stone-300 font-bold">
+            {formatTimer(callDuration)}
+          </div>
+        </div>
 
-              {/* Calling Orb Avatar */}
-              <div
-                className={`w-32 h-32 rounded-full flex items-center justify-center text-5xl mx-auto shadow-2xl border-4 relative z-10 transition-all duration-300 ${
-                  callState === 'connected'
-                    ? isAiSpeaking
-                      ? 'border-emerald-400 bg-slate-800 ring-8 ring-emerald-500/30 scale-105'
-                      : 'border-indigo-400 bg-slate-800 ring-8 ring-indigo-500/20'
-                    : 'border-slate-700 bg-slate-800'
+        {/* Central Avatar & Call Status */}
+        <div className="text-center py-6 relative z-10 flex flex-col items-center justify-center">
+          <div className="relative mb-4">
+            <div
+              className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+                isAiSpeaking
+                  ? 'bg-gradient-to-tr from-rose-700 to-rose-600 ring-8 ring-rose-500/20 scale-105 shadow-lg shadow-rose-900/30'
+                  : callState === 'connected'
+                  ? 'bg-gradient-to-tr from-emerald-800 to-teal-700 ring-6 ring-emerald-500/20'
+                  : 'bg-stone-800 border-2 border-stone-700'
+              }`}
+            >
+              <span className="text-3xl font-serif font-black text-white">日</span>
+            </div>
+
+            {/* Speaking audio wave indicator */}
+            {isAiSpeaking && (
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-md animate-bounce">
+                말하는 중...
+              </span>
+            )}
+          </div>
+
+          <h3 className="text-xl font-bold text-white">nihongo-jlpt AI 원어민 튜터</h3>
+          <p className="text-xs text-stone-400 mt-1">
+            {callState === 'calling'
+              ? '전화 연결 중...'
+              : callState === 'connected'
+              ? '통화 중 (말씀하시면 자동으로 감지합니다)'
+              : callState === 'ended'
+              ? '통화가 종료되었습니다'
+              : '준비되시면 아래 통화 시작 버튼을 누르세요'}
+          </p>
+
+          {callState === 'connected' && (
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 rounded-full text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>LIVE CALLING</span>
+            </div>
+          )}
+        </div>
+
+        {/* Real-time Subtitles / Latest Speech */}
+        <div className="relative z-10 my-2 min-h-[90px] flex flex-col justify-end">
+          {currentSubtitle ? (
+            <div className="bg-stone-800/90 border border-stone-700/80 rounded-2xl p-3.5 backdrop-blur-sm animate-fade-in space-y-1">
+              <div className="flex items-center justify-between text-[11px] text-stone-400">
+                <span className="font-bold text-rose-400">{currentSubtitle.speaker}</span>
+                <span>실시간 발화</span>
+              </div>
+              <p className="text-sm font-semibold text-white leading-snug">{currentSubtitle.text}</p>
+              {currentSubtitle.kr && (
+                <p className="text-xs text-stone-400 leading-snug">{currentSubtitle.kr}</p>
+              )}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-xs text-stone-500">
+              {callState === 'connected' ? '말씀을 듣고 있습니다...' : '전화 연결 후 대화가 여기에 표시됩니다.'}
+            </div>
+          )}
+        </div>
+
+        {/* Real-time Inline Feedback Pill */}
+        {latestCorrection && callState === 'connected' && (
+          <div className="relative z-10 mb-3 bg-amber-950/50 border border-amber-800/60 rounded-2xl p-3 text-xs animate-slide-up">
+            <div className="flex items-center gap-1.5 text-amber-300 font-bold mb-1">
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>실시간 표현 교정</span>
+            </div>
+            <div className="text-stone-300">
+              👉 <span className="text-amber-200 font-bold">{latestCorrection.improvedJapanese}</span>
+            </div>
+            <div className="text-[11px] text-stone-400 mt-0.5">{latestCorrection.feedbackPoint}</div>
+          </div>
+        )}
+
+        {/* Bottom Call Action Buttons */}
+        <div className="relative z-10 pt-3 border-t border-stone-800/80">
+          {callState === 'idle' || callState === 'ended' ? (
+            <button
+              onClick={checkMicAndStartCall}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 active:scale-98 transition-all"
+            >
+              <Phone className="w-5 h-5 fill-white" />
+              <span>통화 시작하기 (마이크 자동 연결)</span>
+            </button>
+          ) : (
+            <div className="flex items-center justify-around gap-3">
+              {/* Mute Button */}
+              <button
+                onClick={toggleMute}
+                className={`flex-1 py-3 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${
+                  isMuted
+                    ? 'bg-amber-600/30 text-amber-300 border border-amber-500'
+                    : 'bg-stone-800 text-stone-300 border border-stone-700 hover:bg-stone-700'
                 }`}
               >
-                {callState === 'connected' ? '🎙️' : '🎧'}
-              </div>
+                {isMuted ? <MicOff className="w-4 h-4 text-amber-400" /> : <Mic className="w-4 h-4" />}
+                <span>{isMuted ? '음소거 됨' : '음소거'}</span>
+              </button>
+
+              {/* End Call Button */}
+              <button
+                onClick={handleEndCall}
+                className="flex-1 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-rose-950/40 active:scale-98 transition-all"
+              >
+                <PhoneOff className="w-4 h-4 fill-white" />
+                <span>통화 종료 및 리포트</span>
+              </button>
             </div>
-
-            <div>
-              <h3 className="text-2xl font-black text-white">nihongo-jlpt AI 원어민 튜터</h3>
-              <p className="text-xs text-slate-400 mt-1">24시간 언제든 대화하는 실시간 음성 통화</p>
-
-              {callState === 'calling' && (
-                <p className="text-xs text-amber-400 font-bold mt-3 animate-pulse">
-                  전화 연결 중... (따르릉~)
-                </p>
-              )}
-
-              {callState === 'connected' && (
-                <div className="mt-3 inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-950/80 text-emerald-400 border border-emerald-800 rounded-full text-xs font-mono font-bold shadow-md">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>{formatTimer(callDuration)} 통화 중</span>
-                </div>
-              )}
-            </div>
-
-            {/* Real-time Subtitles */}
-            {callState === 'connected' && currentSubtitle && (
-              <div className="p-4 rounded-2xl bg-slate-800/80 border border-slate-700 text-left text-xs space-y-1 max-h-32 overflow-y-auto animate-in fade-in">
-                <span className="text-[10px] font-bold text-emerald-400 block">
-                  {currentSubtitle.speaker}:
-                </span>
-                <p className="font-bold text-white text-sm leading-relaxed">
-                  {currentSubtitle.text}
-                </p>
-                <p className="text-slate-400 text-[11px]">{currentSubtitle.kr}</p>
-              </div>
-            )}
-
-            {/* Live Verbal Correction Popup during Call */}
-            {callState === 'connected' && latestCorrection && (
-              <div className="p-3.5 rounded-2xl bg-amber-950/60 border border-amber-800/80 text-left text-xs space-y-1 animate-in slide-in-from-top-1">
-                <div className="flex items-center gap-1.5 text-amber-300 font-bold">
-                  <Edit3 className="w-3.5 h-3.5 text-amber-400" />
-                  <span>실시간 교정 제안</span>
-                </div>
-                <p className="text-amber-200">
-                  👉 <strong className="text-white">{latestCorrection.improvedJapanese}</strong>
-                </p>
-                <p className="text-[11px] text-amber-300/80">{latestCorrection.feedbackPoint}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Bottom Action Controls */}
-          <div className="pt-4 border-t border-slate-800">
-            {callState === 'connected' ? (
-              <div className="flex items-center justify-around px-6">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className={`p-3.5 rounded-full text-xs font-bold transition-all ${
-                    isMuted ? 'bg-amber-500 text-slate-900' : 'bg-slate-800 text-slate-300'
-                  }`}
-                  title={isMuted ? '음소거 해제' : '마이크 음소거'}
-                >
-                  {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                </button>
-
-                {/* Big Red End Call Button */}
-                <button
-                  onClick={handleEndCall}
-                  className="p-5 rounded-full bg-rose-600 hover:bg-rose-700 text-white shadow-2xl shadow-rose-600/50 transition-all active:scale-95"
-                  title="통화 종료 및 종합 리포트 생성"
-                >
-                  <PhoneOff className="w-7 h-7" />
-                </button>
-              </div>
-            ) : callState === 'calling' ? (
-              <div className="flex justify-center">
-                <button
-                  onClick={() => setCallState('idle')}
-                  className="p-4 rounded-full bg-rose-600 text-white shadow-lg"
-                >
-                  <PhoneOff className="w-6 h-6" />
-                </button>
-              </div>
-            ) : callState === 'ended' && finalReport ? (
-              /* Comprehensive Session Report After Call */
-              <div className="space-y-4 animate-in zoom-in-95 duration-200">
-                <div className="p-5 rounded-3xl bg-slate-800 border border-slate-700 text-xs space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-700 pb-2">
-                    <span className="font-black text-emerald-400 text-sm flex items-center gap-1.5">
-                      <Award className="w-4 h-4" /> 통화 종합 피드백 리포트
-                    </span>
-                    <span className="font-extrabold text-purple-400 text-sm">+50 XP 획득</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-slate-300">
-                    <div className="p-2.5 rounded-xl bg-slate-900/60">
-                      <span className="text-[10px] text-slate-400 block">통화 시간</span>
-                      <strong className="text-sm text-white">{formatTimer(finalReport.durationSeconds)}</strong>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-slate-900/60">
-                      <span className="text-[10px] text-slate-400 block">문법 정확도 점수</span>
-                      <strong className="text-sm text-emerald-400">{finalReport.grammarAccuracyScore}점</strong>
-                    </div>
-                  </div>
-
-                  {/* Corrections List */}
-                  {finalReport.corrections.length > 0 ? (
-                    <div className="space-y-2 pt-1">
-                      <span className="text-[11px] font-bold text-amber-300 block">
-                        오늘의 문장 교정 리스트 ({finalReport.corrections.length}건):
-                      </span>
-                      <div className="space-y-2 max-h-36 overflow-y-auto">
-                        {finalReport.corrections.map((cor) => (
-                          <div
-                            key={cor.id}
-                            className="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700 text-[11px] space-y-1"
-                          >
-                            <div className="flex items-start gap-1.5">
-                              <span className="text-slate-400 line-through shrink-0">{cor.originalText}</span>
-                              <span className="text-emerald-400 font-bold">👉 {cor.improvedJapanese}</span>
-                            </div>
-                            <p className="text-slate-400 text-[10px]">💡 {cor.feedbackPoint}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-xs text-emerald-400 font-semibold">
-                      👏 문법 오류 없이 대단히 매끄럽고 유창하게 대화를 완료하셨습니다!
-                    </p>
-                  )}
-
-                  {/* AI Summary */}
-                  <div className="p-3 rounded-xl bg-indigo-950/50 border border-indigo-900 text-indigo-200 text-[11px] leading-relaxed">
-                    <strong>AI 총평: </strong> {finalReport.aiSummary}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setCallState('idle')}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-2xl shadow-lg transition-all"
-                >
-                  새 통화 시작하기
-                </button>
-              </div>
-            ) : (
-              /* Idle: Big Green Start Call Button */
-              <div className="flex items-center justify-center">
-                <button
-                  onClick={handleStartCall}
-                  className="flex items-center gap-3 px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm shadow-xl shadow-emerald-500/30 transition-all hover:scale-105 active:scale-95"
-                >
-                  <Phone className="w-5 h-5 animate-bounce" />
-                  <span>핸즈프리 통화 시작</span>
-                </button>
-              </div>
-            )}
-          </div>
+          )}
         </div>
       </div>
+
+      {/* Comprehensive Session Report (Displayed after call ends) */}
+      {finalReport && (
+        <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-md space-y-4 animate-slide-up">
+          <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
+            <div className="flex items-center gap-2">
+              <span className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/60 flex items-center justify-center">
+                <Award className="w-4 h-4" />
+              </span>
+              <div>
+                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  통화 종합 분석 리포트
+                </h3>
+                <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                  통화 시간: {Math.floor(finalReport.durationSeconds / 60)}분 {finalReport.durationSeconds % 60}초 · 총 {finalReport.totalTurns}회 발화
+                </p>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-xl font-black text-rose-600 dark:text-rose-400 font-sans">
+                {finalReport.grammarAccuracyScore}점
+              </div>
+              <span className="text-[10px] text-stone-400">문법 정확도</span>
+            </div>
+          </div>
+
+          {/* AI Overall Assessment */}
+          <div className="p-3.5 bg-stone-50 dark:bg-stone-900/60 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
+            <span className="font-bold block text-stone-900 dark:text-stone-100 mb-1">
+              💬 AI 튜터 총평
+            </span>
+            {finalReport.aiSummary}
+          </div>
+
+          {/* Corrections List */}
+          <div>
+            <h4 className="text-xs font-bold text-stone-800 dark:text-stone-200 mb-2 flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+              <span>맞춤 교정 내역 ({finalReport.corrections.length}건)</span>
+            </h4>
+
+            {finalReport.corrections.length === 0 ? (
+              <div className="p-4 text-center rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-900/40 text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
+                🎉 문법 오류 없이 훌륭하고 유창하게 대화를 이끌었습니다!
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {finalReport.corrections.map((item, idx) => (
+                  <div
+                    key={item.id || idx}
+                    className="p-3 bg-stone-50 dark:bg-stone-900/60 rounded-xl border border-stone-200/70 dark:border-stone-800 text-xs space-y-1"
+                  >
+                    <div className="text-stone-400 line-through">
+                      내가 한 말: {item.originalText}
+                    </div>
+                    <div className="font-bold text-rose-600 dark:text-rose-400">
+                      👉 원어민 추천: {item.improvedJapanese}
+                    </div>
+                    <div className="text-[11px] text-stone-600 dark:text-stone-300">
+                      이유: {item.feedbackPoint}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Restart Call button */}
+          <button
+            onClick={checkMicAndStartCall}
+            className="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>새로운 통화 시작하기</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -67,109 +67,103 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
-        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] dark:bg-[#18181B]">
+        <div className="w-9 h-9 border-3 border-rose-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
-      {/* Global Header */}
-      <Header
-        stats={stats}
-        onUpdateStats={handleUpdateStats}
-        activeTab={activeTab}
-        onOpenAISettings={() => setIsAISettingsOpen(true)}
-      />
-
-      {/* Primary Navigation */}
-      <Navigation
-        activeTab={activeTab}
-        onChangeTab={setActiveTab}
-        completedGrammarCount={stats.completedGrammarIds.length}
-        totalGrammarCount={grammarData.length}
-      />
-
-      {/* Main Body */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
-        {activeTab === 'n1_adaptive' && (
-          <AdaptiveN1View stats={stats} onAddXP={handleAddXP} />
-        )}
-
-        {activeTab === 'hands_free_call' && (
-          <HandsFreeCallView
-            stats={stats}
-            onAddXP={handleAddXP}
-            onOpenAISettings={() => setIsAISettingsOpen(true)}
-          />
-        )}
-
-        {activeTab === 'custom_roleplay' && (
-          <CustomRoleplayView
-            stats={stats}
-            onAddXP={handleAddXP}
-            onOpenAISettings={() => setIsAISettingsOpen(true)}
-          />
-        )}
-
-        {activeTab === 'grammar' && (
-          <GrammarView
-            grammarList={grammarData}
-            stats={stats}
-            onUpdateStats={handleUpdateStats}
-            onAddXP={handleAddXP}
-          />
-        )}
-
-        {activeTab === 'shadowing' && (
-          <ShadowingView stats={stats} onAddXP={handleAddXP} />
-        )}
-
-        {activeTab === 'vocab' && (
-          <VocabView
-            vocabList={vocabData}
-            stats={stats}
-            onUpdateStats={handleUpdateStats}
-            onAddXP={handleAddXP}
-          />
-        )}
-
-        {activeTab === 'kana' && (
-          <KanaView stats={stats} onAddXP={handleAddXP} />
-        )}
-
-        {activeTab === 'quiz' && (
-          <QuizChallengeView
-            grammarList={grammarData}
-            stats={stats}
-            onAddXP={handleAddXP}
-          />
-        )}
-      </main>
-
-      {/* AI Settings Modal */}
-      {isAISettingsOpen && (
-        <AISettingsModal
+    <div className="min-h-screen bg-[#F2EFE9] dark:bg-[#111113] text-stone-900 dark:text-stone-100 flex justify-center font-sans transition-colors antialiased">
+      {/* Mobile-First Centered Container */}
+      <div className="w-full max-w-md min-h-screen bg-[#FAF9F5] dark:bg-[#18181B] shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-stone-200/70 dark:border-stone-850 flex flex-col relative">
+        {/* Global Mobile Header */}
+        <Header
           stats={stats}
           onUpdateStats={handleUpdateStats}
-          onClose={() => setIsAISettingsOpen(false)}
+          activeTab={activeTab}
+          onOpenAISettings={() => setIsAISettingsOpen(true)}
         />
-      )}
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 py-6 text-center text-xs text-slate-500">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© 2026 nihongo-jlpt (日本語) - 대화하며 JLPT 1급(N1) 합격까지</p>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span>JLPT N5 ~ N1 대화 미션</span>
-            <span>·</span>
-            <span>코토모 실시간 보이스 통화</span>
-            <span>·</span>
-            <span>3단계 AI 섀도잉</span>
-          </div>
-        </div>
-      </footer>
+        {/* Navigation (Sub-tabs for study mode + fixed mobile bottom bar) */}
+        <Navigation
+          activeTab={activeTab}
+          onChangeTab={setActiveTab}
+          completedGrammarCount={stats.completedGrammarIds.length}
+          totalGrammarCount={grammarData.length}
+        />
+
+        {/* Main Body (Mobile optimized padding with safe bottom area) */}
+        <main className="flex-1 w-full px-3.5 pt-3.5 pb-24">
+          {activeTab === 'n1_adaptive' && (
+            <AdaptiveN1View stats={stats} onAddXP={handleAddXP} />
+          )}
+
+          {activeTab === 'hands_free_call' && (
+            <HandsFreeCallView
+              stats={stats}
+              onAddXP={handleAddXP}
+              onOpenAISettings={() => setIsAISettingsOpen(true)}
+            />
+          )}
+
+          {activeTab === 'custom_roleplay' && (
+            <CustomRoleplayView
+              stats={stats}
+              onAddXP={handleAddXP}
+              onOpenAISettings={() => setIsAISettingsOpen(true)}
+            />
+          )}
+
+          {activeTab === 'grammar' && (
+            <GrammarView
+              grammarList={grammarData}
+              stats={stats}
+              onUpdateStats={handleUpdateStats}
+              onAddXP={handleAddXP}
+            />
+          )}
+
+          {activeTab === 'shadowing' && (
+            <ShadowingView stats={stats} onAddXP={handleAddXP} />
+          )}
+
+          {activeTab === 'vocab' && (
+            <VocabView
+              vocabList={vocabData}
+              stats={stats}
+              onUpdateStats={handleUpdateStats}
+              onAddXP={handleAddXP}
+            />
+          )}
+
+          {activeTab === 'kana' && (
+            <KanaView stats={stats} onAddXP={handleAddXP} />
+          )}
+
+          {activeTab === 'quiz' && (
+            <QuizChallengeView
+              grammarList={grammarData}
+              stats={stats}
+              onAddXP={handleAddXP}
+            />
+          )}
+        </main>
+
+        {/* AI Settings Modal */}
+        {isAISettingsOpen && (
+          <AISettingsModal
+            stats={stats}
+            onUpdateStats={handleUpdateStats}
+            onClose={() => setIsAISettingsOpen(false)}
+          />
+        )}
+
+        {/* Footer info inside mobile frame */}
+        <footer className="border-t border-stone-200/70 dark:border-stone-800/80 bg-white/40 dark:bg-stone-900/40 py-4 px-4 text-center text-[11px] text-stone-400 mb-16">
+          <p className="font-medium">© 2026 nihongo-jlpt (日本語) · 1급 합격 AI 회화</p>
+        </footer>
+      </div>
     </div>
   );
 }

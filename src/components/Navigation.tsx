@@ -4,13 +4,12 @@ import React from 'react';
 import {
   Crown,
   BookMarked,
-  MessageSquareText,
-  Layers,
-  SpellCheck,
-  Trophy,
-  Headphones,
   PhoneCall,
   Target,
+  Headphones,
+  Layers,
+  Trophy,
+  BookOpen,
 } from 'lucide-react';
 import { NavTab } from '@/types';
 
@@ -29,99 +28,110 @@ export const Navigation: React.FC<NavigationProps> = ({
   completedGrammarCount,
   totalGrammarCount,
 }) => {
-  const tabs = [
+  // Main 4 Mobile Bottom Tabs
+  const isStudyTab = ['grammar', 'shadowing', 'vocab', 'quiz', 'kana'].includes(activeTab);
+
+  const mainTabs = [
     {
       id: 'n1_adaptive' as NavTab,
-      label: 'AI 1급 합격 대화',
-      sub: 'N5부터 상태 인지 승급',
+      label: '1급 대화',
+      sub: 'N5→N1 승급',
       icon: Crown,
-      color: 'text-amber-500 dark:text-amber-400',
-      badge: 'N5 ➔ N1',
     },
     {
       id: 'hands_free_call' as NavTab,
-      label: '콜 모드 (Hands-Free)',
-      sub: '운전/산책 중 음성 통화',
+      label: '콜 모드',
+      sub: '핸즈프리 통화',
       icon: PhoneCall,
-      color: 'text-emerald-500 dark:text-emerald-400',
-      badge: '핸즈프리',
     },
     {
       id: 'custom_roleplay' as NavTab,
-      label: '맞춤형 상황극',
-      sub: '비즈니스 · 여행 · 토론',
+      label: '상황극',
+      sub: '롤플레잉',
       icon: Target,
-      color: 'text-teal-600 dark:text-teal-400',
     },
     {
       id: 'grammar' as NavTab,
-      label: '급수별 문법',
-      sub: `${completedGrammarCount}/${totalGrammarCount} 완료`,
-      icon: BookMarked,
-      color: 'text-indigo-600 dark:text-indigo-400',
-    },
-    {
-      id: 'shadowing' as NavTab,
-      label: '3단계 섀도잉',
-      sub: '실전 문장 채집 & 리스닝',
-      icon: Headphones,
-      color: 'text-orange-600 dark:text-orange-400',
-    },
-    {
-      id: 'vocab' as NavTab,
-      label: '필수 어휘',
-      sub: '테마별 플래시카드',
-      icon: Layers,
-      color: 'text-amber-600 dark:text-amber-400',
-    },
-    {
-      id: 'quiz' as NavTab,
-      label: '퀴즈 테스트',
-      sub: '어순 배열 & 빈칸',
-      icon: Trophy,
-      color: 'text-cyan-600 dark:text-cyan-400',
+      label: '학습실',
+      sub: '문법·섀도잉',
+      icon: BookOpen,
+      isActiveOverride: isStudyTab,
     },
   ];
 
+  // Secondary sub-tabs for Study Mode (문법, 섀도잉, 어휘, 퀴즈)
+  const studySubTabs = [
+    { id: 'grammar' as NavTab, label: '급수별 문법', icon: BookMarked },
+    { id: 'shadowing' as NavTab, label: '3단계 섀도잉', icon: Headphones },
+    { id: 'vocab' as NavTab, label: '단어장', icon: Layers },
+    { id: 'quiz' as NavTab, label: '퀴즈', icon: Trophy },
+  ];
+
   return (
-    <nav className="w-full bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center space-x-2 sm:space-x-4 overflow-x-auto py-2.5 scrollbar-none">
-          {tabs.map((tab) => {
+    <>
+      {/* Sub-bar for Study Mode tabs if a study tab is currently active */}
+      {isStudyTab && (
+        <div className="bg-[#FAF9F5] dark:bg-[#18181B] border-b border-stone-200/80 dark:border-stone-800 px-3 py-2 sticky top-[57px] z-30 transition-colors">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-md mx-auto">
+            {studySubTabs.map((sub) => {
+              const SubIcon = sub.icon;
+              const isSelected = activeTab === sub.id;
+              return (
+                <button
+                  key={sub.id}
+                  onClick={() => onChangeTab(sub.id)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 ${
+                    isSelected
+                      ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-sm'
+                      : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200/70 dark:border-stone-700 hover:bg-stone-100'
+                  }`}
+                >
+                  <SubIcon className="w-3.5 h-3.5" />
+                  <span>{sub.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Fixed Mobile Bottom Tab Bar (App-like navigation) */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border-t border-stone-200/80 dark:border-stone-800 pb-[env(safe-area-inset-bottom,8px)] pt-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
+        <div className="max-w-md mx-auto px-3 flex items-center justify-around">
+          {mainTabs.map((tab) => {
             const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+            const isActive = tab.isActiveOverride !== undefined ? tab.isActiveOverride : activeTab === tab.id;
+
             return (
               <button
                 key={tab.id}
                 onClick={() => onChangeTab(tab.id)}
-                className={`relative flex items-center gap-2.5 px-4 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all duration-200 ${
+                className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-2xl min-w-[64px] transition-all duration-200 active:scale-95 ${
                   isActive
-                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200/80 dark:border-slate-700'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-800/50'
+                    ? 'text-rose-600 dark:text-rose-400 font-bold'
+                    : 'text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 font-medium'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? tab.color : 'text-slate-400'}`} />
-                <div className="text-left">
-                  <div className="flex items-center gap-1.5">
-                    <span>{tab.label}</span>
-                    {tab.badge && (
-                      <span className="text-[10px] px-1.5 py-0.2 bg-emerald-500 text-white font-bold rounded-full">
-                        {tab.badge}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
-                    {tab.sub}
-                  </div>
+                <div
+                  className={`w-10 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    isActive
+                      ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 scale-105'
+                      : 'text-stone-500 dark:text-stone-400'
+                  }`}
+                >
+                  <Icon className="w-5 h-5 stroke-[2.2]" />
                 </div>
+                <span className="text-[11px] mt-0.5 tracking-tight">{tab.label}</span>
+
+                {/* Subtle active pill indicator */}
                 {isActive && (
-                  <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-indigo-600 dark:bg-indigo-400 rounded-full" />
+                  <span className="absolute -top-0.5 w-1 h-1 rounded-full bg-rose-600 dark:bg-rose-400" />
                 )}
               </button>
             );
           })}
         </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };

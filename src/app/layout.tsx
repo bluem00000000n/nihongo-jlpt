@@ -22,7 +22,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "nihongo-jlpt (日本語) - 대화하며 JLPT 1급(N1) 합격까지",
-  description: "대화하며 JLPT 1급(N1) 합격까지! 실시간 AI 대화 미션, 구술 모의고사, 급수별 핵심 문법, 3단계 섀도잉, 코토모 음성 통화 통합 학습 앱",
+  description: "대화하며 JLPT 1급(N1) 합격까지! 모바일 맞춤형 AI 일본어 회화 및 급수별 실전 학습 도구",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

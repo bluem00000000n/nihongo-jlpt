@@ -62,8 +62,11 @@ export const Header: React.FC<HeaderProps> = ({
                   学習帳
                 </span>
               </div>
-              <p className="text-[10px] text-stone-500 dark:text-stone-400 font-mono tracking-tight">
-                方眼ノート仕様 · 5mm Grid
+              <p className="text-[10px] text-stone-500 dark:text-stone-400 font-mono tracking-tight flex items-center gap-1.5 mt-0.5">
+                <span>도쿄 표준어 · 東京標準語</span>
+                <span className="px-1 py-0.2 rounded-xs bg-[#D93829] text-white font-extrabold text-[8px] leading-tight shadow-xs">
+                  NHK 共通語
+                </span>
               </p>
             </div>
           </div>
@@ -74,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => setIsQuickSettingsOpen(true)}
               className="px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-850 hover:bg-[#F2ECE1] transition-colors border border-[#DDD5C5] dark:border-stone-700 text-xs font-bold shadow-[1px_1px_0px_rgba(0,0,0,0.06)]"
-              title="학습 설정 및 AI 엔진 선택"
+              title="도쿄 표준 발음 및 학습 설정"
               aria-label="설정"
             >
               <Settings2 className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
@@ -84,29 +87,50 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </header>
 
-      {/* Quick Settings Bottom Sheet / Modal (Human designed, warm & clean) */}
+      {/* Quick Settings Bottom Sheet / Modal (LOFT Stationery Setting Note) */}
       {isQuickSettingsOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-stone-900/50 backdrop-blur-xs animate-fade-in p-0 sm:p-4">
-          <div className="w-full max-w-md bg-[#FAF9F5] dark:bg-[#1C1B19] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-200 dark:border-stone-800 p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-200/80 dark:border-stone-800">
+          <div className="w-full max-w-md bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-t-2xl sm:rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
               <div className="flex items-center gap-2">
                 <Settings2 className="w-4 h-4 text-stone-700 dark:text-stone-300" />
-                <h3 className="font-bold text-sm text-stone-900 dark:text-stone-100">학습 및 AI 설정</h3>
+                <h3 className="font-extrabold text-sm text-stone-900 dark:text-stone-100">학습 및 발음 설정 (LOFT SETTING)</h3>
               </div>
               <button
                 onClick={() => setIsQuickSettingsOpen(false)}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-200/60 dark:hover:bg-stone-800"
+                className="w-7 h-7 rounded-md flex items-center justify-center text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-200/60 dark:hover:bg-stone-800"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
+            {/* Tokyo Standard Voice Indicator */}
+            <div className="p-3 bg-white dark:bg-stone-900 rounded-xl border border-[#DDD5C5] dark:border-stone-800 space-y-1.5 shadow-xs">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+                  <span className="text-[11px] font-mono font-bold text-stone-600 dark:text-stone-300">
+                    음성 발음 기준
+                  </span>
+                </div>
+                <span className="px-1.5 py-0.5 rounded-xs bg-[#FFE000] text-stone-900 font-extrabold text-[9px] shadow-xs">
+                  도쿄 표준 발음
+                </span>
+              </div>
+              <p className="text-xs font-extrabold text-stone-900 dark:text-stone-100">
+                東京標準語 · NHK 共通語アクセント
+              </p>
+              <p className="text-[10px] text-stone-500 leading-normal">
+                사투리 없는 도쿄 수도권 표준 억양(東京式ピッチアクセント)으로 원어민 발음 및 통화가 재생됩니다.
+              </p>
+            </div>
+
             {/* AI Engine Status & Configuration */}
-            <div className="p-3.5 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800 flex items-center justify-between">
+            <div className="p-3 bg-white dark:bg-stone-900 rounded-xl border border-[#DDD5C5] dark:border-stone-800 flex items-center justify-between shadow-xs">
               <div>
-                <span className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider block">AI 엔진</span>
+                <span className="text-[10px] font-mono font-bold text-stone-400 uppercase tracking-wider block">AI 엔진</span>
                 <span className="text-xs font-bold text-stone-900 dark:text-white flex items-center gap-1.5 mt-0.5">
-                  <Sparkles className="w-3.5 h-3.5 text-rose-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#D93829]" />
                   {aiProviderName}
                 </span>
               </div>
@@ -115,7 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
                   setIsQuickSettingsOpen(false);
                   onOpenAISettings();
                 }}
-                className="px-3 py-1.5 rounded-xl bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 text-xs font-bold hover:opacity-90 transition-opacity"
+                className="px-3 py-1.5 rounded-md bg-[#FFE000] text-stone-900 text-xs font-extrabold border border-stone-800/20 hover:bg-[#FACC15] transition-colors shadow-xs"
               >
                 연동 관리
               </button>

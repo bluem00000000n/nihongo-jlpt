@@ -13,8 +13,25 @@ export async function POST(req: NextRequest) {
       userMessage = '',
     } = body;
 
-    if (!apiKey) {
-      return NextResponse.json({ error: 'API 키가 입력되지 않았습니다.' }, { status: 400 });
+    // Use user-provided API key, or fallback to server environment variable
+    const effectiveApiKey =
+      apiKey?.trim() ||
+      (provider === 'gemini'
+        ? process.env.GEMINI_API_KEY
+        : provider === 'openai'
+        ? process.env.OPENAI_API_KEY
+        : undefined);
+
+    if (!effectiveApiKey) {
+      return NextResponse.json(
+        {
+          error:
+            provider === 'gemini'
+              ? 'Gemini API 키가 입력되지 않았습니다. Google AI Studio(aistudio.google.com)에서 무료 키를 발급받아 입력해 주세요.'
+              : 'OpenAI API 키가 입력되지 않았습니다. platform.openai.com에서 키를 발급받아 입력해 주세요.',
+        },
+        { status: 400 }
+      );
     }
 
     const systemPrompt = `당신은 사용자를 JLPT N5(기초)부터 N1(1급 합격)까지 단계별로 대화를 통해 성장시키는 'nihongo-jlpt AI 튜터'입니다.
@@ -61,7 +78,7 @@ export async function POST(req: NextRequest) {
     // 1. Google Gemini API Call
     if (provider === 'gemini') {
       const geminiModel = model.includes('gemini') ? model : 'gemini-2.0-flash';
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${effectiveApiKey}`;
 
       const conversationContext = history
         .slice(-6)
@@ -116,7 +133,7 @@ export async function POST(req: NextRequest) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${effectiveApiKey}`,
         },
         body: JSON.stringify({
           model: openaiModel,

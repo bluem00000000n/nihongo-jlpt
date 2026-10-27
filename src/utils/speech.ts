@@ -3,6 +3,8 @@
 class SpeechService {
   private synth: SpeechSynthesis | null = null;
   private japaneseVoice: SpeechSynthesisVoice | null = null;
+  private femaleVoice: SpeechSynthesisVoice | null = null;
+  private maleVoice: SpeechSynthesisVoice | null = null;
   private isInitialized = false;
 
   constructor() {
@@ -17,9 +19,7 @@ class SpeechService {
 
   /**
    * Prioritize Tokyo Standard Japanese (東京標準語・NHK共通語) voices
-   * - Apple: Kyoko (Enhanced/Premium), Otoya, Siri
-   * - Google/Android: Google 日本語 (Tokyo standard neural)
-   * - Microsoft/Edge: Microsoft Nanami (Natural), Keita (Natural), Ayumi
+   * Segregates Female and Male Tokyo standard voices
    */
   private loadVoice() {
     if (!this.synth) return;
@@ -31,41 +31,43 @@ class SpeechService {
     );
 
     if (jaVoices.length > 0) {
-      // 1. Apple Tokyo Standard: Kyoko (Enhanced/Premium), Otoya
-      const appleTokyo = jaVoices.find(
+      // Female Tokyo Standard: Kyoko, Nanami, Ayumi
+      this.femaleVoice = jaVoices.find(
         (v) =>
           (v.name.includes('Kyoko') && (v.name.includes('Enhanced') || v.name.includes('Premium'))) ||
           v.name.includes('Kyoko') ||
-          (v.name.includes('Otoya') && v.name.includes('Enhanced')) ||
-          v.name.includes('Otoya')
-      );
-
-      // 2. Microsoft Tokyo Natural: Nanami, Keita
-      const msTokyo = jaVoices.find(
-        (v) =>
           v.name.includes('Nanami') ||
+          v.name.includes('Ayumi') ||
+          v.name.includes('Haruka')
+      ) || null;
+
+      // Male Tokyo Standard: Otoya, Keita, Ichiro
+      this.maleVoice = jaVoices.find(
+        (v) =>
+          (v.name.includes('Otoya') && (v.name.includes('Enhanced') || v.name.includes('Premium'))) ||
+          v.name.includes('Otoya') ||
           v.name.includes('Keita') ||
-          (v.name.includes('Natural') && v.lang.includes('ja'))
-      );
+          v.name.includes('Ichiro') ||
+          v.name.includes('Daichi') ||
+          v.name.includes('Hattori')
+      ) || null;
 
-      // 3. Google Tokyo Neural: Google 日本語
-      const googleTokyo = jaVoices.find(
-        (v) => v.name.includes('Google') || v.name.includes('ja-jp-x')
-      );
-
-      // 4. Siri or any ja-JP voice
-      const siriTokyo = jaVoices.find((v) => v.name.includes('Siri'));
-
-      this.japaneseVoice = appleTokyo || msTokyo || googleTokyo || siriTokyo || jaVoices[0];
+      // Default fallback
+      this.japaneseVoice = this.femaleVoice || this.maleVoice || jaVoices[0];
       this.isInitialized = true;
     }
   }
 
   /**
    * Speaks Japanese text in authentic Tokyo standard pronunciation and pitch accent
-   * Default rate: 0.92 (natural Tokyo announcer pace, clear for learners)
+   * Supports character gender voice selection
    */
-  public speak(text: string, rate: number = 0.92, pitch: number = 1.0): Promise<void> {
+  public speak(
+    text: string,
+    rate: number = 0.92,
+    pitch: number = 1.0,
+    gender?: 'female' | 'male'
+  ): Promise<void> {
     return new Promise((resolve) => {
       if (typeof window === 'undefined' || !this.synth) {
         resolve();
@@ -89,13 +91,20 @@ class SpeechService {
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'ja-JP';
       utterance.rate = rate; // Tokyo standard conversational speed (0.92)
-      utterance.pitch = pitch; // Standard pitch accent (1.0)
 
       if (!this.japaneseVoice) {
         this.loadVoice();
       }
-      if (this.japaneseVoice) {
+
+      if (gender === 'male') {
+        utterance.voice = this.maleVoice || this.japaneseVoice;
+        utterance.pitch = pitch * 0.94; // slightly deeper male pitch
+      } else if (gender === 'female') {
+        utterance.voice = this.femaleVoice || this.japaneseVoice;
+        utterance.pitch = pitch * 1.04; // bright clear female pitch
+      } else {
         utterance.voice = this.japaneseVoice;
+        utterance.pitch = pitch;
       }
 
       utterance.onend = () => resolve();

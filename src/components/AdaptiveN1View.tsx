@@ -10,6 +10,7 @@ import {
 } from '@/utils/adaptiveEngine';
 import { speechService } from '@/utils/speech';
 import { MicrophonePermissionModal } from '@/components/MicrophonePermissionModal';
+import { PlacementTestModal } from '@/components/PlacementTestModal';
 import {
   Crown,
   Sparkles,
@@ -24,6 +25,7 @@ import {
   Sliders,
   RotateCcw,
   CheckCircle,
+  Target,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -39,16 +41,21 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isMicOn, setIsMicOn] = useState<boolean>(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState<boolean>(false);
+  const [isPlacementModalOpen, setIsPlacementModalOpen] = useState<boolean>(false);
   const [levelUpAlert, setLevelUpAlert] = useState<{ oldLevel: JLPTLevel; newLevel: JLPTLevel } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
 
-  // Load adaptive learner state on mount
+  // Load adaptive learner state on mount & prompt placement test if first time
   useEffect(() => {
     const saved = loadAdaptiveState();
     setLearnerState(saved);
     initWelcomeChat(saved.currentLevel);
+
+    if (!saved.hasCompletedPlacementTest) {
+      setIsPlacementModalOpen(true);
+    }
   }, []);
 
   // Auto-scroll chat
@@ -168,6 +175,22 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
     initWelcomeChat('N5');
   };
 
+  const handlePlacementComplete = (lvl: JLPTLevel) => {
+    const updated: AdaptiveLearnerState = {
+      ...learnerState,
+      currentLevel: lvl,
+      levelProgress: 15,
+      hasCompletedPlacementTest: true,
+      notes: [
+        ...learnerState.notes,
+        `레벨 진단 테스트 완료: 【${lvl}】 단계로 맞춤 설정되었습니다.`,
+      ],
+    };
+    setLearnerState(updated);
+    saveAdaptiveState(updated);
+    initWelcomeChat(lvl);
+  };
+
   // Pre-flight mic permission check & toggle
   const toggleMic = async () => {
     if (typeof window === 'undefined') return;
@@ -244,6 +267,13 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         featureName="AI 튜터 음성 입력"
       />
 
+      {/* Placement Level Test Modal */}
+      <PlacementTestModal
+        isOpen={isPlacementModalOpen}
+        onClose={() => setIsPlacementModalOpen(false)}
+        onComplete={handlePlacementComplete}
+      />
+
       {/* Flagship Header: Mobile Adaptive Level Card */}
       <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-4">
         {/* Level Status Header */}
@@ -275,14 +305,24 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             </div>
           </div>
 
-          <button
-            onClick={handleResetLevel}
-            className="text-[11px] text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
-            title="N5 기초로 초기화"
-          >
-            <RotateCcw className="w-3 h-3" />
-            <span>N5 리셋</span>
-          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsPlacementModalOpen(true)}
+              className="text-[11px] text-rose-600 dark:text-rose-400 font-bold flex items-center gap-1 py-1 px-2 rounded-lg bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100"
+              title="5문항 빠른 레벨 진단 테스트"
+            >
+              <Target className="w-3 h-3" />
+              <span>레벨 진단</span>
+            </button>
+            <button
+              onClick={handleResetLevel}
+              className="text-[11px] text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800"
+              title="N5 기초로 초기화"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>리셋</span>
+            </button>
+          </div>
         </div>
 
         {/* Level Progress Gauge */}

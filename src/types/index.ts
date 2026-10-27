@@ -102,6 +102,7 @@ export interface AdaptiveLearnerState {
   totalTurns: number;
   lastEvaluatedDate?: string;
   notes: string[];
+  hasCompletedPlacementTest?: boolean;
 }
 
 export interface AISettings {

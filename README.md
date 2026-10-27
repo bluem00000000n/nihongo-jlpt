@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nihongo (日本語) - 대화하며 JLPT 1급(N1) 합격까지
 
-## Getting Started
+> **설치 없이 웹 브라우저만 있으면 윈도우, Mac, 모바일 어디서나 24시간 자유롭게 실행되는 AI 일본어 회화 & 1급 합격 학습 도구**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 핵심 4대 기능
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. 🤖 24시간 실시간 AI 튜터 (ChatGPT & Gemini 연동)
+- **Google Gemini (최신 2.0 Flash / 1.5 Pro)** 또는 **OpenAI ChatGPT (GPT-4o / GPT-4o-mini)** API를 손쉽게 연동
+- API 키가 없어도 내장 스마트 엔진으로 즉시 100% 무료 사용 가능
+- N5 기초부터 학습자의 수준을 기억하여 알아서 급수를 높여가는 적응형 성장 시스템
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. ✏️ 실시간 교정 및 종료 후 '종합 리포트'
+- 대화 중 문법이나 표현이 어색하면 AI가 **"👉 자연스러운 원어민 표현"**과 **이유(피드백)**를 즉시 설명
+- 대화/통화가 종료되면 **문법 정확도 점수, 교정 문장 리스트, 어휘 달성률, AI 총평**이 담긴 **종합 리포트** 자동 생성
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. 📞 콜 모드 (Hands-Free 무선 전화 통화)
+- 운전이나 산책, 조깅을 하면서 스마트폰을 보거나 타이핑하지 않고 **100% 말로만 주고받는 모드**
+- 이어폰을 꽂고 실제 일본인 친구와 LINE 보이스 통화를 하듯 자연스러운 음성 대화 지원
 
-## Learn More
+### 4. 🎭 맞춤형 상황극 (Roleplay)
+- **비즈니스 회의, 여행지 상황, 심층 시사 토론, 일상 쇼핑** 등 원하는 주제와 난이도(N5~N1)를 선택
+- 역할(내 역할 & AI 역할)과 미션 목표를 달성하며 실전 감각 극대화
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 실행 방법 (윈도우 / Mac 가리지 않는 크로스플랫폼)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 방법 A. 웹 링크로 접속 (무설치 ⭐️ 가장 추천)
+- Vercel 등 클라우드에 배포 시 링크(`https://your-nihongo.vercel.app`) 클릭 한 번으로 설치 0초 즉시 실행!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 방법 B. 로컬에서 실행
+- **Windows**: `run.bat` 파일을 더블 클릭하면 브라우저가 자동으로 열립니다.
+- **Mac / Linux**: 터미널에서 `./run.sh`를 실행하거나 `npm run dev` 실행 후 `http://localhost:3000` 접속.

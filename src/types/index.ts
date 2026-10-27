@@ -78,6 +78,30 @@ export interface VocabItem {
   category: string;
 }
 
+export interface KanjiCompound {
+  word: string;
+  reading: string;
+  korean: string;
+  level?: JLPTLevel;
+}
+
+export interface KanjiMasterItem {
+  id: string;
+  kanji: string;
+  hanjaSound: string; // e.g. "목욕할 욕", "골 곡"
+  level: JLPTLevel;
+  radical: string; // 부수 e.g. "氵 (삼수변)"
+  strokes: number; // 획수
+  onyomi: string; // 음독 e.g. "ヨク"
+  kunyomi: string; // 훈독 e.g. "あび.る"
+  story: string; // 한자 암기박사 연상기억 스토리
+  compounds: KanjiCompound[];
+  exampleSentence: {
+    japanese: string;
+    korean: string;
+  };
+}
+
 export interface KanaCharacter {
   kana: string;
   romaji: string;

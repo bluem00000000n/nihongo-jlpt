@@ -262,43 +262,51 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         }}
         featureName="맞춤형 상황극 음성 대화"
       />
-      {/* Top Mobile Card */}
-      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-3">
+      {/* Top Mobile Card (LOFT Stationery Memo) */}
+      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3.5">
+        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+          <div className="flex items-center gap-1.5">
+            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT ROLEPLAY</span>
+            <span>REAL-LIFE SCENARIOS</span>
+          </div>
+          <span>TOTAL: 10 SCENARIOS</span>
+        </div>
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 border border-teal-200/80 dark:border-teal-900/60 flex items-center justify-center">
-              <Target className="w-4 h-4" />
+            <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
+              劇
             </span>
             <div>
-              <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-tight">
+              <h2 className="text-base font-extrabold text-stone-900 dark:text-stone-100 leading-tight">
                 실전 맞춤형 상황극 (Roleplay)
               </h2>
               <span className="text-[11px] text-stone-500 dark:text-stone-400">
-                실제 일본에서 마주치는 15+ 다양한 리얼 상황
+                실제 일본에서 마주치는 10+ 리얼 상황
               </span>
             </div>
           </div>
 
           <button
             onClick={handlePickRandomScenario}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 text-xs font-bold active:scale-95 transition-all shadow-xs"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 border border-stone-800/20 text-xs font-extrabold active:scale-95 transition-all shadow-[1px_2px_0px_rgba(0,0,0,0.1)]"
             title="실전 상황극 무작위 랜덤 뽑기"
           >
-            <Shuffle className="w-3 h-3 text-rose-600" />
-            <span>랜덤 뽑기</span>
+            <Shuffle className="w-3.5 h-3.5" />
+            <span>🎲 랜덤 뽑기</span>
           </button>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-stone-100 dark:border-stone-800">
+        {/* Category Filter Pills (Stationery Index Tabs) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1 rounded-sm text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat
                   ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-xs'
-                  : 'bg-stone-50 dark:bg-stone-900 text-stone-600 dark:text-stone-400 hover:bg-stone-100'
+                  : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F4EFE4]'
               }`}
             >
               {cat === 'ALL' ? '전체 상황극' : cat}
@@ -314,28 +322,28 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               <button
                 key={sc.id}
                 onClick={() => setSelectedScenario(sc)}
-                className={`min-w-[190px] max-w-[210px] p-3 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between shrink-0 ${
+                className={`min-w-[190px] max-w-[210px] p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between shrink-0 ${
                   isSelected
-                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
-                    : 'bg-stone-50 dark:bg-stone-900/60 text-stone-800 dark:text-stone-200 border-stone-200/80 dark:border-stone-800 hover:border-rose-300'
+                    ? 'bg-[#FFE000] text-stone-900 border-stone-900 shadow-[1px_2px_0px_rgba(0,0,0,0.15)]'
+                    : 'bg-white dark:bg-stone-850 text-stone-800 dark:text-stone-200 border-[#DDD5C5] dark:border-stone-750 hover:border-stone-800'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span
-                      className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
+                      className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs ${
                         isSelected
-                          ? 'bg-rose-700 text-white'
-                          : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200/60 dark:border-stone-700'
+                          ? 'bg-stone-900 text-white'
+                          : 'bg-[#F5EFE3] dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-[#E5DEC9] dark:border-stone-700'
                       }`}
                     >
                       {sc.category} · {sc.level}
                     </span>
                   </div>
-                  <h4 className="text-xs font-bold line-clamp-1">{sc.title}</h4>
+                  <h4 className="text-xs font-extrabold line-clamp-1">{sc.title}</h4>
                   <p
                     className={`text-[10px] mt-1 line-clamp-2 leading-relaxed ${
-                      isSelected ? 'text-rose-100' : 'text-stone-500 dark:text-stone-400'
+                      isSelected ? 'text-stone-800 font-medium' : 'text-stone-500 dark:text-stone-400'
                     }`}
                   >
                     {sc.situation}
@@ -347,21 +355,21 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
       </div>
 
-      {/* Main Roleplay Chat Box */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden flex flex-col">
+      {/* Main Roleplay Chat Box (LOFT Notebook Page) */}
+      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] overflow-hidden flex flex-col">
         {/* Scenario Header Bar */}
-        <div className="p-5 bg-gradient-to-r from-teal-600 to-indigo-700 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="p-4 bg-[#35312C] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#25221E]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-bold px-2 py-0.5 bg-white/20 rounded-full">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/15 rounded-xs text-stone-200 font-mono">
                 내 역할: {selectedScenario.userRole}
               </span>
-              <span className="text-xs font-bold px-2 py-0.5 bg-white/20 rounded-full">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/15 rounded-xs text-stone-200 font-mono">
                 상대: {selectedScenario.aiRole}
               </span>
             </div>
-            <h3 className="text-lg font-black">{selectedScenario.title}</h3>
-            <p className="text-xs text-teal-100 mt-1 max-w-xl">
+            <h3 className="text-base font-extrabold tracking-tight">{selectedScenario.title}</h3>
+            <p className="text-xs text-amber-300 mt-1 max-w-xl">
               🎯 <strong>미션 목표: </strong>{selectedScenario.missionGoal}
             </p>
           </div>
@@ -369,14 +377,14 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleFinishRoleplay}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs font-black shadow-md transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 text-xs font-black shadow-xs transition-all border border-stone-800/30"
             >
               <Award className="w-3.5 h-3.5" />
-              상황극 완료 & 종합 리포트
+              완료 & 리포트
             </button>
             <button
               onClick={() => initScenario(selectedScenario)}
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white"
+              className="p-1.5 rounded-md bg-white/10 hover:bg-white/20 text-white"
               title="상황극 다시 시작"
             >
               <RotateCcw className="w-4 h-4" />
@@ -385,44 +393,46 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Message Stream */}
-        <div className="p-6 space-y-4 max-h-[460px] overflow-y-auto bg-slate-50/40 dark:bg-slate-900/40">
+        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-[#FDFCF9] dark:bg-[#181715] loft-dot-bg">
           {chatLog.map((chat, idx) => (
             <div
               key={idx}
-              className={`flex gap-3 items-start animate-in fade-in duration-200 ${
+              className={`flex gap-2.5 items-start animate-fade-in ${
                 chat.sender === 'user' ? 'flex-row-reverse' : ''
               }`}
             >
               <div
-                className={`w-9 h-9 rounded-2xl flex items-center justify-center text-xs font-bold shrink-0 ${
-                  chat.sender === 'user' ? 'bg-indigo-600 text-white' : 'bg-teal-600 text-white'
+                className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold shrink-0 shadow-xs ${
+                  chat.sender === 'user'
+                    ? 'bg-[#FFE000] text-stone-900 border border-stone-800/30'
+                    : 'bg-[#D93829] text-white font-serif'
                 }`}
               >
-                {chat.sender === 'user' ? '나' : '상대'}
+                {chat.sender === 'user' ? '私' : '相'}
               </div>
 
               <div
-                className={`max-w-lg p-4 rounded-2xl space-y-1 shadow-sm ${
+                className={`max-w-[85%] p-3.5 rounded-xl space-y-1 shadow-xs ${
                   chat.sender === 'user'
-                    ? 'bg-indigo-600 text-white rounded-tr-none'
-                    : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 rounded-tl-none'
+                    ? 'bg-[#FEF9C3] dark:bg-[#2C2718] text-stone-900 dark:text-stone-100 border border-[#FDE047] dark:border-yellow-900/60 rounded-tr-xs'
+                    : 'bg-white dark:bg-[#22201D] text-stone-900 dark:text-stone-100 border border-[#E2D9C8] dark:border-stone-750 border-l-4 border-l-[#D93829] rounded-tl-xs'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className={`text-[10px] font-bold ${chat.sender === 'user' ? 'text-indigo-200' : 'text-teal-600 dark:text-teal-400'}`}>
+                  <span className={`text-[10px] font-mono font-bold ${chat.sender === 'user' ? 'text-amber-800 dark:text-amber-300' : 'text-stone-500'}`}>
                     {chat.sender === 'user' ? selectedScenario.userRole : selectedScenario.aiRole}
                   </span>
                   {chat.sender === 'ai' && (
                     <button
                       onClick={() => speechService.speak(chat.japanese, 0.88)}
-                      className="p-1 rounded text-slate-400 hover:text-teal-600"
+                      className="p-1 rounded text-stone-400 hover:text-stone-700"
                     >
-                      <Volume2 className="w-3.5 h-3.5" />
+                      <Volume2 className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
                     </button>
                   )}
                 </div>
-                <p className="text-sm font-bold leading-relaxed">{chat.japanese}</p>
-                <p className={`text-xs ${chat.sender === 'user' ? 'text-indigo-100' : 'text-slate-500 dark:text-slate-400'}`}>
+                <p className="text-sm font-semibold leading-relaxed">{chat.japanese}</p>
+                <p className={`text-xs ${chat.sender === 'user' ? 'text-amber-900 dark:text-amber-200' : 'text-stone-500 dark:text-stone-400'}`}>
                   {chat.korean}
                 </p>
               </div>
@@ -430,9 +440,9 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
           ))}
 
           {isTyping && (
-            <div className="flex gap-2 items-center text-xs text-slate-400 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-teal-600 animate-ping" />
-              <span>{selectedScenario.aiRole}가 답변을 생각하고 있습니다...</span>
+            <div className="flex gap-2 items-center text-xs text-stone-500 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
+              <span>{selectedScenario.aiRole}가 답변을 작성하고 있습니다...</span>
             </div>
           )}
 
@@ -440,95 +450,95 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
+        <div className="p-2.5 bg-[#FAF7F0] dark:bg-[#1E1D1B] border-t border-[#E5DEC9] dark:border-stone-800">
           <form
             onSubmit={(e) => {
               e.preventDefault();
               handleSendMessage();
             }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-1.5"
           >
             <button
               type="button"
               onClick={toggleMic}
-              className={`p-3 rounded-2xl transition-all ${
+              className={`p-2.5 rounded-lg transition-all border ${
                 isMicOn
-                  ? 'bg-rose-500 text-white animate-pulse'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                  ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
+                  : 'bg-white dark:bg-stone-850 text-stone-700 dark:text-stone-300 border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F2ECE1]'
               }`}
               title="음성으로 말하기"
             >
-              {isMicOn ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              {isMicOn ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </button>
 
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`[${selectedScenario.userRole}] 역할로 일본어로 답변하세요...`}
-              className="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-700/60 border border-slate-200 dark:border-slate-600 rounded-2xl text-sm"
+              placeholder={`[${selectedScenario.userRole}] 역할로 일본어로 답변`}
+              className="flex-1 px-3 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-stone-800"
             />
 
             <button
               type="submit"
               disabled={!inputText.trim() || isTyping}
-              className="p-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 text-white rounded-2xl"
+              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-stone-900 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-stone-800/20 flex items-center justify-center"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </button>
           </form>
         </div>
       </div>
 
-      {/* Comprehensive Report Modal */}
+      {/* Comprehensive Report Modal (LOFT Stationery Evaluation Sheet) */}
       {finalReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full p-6 sm:p-8 space-y-5 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto relative">
+            <div className="flex items-start justify-between pb-3 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
               <div>
-                <span className="text-xs font-bold text-teal-600 uppercase">
-                  맞춤형 상황극 종합 평가 결과
+                <span className="text-[10px] font-mono font-bold text-[#D93829] uppercase tracking-wider block">
+                  EVALUATION NOTE · 評価シート
                 </span>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white mt-0.5">
+                <h3 className="text-base font-extrabold text-stone-900 dark:text-white mt-0.5">
                   {selectedScenario.title}
                 </h3>
               </div>
               <button
                 onClick={() => setFinalReport(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center text-sm font-bold"
+                className="w-7 h-7 rounded-md bg-stone-200/70 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center text-xs font-bold hover:bg-stone-300"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-center">
-              <span className="text-xs text-stone-400 block">문법 정확도 점수</span>
-              <strong className="text-2xl font-black text-rose-600">
+            <div className="p-3 rounded-xl bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-700 text-center shadow-xs">
+              <span className="text-[11px] text-stone-500 block font-mono">ACCURACY SCORE</span>
+              <strong className="text-2xl font-black text-[#D93829]">
                 {finalReport.grammarAccuracyScore}점
               </strong>
             </div>
 
-            <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 text-xs text-teal-900 dark:text-teal-200 leading-relaxed">
-              <strong className="block font-bold mb-1">AI 롤플레잉 총평:</strong>
+            <div className="p-3.5 rounded-xl bg-[#FEF9C3] dark:bg-[#2C2718] border border-[#FDE047] dark:border-yellow-900/60 text-xs text-stone-800 dark:text-stone-200 leading-relaxed shadow-xs">
+              <strong className="block font-bold text-amber-900 dark:text-amber-300 mb-1">【AI 총평 메모】</strong>
               {finalReport.aiSummary}
             </div>
 
             {finalReport.corrections.length > 0 && (
               <div className="space-y-2">
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
-                  상황극 중 교정받은 표현 ({finalReport.corrections.length}건):
+                <span className="text-xs font-bold text-stone-700 dark:text-stone-300 block">
+                  교정 피드백 ({finalReport.corrections.length}건):
                 </span>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {finalReport.corrections.map((cor) => (
                     <div
                       key={cor.id}
-                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs space-y-1"
+                      className="p-3 rounded-lg bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-700 text-xs space-y-1 shadow-xs"
                     >
                       <div className="flex items-start gap-1.5">
-                        <span className="text-slate-400 line-through">{cor.originalText}</span>
-                        <span className="text-teal-600 font-bold">👉 {cor.improvedJapanese}</span>
+                        <span className="text-stone-400 line-through">{cor.originalText}</span>
+                        <span className="text-[#D93829] font-bold">👉 {cor.improvedJapanese}</span>
                       </div>
-                      <p className="text-[11px] text-slate-500">{cor.feedbackPoint}</p>
+                      <p className="text-[11px] text-stone-500">{cor.feedbackPoint}</p>
                     </div>
                   ))}
                 </div>
@@ -537,9 +547,9 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
 
             <button
               onClick={() => setFinalReport(null)}
-              className="w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl shadow-md"
+              className="w-full py-2.5 bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs rounded-lg shadow-xs border border-stone-800/20"
             >
-              확인 및 상황극 닫기
+              확인 및 리포트 닫기
             </button>
           </div>
         </div>

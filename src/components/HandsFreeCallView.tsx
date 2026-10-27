@@ -321,15 +321,23 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         featureName="핸즈프리 보이스 통화"
       />
 
-      {/* Top Mobile Card: Introduction & Context */}
-      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-3">
+      {/* Top Mobile Card: Introduction & Context (LOFT Stationery Call Note) */}
+      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+          <div className="flex items-center gap-1.5">
+            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT CALL</span>
+            <span>HANDS-FREE AUDIO</span>
+          </div>
+          <span>REALTIME SPEECH</span>
+        </div>
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-900/60 flex items-center justify-center">
-              <Headphones className="w-4 h-4" />
+            <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
+              話
             </span>
             <div>
-              <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-tight">
+              <h2 className="text-base font-extrabold text-stone-900 dark:text-stone-100 leading-tight">
                 콜 모드 (Hands-Free)
               </h2>
               <span className="text-[11px] text-stone-500 dark:text-stone-400">
@@ -340,7 +348,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
           <button
             onClick={onOpenAISettings}
-            className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-stone-100 dark:bg-stone-800 text-[11px] font-bold text-stone-700 dark:text-stone-300 hover:bg-stone-200"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white dark:bg-stone-800 border border-[#DDD5C5] dark:border-stone-700 text-[11px] font-bold text-stone-700 dark:text-stone-300 hover:bg-[#F2ECE1] shadow-xs"
           >
             <Zap className="w-3 h-3 text-amber-500" />
             <span>{stats.aiSettings?.provider === 'built_in' ? '내장 AI' : stats.aiSettings?.provider}</span>
@@ -348,36 +356,32 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
 
         {/* 3 Practical situations */}
-        <div className="grid grid-cols-3 gap-2 pt-1 border-t border-stone-100 dark:border-stone-800/80 text-center">
-          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
-            <Car className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
-            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">차량 운전</span>
+        <div className="grid grid-cols-3 gap-2 pt-1 border-t border-stone-200/80 dark:border-stone-800/80 text-center">
+          <div className="p-2 rounded-lg bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-800 shadow-xs">
+            <Car className="w-3.5 h-3.5 mx-auto text-stone-700 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-bold text-stone-700 dark:text-stone-300 block">차량 운전</span>
           </div>
-          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
-            <Footprints className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
-            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">산책 · 조깅</span>
+          <div className="p-2 rounded-lg bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-800 shadow-xs">
+            <Footprints className="w-3.5 h-3.5 mx-auto text-stone-700 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-bold text-stone-700 dark:text-stone-300 block">산책 · 조깅</span>
           </div>
-          <div className="p-2 rounded-xl bg-stone-50 dark:bg-stone-900/60 border border-stone-100 dark:border-stone-800">
-            <FileText className="w-3.5 h-3.5 mx-auto text-stone-600 dark:text-stone-300 mb-1" />
-            <span className="text-[10px] font-semibold text-stone-600 dark:text-stone-300 block">종합 리포트</span>
+          <div className="p-2 rounded-lg bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-800 shadow-xs">
+            <FileText className="w-3.5 h-3.5 mx-auto text-stone-700 dark:text-stone-300 mb-1" />
+            <span className="text-[10px] font-bold text-stone-700 dark:text-stone-300 block">종합 리포트</span>
           </div>
         </div>
       </div>
 
-      {/* Main Calling Card (Crafted with phone-like elegance) */}
-      <div className="bg-[#1C1B19] text-white rounded-3xl border border-stone-800 shadow-xl p-5 flex flex-col justify-between min-h-[480px] relative overflow-hidden">
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-0 right-0 w-44 h-44 bg-rose-900/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-44 h-44 bg-emerald-900/10 rounded-full blur-3xl pointer-events-none" />
-
+      {/* Main Calling Card (Sumi Ink Notebook Slate) */}
+      <div className="bg-[#24221F] text-stone-100 rounded-2xl border border-[#3A3631] shadow-xl p-5 flex flex-col justify-between min-h-[480px] relative overflow-hidden">
         {/* Top Info Bar */}
-        <div className="flex items-center justify-between text-xs text-stone-400 relative z-10">
+        <div className="flex items-center justify-between text-xs text-stone-400 relative z-10 border-b border-stone-700/60 pb-3">
           <div className="flex items-center gap-1.5">
-            <Radio className="w-3.5 h-3.5 text-rose-500 animate-pulse" />
-            <span className="font-mono font-medium tracking-tight">VOICE CALL</span>
+            <span className="w-2 h-2 rounded-full bg-[#FFE000] animate-pulse" />
+            <span className="font-mono font-bold text-stone-200 tracking-wider text-[11px]">VOICE CALL · 通話</span>
           </div>
 
-          <div className="px-2.5 py-1 rounded-full bg-stone-800/80 border border-stone-700/60 text-[11px] font-mono text-stone-300 font-bold">
+          <div className="px-2.5 py-0.5 rounded-sm bg-stone-800 border border-stone-600/70 text-[11px] font-mono text-[#FFE000] font-bold">
             {formatTimer(callDuration)}
           </div>
         </div>
@@ -386,12 +390,12 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         <div className="text-center py-6 relative z-10 flex flex-col items-center justify-center">
           <div className="relative mb-4">
             <div
-              className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+              className={`w-24 h-24 rounded-xl flex items-center justify-center transition-all duration-300 border-2 ${
                 isAiSpeaking
-                  ? 'bg-gradient-to-tr from-rose-700 to-rose-600 ring-8 ring-rose-500/20 scale-105 shadow-lg shadow-rose-900/30'
+                  ? 'bg-[#D93829] border-[#FFE000] scale-105 shadow-lg shadow-black/40 ring-4 ring-[#FFE000]/30'
                   : callState === 'connected'
-                  ? 'bg-gradient-to-tr from-emerald-800 to-teal-700 ring-6 ring-emerald-500/20'
-                  : 'bg-stone-800 border-2 border-stone-700'
+                  ? 'bg-stone-800 border-emerald-500'
+                  : 'bg-stone-850 border-stone-700'
               }`}
             >
               <span className="text-3xl font-serif font-black text-white">日</span>
@@ -399,13 +403,13 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
             {/* Speaking audio wave indicator */}
             {isAiSpeaking && (
-              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-md animate-bounce">
-                말하는 중...
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-xs bg-[#FFE000] text-[10px] font-black text-black shadow-md border border-stone-900 animate-bounce">
+                発話中
               </span>
             )}
           </div>
 
-          <h3 className="text-xl font-bold text-white">nihongo-jlpt AI 원어민 튜터</h3>
+          <h3 className="text-lg font-extrabold text-white">nihongo-jlpt AI 튜터</h3>
           <p className="text-xs text-stone-400 mt-1">
             {callState === 'calling'
               ? '전화 연결 중...'
@@ -417,8 +421,8 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           </p>
 
           {callState === 'connected' && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 rounded-full text-xs font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-stone-800/90 text-[#FFE000] border border-stone-700 rounded-md text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#FFE000] animate-pulse" />
               <span>LIVE CALLING</span>
             </div>
           )}
@@ -427,10 +431,10 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         {/* Real-time Subtitles / Latest Speech */}
         <div className="relative z-10 my-2 min-h-[90px] flex flex-col justify-end">
           {currentSubtitle ? (
-            <div className="bg-stone-800/90 border border-stone-700/80 rounded-2xl p-3.5 backdrop-blur-sm animate-fade-in space-y-1">
+            <div className="bg-[#1C1A18]/90 border border-stone-700/80 rounded-xl p-3.5 backdrop-blur-sm animate-fade-in space-y-1">
               <div className="flex items-center justify-between text-[11px] text-stone-400">
-                <span className="font-bold text-rose-400">{currentSubtitle.speaker}</span>
-                <span>실시간 발화</span>
+                <span className="font-bold text-[#FFE000]">{currentSubtitle.speaker}</span>
+                <span className="font-mono text-[10px]">REALTIME</span>
               </div>
               <p className="text-sm font-semibold text-white leading-snug">{currentSubtitle.text}</p>
               {currentSubtitle.kr && (
@@ -439,44 +443,44 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
             </div>
           ) : (
             <div className="text-center py-4 text-xs text-stone-500">
-              {callState === 'connected' ? '말씀을 듣고 있습니다...' : '전화 연결 후 대화가 여기에 표시됩니다.'}
+              {callState === 'connected' ? '말씀을 듣고 있습니다...' : '전화 연결 후 대화 내용이 여기에 표시됩니다.'}
             </div>
           )}
         </div>
 
         {/* Real-time Inline Feedback Pill */}
         {latestCorrection && callState === 'connected' && (
-          <div className="relative z-10 mb-3 bg-amber-950/50 border border-amber-800/60 rounded-2xl p-3 text-xs animate-slide-up">
-            <div className="flex items-center gap-1.5 text-amber-300 font-bold mb-1">
+          <div className="relative z-10 mb-3 bg-[#2D1B1B] border border-rose-900/60 rounded-xl p-3 text-xs animate-slide-up shadow-xs">
+            <div className="flex items-center gap-1.5 text-rose-300 font-bold mb-1">
               <Edit3 className="w-3.5 h-3.5" />
               <span>실시간 표현 교정</span>
             </div>
             <div className="text-stone-300">
-              👉 <span className="text-amber-200 font-bold">{latestCorrection.improvedJapanese}</span>
+              👉 <span className="text-[#FFE000] font-bold">{latestCorrection.improvedJapanese}</span>
             </div>
             <div className="text-[11px] text-stone-400 mt-0.5">{latestCorrection.feedbackPoint}</div>
           </div>
         )}
 
         {/* Bottom Call Action Buttons */}
-        <div className="relative z-10 pt-3 border-t border-stone-800/80">
+        <div className="relative z-10 pt-3 border-t border-stone-800">
           {callState === 'idle' || callState === 'ended' ? (
             <button
               onClick={checkMicAndStartCall}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/40 active:scale-98 transition-all"
+              className="w-full py-3 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-sm flex items-center justify-center gap-2 shadow-md border border-stone-800/30 active:scale-98 transition-all"
             >
-              <Phone className="w-5 h-5 fill-white" />
+              <Phone className="w-4.5 h-4.5 fill-current" />
               <span>통화 시작하기 (마이크 자동 연결)</span>
             </button>
           ) : (
-            <div className="flex items-center justify-around gap-3">
+            <div className="flex items-center justify-around gap-2.5">
               {/* Mute Button */}
               <button
                 onClick={toggleMute}
-                className={`flex-1 py-3 rounded-2xl flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${
+                className={`flex-1 py-2.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold transition-all border ${
                   isMuted
-                    ? 'bg-amber-600/30 text-amber-300 border border-amber-500'
-                    : 'bg-stone-800 text-stone-300 border border-stone-700 hover:bg-stone-700'
+                    ? 'bg-amber-600/30 text-amber-300 border-amber-500'
+                    : 'bg-stone-800 text-stone-300 border-stone-700 hover:bg-stone-700'
                 }`}
               >
                 {isMuted ? <MicOff className="w-4 h-4 text-amber-400" /> : <Mic className="w-4 h-4" />}
@@ -486,7 +490,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
               {/* End Call Button */}
               <button
                 onClick={handleEndCall}
-                className="flex-1 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-rose-950/40 active:scale-98 transition-all"
+                className="flex-1 py-2.5 rounded-lg bg-[#D93829] hover:bg-[#B92B1E] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-all border border-[#B92B1E]"
               >
                 <PhoneOff className="w-4 h-4 fill-white" />
                 <span>통화 종료 및 리포트</span>
@@ -496,62 +500,62 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
       </div>
 
-      {/* Comprehensive Session Report (Displayed after call ends) */}
+      {/* Comprehensive Session Report (LOFT Stationery Evaluation Sheet) */}
       {finalReport && (
-        <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-md space-y-4 animate-slide-up">
-          <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
+        <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 sm:p-5 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-4 animate-slide-up">
+          <div className="flex items-center justify-between pb-3 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/60 flex items-center justify-center">
+              <span className="w-8 h-8 rounded-md bg-[#FFE000] text-stone-900 border border-stone-800/30 flex items-center justify-center font-bold shadow-xs">
                 <Award className="w-4 h-4" />
               </span>
               <div>
-                <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                <h3 className="text-base font-extrabold text-stone-900 dark:text-stone-100">
                   통화 종합 분석 리포트
                 </h3>
-                <p className="text-[11px] text-stone-500 dark:text-stone-400">
-                  통화 시간: {Math.floor(finalReport.durationSeconds / 60)}분 {finalReport.durationSeconds % 60}초 · 총 {finalReport.totalTurns}회 발화
+                <p className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
+                  DURATION: {Math.floor(finalReport.durationSeconds / 60)}분 {finalReport.durationSeconds % 60}초 · {finalReport.totalTurns} TURNS
                 </p>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-xl font-black text-rose-600 dark:text-rose-400 font-sans">
+              <div className="text-xl font-black text-[#D93829] font-mono">
                 {finalReport.grammarAccuracyScore}점
               </div>
-              <span className="text-[10px] text-stone-400">문법 정확도</span>
+              <span className="text-[10px] text-stone-500 font-mono">ACCURACY</span>
             </div>
           </div>
 
           {/* AI Overall Assessment */}
-          <div className="p-3.5 bg-stone-50 dark:bg-stone-900/60 rounded-2xl border border-stone-200/60 dark:border-stone-800 text-xs text-stone-700 dark:text-stone-300 leading-relaxed">
-            <span className="font-bold block text-stone-900 dark:text-stone-100 mb-1">
-              💬 AI 튜터 총평
+          <div className="p-3.5 bg-[#FEF9C3] dark:bg-[#2C2718] rounded-xl border border-[#FDE047] dark:border-yellow-900/60 text-xs text-stone-800 dark:text-stone-200 leading-relaxed shadow-xs">
+            <span className="font-extrabold block text-amber-900 dark:text-amber-300 mb-1">
+              【AI 튜터 총평 메모】
             </span>
             {finalReport.aiSummary}
           </div>
 
           {/* Corrections List */}
           <div>
-            <h4 className="text-xs font-bold text-stone-800 dark:text-stone-200 mb-2 flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+            <h4 className="text-xs font-extrabold text-stone-800 dark:text-stone-200 mb-2 flex items-center gap-1.5">
+              <span className="loft-hanko text-[9px] px-1 py-0.2">添削</span>
               <span>맞춤 교정 내역 ({finalReport.corrections.length}건)</span>
             </h4>
 
             {finalReport.corrections.length === 0 ? (
-              <div className="p-4 text-center rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-900/40 text-xs text-emerald-800 dark:text-emerald-300 font-semibold">
-                🎉 문법 오류 없이 훌륭하고 유창하게 대화를 이끌었습니다!
+              <div className="p-4 text-center rounded-xl bg-[#ECFDF5] dark:bg-emerald-950/30 border border-emerald-200/80 text-xs text-emerald-900 dark:text-emerald-300 font-bold shadow-xs">
+                🎉 문법 오류 없이 훌륭하고 유창하게 통화를 완료했습니다!
               </div>
             ) : (
               <div className="space-y-2">
                 {finalReport.corrections.map((item, idx) => (
                   <div
                     key={item.id || idx}
-                    className="p-3 bg-stone-50 dark:bg-stone-900/60 rounded-xl border border-stone-200/70 dark:border-stone-800 text-xs space-y-1"
+                    className="p-3 bg-white dark:bg-stone-850 rounded-lg border border-[#DDD5C5] dark:border-stone-700 text-xs space-y-1 shadow-xs"
                   >
                     <div className="text-stone-400 line-through">
                       내가 한 말: {item.originalText}
                     </div>
-                    <div className="font-bold text-rose-600 dark:text-rose-400">
+                    <div className="font-extrabold text-[#D93829] dark:text-rose-400">
                       👉 원어민 추천: {item.improvedJapanese}
                     </div>
                     <div className="text-[11px] text-stone-600 dark:text-stone-300">
@@ -566,7 +570,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           {/* Restart Call button */}
           <button
             onClick={checkMicAndStartCall}
-            className="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
+            className="w-full py-2.5 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-stone-800/20 active:scale-98 transition-all"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>새로운 통화 시작하기</span>

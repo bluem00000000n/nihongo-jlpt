@@ -73,25 +73,29 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <>
-      {/* Sub-bar for Study Mode tabs if a study tab is currently active */}
+      {/* Sub-bar for Study Mode tabs (Stationery Index Flag Stickers) */}
       {isStudyTab && (
-        <div className="bg-[#FAF9F5] dark:bg-[#18181B] border-b border-stone-200/80 dark:border-stone-800 px-3 py-2 sticky top-[57px] z-30 transition-colors">
+        <div className="bg-[#FAF7F0] dark:bg-[#1C1B19] border-b border-[#E5DEC9] dark:border-stone-800 px-3 py-2 sticky top-[82px] z-30 transition-colors">
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-md mx-auto">
-            {studySubTabs.map((sub) => {
+            {studySubTabs.map((sub, idx) => {
               const SubIcon = sub.icon;
               const isSelected = activeTab === sub.id;
               return (
                 <button
                   key={sub.id}
                   onClick={() => onChangeTab(sub.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs whitespace-nowrap transition-all duration-150 relative ${
                     isSelected
-                      ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-sm'
-                      : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200/70 dark:border-stone-700 hover:bg-stone-100'
+                      ? 'bg-[#FFE000] text-stone-900 font-extrabold shadow-[1px_2px_0px_rgba(0,0,0,0.12)] border border-stone-800/30'
+                      : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#E0D8C6] dark:border-stone-700 hover:bg-[#F4EFE4] font-medium shadow-[0_1px_1px_rgba(0,0,0,0.03)]'
                   }`}
                 >
+                  <span className="text-[9px] font-mono text-stone-400 font-normal">0{idx + 1}</span>
                   <SubIcon className="w-3.5 h-3.5" />
                   <span>{sub.label}</span>
+                  {isSelected && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D93829] inline-block -ml-0.5" />
+                  )}
                 </button>
               );
             })}
@@ -99,10 +103,10 @@ export const Navigation: React.FC<NavigationProps> = ({
         </div>
       )}
 
-      {/* Fixed Mobile Bottom Tab Bar (App-like navigation) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border-t border-stone-200/80 dark:border-stone-800 pb-[env(safe-area-inset-bottom,8px)] pt-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.04)]">
+      {/* Fixed Mobile Bottom Tab Bar (LOFT Stationery Index Bar) */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#FAF7F0]/98 dark:bg-[#1C1B19]/98 backdrop-blur-md border-t border-[#E5DEC9] dark:border-stone-800 pb-[env(safe-area-inset-bottom,8px)] pt-1.5 shadow-[0_-3px_12px_rgba(30,25,20,0.05)]">
         <div className="max-w-md mx-auto px-3 flex items-center justify-around">
-          {mainTabs.map((tab) => {
+          {mainTabs.map((tab, idx) => {
             const Icon = tab.icon;
             const isActive = tab.isActiveOverride !== undefined ? tab.isActiveOverride : activeTab === tab.id;
 
@@ -110,26 +114,26 @@ export const Navigation: React.FC<NavigationProps> = ({
               <button
                 key={tab.id}
                 onClick={() => onChangeTab(tab.id)}
-                className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-2xl min-w-[64px] transition-all duration-200 active:scale-95 ${
+                className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-xl min-w-[64px] transition-all duration-200 active:scale-95 ${
                   isActive
-                    ? 'text-rose-600 dark:text-rose-400 font-bold'
+                    ? 'text-stone-900 dark:text-white font-extrabold'
                     : 'text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 font-medium'
                 }`}
               >
                 <div
-                  className={`w-10 h-7 rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className={`w-10 h-7 rounded-lg flex items-center justify-center transition-all duration-200 ${
                     isActive
-                      ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 scale-105'
+                      ? 'bg-[#FFE000] text-stone-900 shadow-[1px_2px_0px_rgba(0,0,0,0.12)] border border-stone-800/20'
                       : 'text-stone-500 dark:text-stone-400'
                   }`}
                 >
-                  <Icon className="w-5 h-5 stroke-[2.2]" />
+                  <Icon className="w-4.5 h-4.5 stroke-[2.2]" />
                 </div>
-                <span className="text-[11px] mt-0.5 tracking-tight">{tab.label}</span>
+                <span className="text-[11px] mt-1 tracking-tight">{tab.label}</span>
 
-                {/* Subtle active pill indicator */}
+                {/* Hanko red stamp active dot */}
                 {isActive && (
-                  <span className="absolute -top-0.5 w-1 h-1 rounded-full bg-rose-600 dark:bg-rose-400" />
+                  <span className="absolute -top-1 w-1.5 h-1.5 rounded-full bg-[#D93829]" />
                 )}
               </button>
             );

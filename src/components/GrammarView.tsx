@@ -110,11 +110,19 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top filter and search bar */}
-      <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+    <div className="space-y-4">
+      {/* Top filter and search bar (LOFT Stationery Header) */}
+      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+          <div className="flex items-center gap-1.5">
+            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT GRAMMAR</span>
+            <span>INDEX & NOTE</span>
+          </div>
+          <span>TOTAL: {grammarList.length} ITEMS</span>
+        </div>
+
         {/* JLPT Level Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
           {levels.map((lvl) => {
             const count =
               lvl === 'ALL'
@@ -132,18 +140,18 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
               <button
                 key={lvl}
                 onClick={() => setSelectedLevel(lvl)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20'
-                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700'
+                    ? 'bg-[#FFE000] text-stone-900 font-extrabold shadow-xs border border-stone-800/30'
+                    : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#DDD5C5] dark:border-stone-750 hover:bg-[#F4EFE4]'
                 }`}
               >
                 <span>{lvl === 'ALL' ? '전체' : lvl}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                  className={`text-[9px] font-mono px-1 py-0.2 rounded-xs ${
                     isActive
-                      ? 'bg-indigo-700 text-indigo-100'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+                      ? 'bg-stone-900 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-stone-500'
                   }`}
                 >
                   {completedInLvl}/{count}
@@ -154,20 +162,20 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
         </div>
 
         {/* Search Input */}
-        <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="relative w-full">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="문법 표현 검색 (예: ている, たら, 덕분에)"
-            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="문법 검색 (예: ている, たら, 덕분에)"
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-800"
           />
         </div>
       </div>
 
       {/* Grammar Cards List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-3">
         {filteredGrammar.map((item) => {
           const isCompleted = stats.completedGrammarIds.includes(item.id);
           const isBookmarked = stats.bookmarkedGrammarIds.includes(item.id);
@@ -180,84 +188,69 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                 setSelectedQuizAnswers({});
                 setQuizSubmitted({});
               }}
-              className={`p-5 rounded-2xl border transition-all duration-200 cursor-pointer hover:shadow-lg hover:-translate-y-0.5 relative group bg-white dark:bg-slate-800 ${
+              className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer hover:shadow-md relative group bg-white dark:bg-[#1E1D1B] ${
                 isCompleted
-                  ? 'border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/20 dark:bg-emerald-950/10'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600'
+                  ? 'border-emerald-300 dark:border-emerald-800 bg-[#F4FBF7] dark:bg-emerald-950/10'
+                  : 'border-[#E2D9C8] dark:border-stone-800 hover:border-stone-800'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
-                      item.level === 'N5'
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                        : item.level === 'N4'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
-                        : item.level === 'N3'
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
-                        : item.level === 'N2'
-                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
-                        : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
-                    }`}
-                  >
+                  <span className="loft-hanko text-[9px] px-1 py-0.2">
                     {item.level}
                   </span>
-                  <span className="text-xs text-slate-400 font-medium">{item.category}</span>
+                  <span className="text-[11px] text-stone-500 font-mono">{item.category}</span>
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1">
                   <button
                     onClick={(e) => toggleBookmark(item.id, e)}
-                    className={`p-1.5 rounded-lg transition-colors ${
+                    className={`p-1.5 rounded-md transition-colors ${
                       isBookmarked
                         ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/60'
-                        : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700'
+                        : 'text-stone-400 hover:text-stone-700 hover:bg-stone-100'
                     }`}
                     title="북마크"
                   >
-                    <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-amber-500' : ''}`} />
+                    <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-amber-500' : ''}`} />
                   </button>
                   <button
                     onClick={(e) => toggleComplete(item.id, e)}
-                    className={`p-1.5 rounded-lg transition-colors ${
+                    className={`p-1.5 rounded-md transition-colors ${
                       isCompleted
                         ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-slate-300 hover:text-slate-500'
+                        : 'text-stone-300 hover:text-stone-600'
                     }`}
                     title={isCompleted ? '완료 취소' : '학습 완료 체크'}
                   >
                     {isCompleted ? (
-                      <CheckCircle2 className="w-5 h-5 fill-emerald-100 dark:fill-emerald-900" />
+                      <CheckCircle2 className="w-4.5 h-4.5 fill-emerald-100 dark:fill-emerald-900" />
                     ) : (
-                      <Circle className="w-5 h-5" />
+                      <Circle className="w-4.5 h-4.5" />
                     )}
                   </button>
                 </div>
               </div>
 
               {/* Title & Meaning */}
-              <div className="mt-3">
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 mt-0.5">
+              <div className="mt-2">
+                <h4 className="text-sm font-extrabold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                  <span className="loft-marker">{item.title}</span>
+                </h4>
+                <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-snug">
                   {item.meaning}
                 </p>
-              </div>
-
-              {/* Formula */}
-              <div className="mt-3 px-3 py-1.5 bg-slate-100/80 dark:bg-slate-700/50 rounded-lg text-xs font-mono text-slate-600 dark:text-slate-300 flex items-center justify-between">
-                <span>{item.connection}</span>
-                <span className="text-slate-400 text-[11px]">예문 {item.examples.length}개</span>
+                <div className="mt-2 text-[11px] text-stone-500 bg-[#FAF7F0] dark:bg-stone-900/60 p-2 rounded-md border border-[#E5DEC9] dark:border-stone-800 font-mono">
+                  접속: {item.connection}
+                </div>
               </div>
 
               {/* Quick sample preview */}
               {item.examples[0] && (
-                <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-                  <span className="truncate pr-2">{item.examples[0].japanese}</span>
-                  <div className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-medium shrink-0">
-                    <span>학습하기</span>
+                <div className="mt-2.5 pt-2 border-t border-dashed border-[#DDD5C5] dark:border-stone-800 flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+                  <span className="truncate pr-2 font-serif text-[11px]">{item.examples[0].japanese}</span>
+                  <div className="flex items-center gap-1 text-stone-900 dark:text-stone-100 font-extrabold text-[11px] shrink-0">
+                    <span>학습</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
                 </div>

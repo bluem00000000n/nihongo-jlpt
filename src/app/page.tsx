@@ -76,9 +76,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2EFE9] dark:bg-[#111113] text-stone-900 dark:text-stone-100 flex justify-center font-sans transition-colors antialiased">
-      {/* Mobile-First Centered Container */}
-      <div className="w-full max-w-md min-h-screen bg-[#FAF9F5] dark:bg-[#18181B] shadow-[0_0_50px_rgba(0,0,0,0.06)] border-x border-stone-200/70 dark:border-stone-850 flex flex-col relative">
+    <div className="min-h-screen bg-[#EDE7DC] dark:bg-[#121110] text-stone-900 dark:text-stone-100 flex justify-center font-sans transition-colors antialiased">
+      {/* Mobile-First Centered Container (Japanese LOFT Notebook Paper) */}
+      <div className="w-full max-w-md min-h-screen bg-[#FAF7F0] dark:bg-[#181715] shadow-[0_4px_30px_rgba(40,30,20,0.12)] border-x border-[#E2D9C8] dark:border-stone-800 flex flex-col relative loft-grid-bg">
         {/* Global Mobile Header */}
         <Header
           stats={stats}
@@ -95,8 +95,8 @@ export default function Home() {
           totalGrammarCount={grammarData.length}
         />
 
-        {/* Main Body (Mobile optimized padding with safe bottom area) */}
-        <main className="flex-1 w-full px-3.5 pt-3.5 pb-24">
+        {/* Main Body (Mobile optimized padding with safe bottom area & 5mm grid texture) */}
+        <main className="flex-1 w-full px-3.5 pt-3 pb-24">
           {activeTab === 'n1_adaptive' && (
             <AdaptiveN1View stats={stats} onAddXP={handleAddXP} />
           )}

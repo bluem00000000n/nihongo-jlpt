@@ -27,36 +27,57 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <header className="sticky top-0 z-30 bg-white/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-800 transition-colors">
+      {/* LOFT Stationery Notebook Spine & Brand Header */}
+      <header className="sticky top-0 z-30 bg-[#FAF7F0]/95 dark:bg-[#1C1B19]/95 backdrop-blur-md border-b border-[#E5DEC9] dark:border-stone-800 transition-colors">
+        {/* Notebook Top Spiral Wire Motif (Rollbahn / Maruman style ring holes) */}
+        <div className="w-full bg-[#35312C] dark:bg-[#201E1B] py-1 px-4 flex items-center justify-between border-b border-[#25221E]">
+          <div className="flex items-center gap-1.5 overflow-hidden">
+            {Array.from({ length: 14 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-2.5 h-1.5 rounded-full bg-gradient-to-b from-stone-400 to-stone-600 shadow-inner border border-stone-700/60 flex-shrink-0"
+              />
+            ))}
+          </div>
+          <div className="flex items-center gap-2 text-[9px] font-mono tracking-widest text-stone-300">
+            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black rounded-xs text-[8px]">LOFT</span>
+            <span className="hidden sm:inline">NOTEBOOK</span>
+            <span className="text-stone-400">NO. 2026</span>
+          </div>
+        </div>
+
         <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
-          {/* Logo and Brand */}
+          {/* Logo and Brand in Stationery Note style */}
           <div className="flex items-center gap-2.5">
-            {/* Traditional Shu-iro Vermilion Mark */}
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-rose-600 to-rose-700 flex items-center justify-center text-white font-serif font-black text-base shadow-sm shadow-rose-900/10">
+            {/* Japanese Hanko Inkan Seal Mark */}
+            <div className="w-8 h-8 rounded-lg bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)] border border-[#B92B1E]">
               日
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-bold text-base tracking-tight text-stone-900 dark:text-stone-100 font-sans">
+                <span className="font-extrabold text-base tracking-tight text-stone-900 dark:text-stone-100 font-sans">
                   nihongo-jlpt
                 </span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 font-semibold border border-rose-200/60 dark:border-rose-900/40">
-                  日本語
+                <span className="text-[10px] px-1.5 py-0.5 rounded-xs bg-[#FFE000] text-stone-900 font-extrabold border border-stone-800/20 shadow-[1px_1px_0px_rgba(0,0,0,0.1)]">
+                  学習帳
                 </span>
               </div>
+              <p className="text-[10px] text-stone-500 dark:text-stone-400 font-mono tracking-tight">
+                方眼ノート仕様 · 5mm Grid
+              </p>
             </div>
           </div>
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2">
-            {/* Quick Settings & AI Drawer Button */}
+            {/* Quick Settings Button styled like stationery label */}
             <button
               onClick={() => setIsQuickSettingsOpen(true)}
-              className="px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors border border-stone-200/70 dark:border-stone-750 text-xs font-semibold"
+              className="px-2.5 py-1.5 rounded-md flex items-center gap-1.5 text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-850 hover:bg-[#F2ECE1] transition-colors border border-[#DDD5C5] dark:border-stone-700 text-xs font-bold shadow-[1px_1px_0px_rgba(0,0,0,0.06)]"
               title="학습 설정 및 AI 엔진 선택"
               aria-label="설정"
             >
-              <Settings2 className="w-3.5 h-3.5" />
+              <Settings2 className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
               <span>설정</span>
             </button>
           </div>

@@ -131,37 +131,46 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-      <div className="w-full max-w-md bg-[#FAF9F5] dark:bg-[#1C1B19] rounded-t-3xl sm:rounded-3xl shadow-2xl border border-stone-200/90 dark:border-stone-800 p-5 flex flex-col max-h-[90vh] overflow-hidden">
+      <div className="w-full max-w-md bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-t-2xl sm:rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 p-5 flex flex-col max-h-[90vh] overflow-hidden">
+        {/* Top Header Strip */}
+        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500 mb-2">
+          <div className="flex items-center gap-1.5">
+            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT TEST</span>
+            <span>DIAGNOSIS SHEET</span>
+          </div>
+          <span>NO. 001</span>
+        </div>
+
         {/* Intro Step */}
         {step === 'intro' && (
           <div className="space-y-4 py-2">
-            <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60 flex items-center justify-center mx-auto text-xl font-serif font-black">
+            <div className="w-12 h-12 rounded-lg bg-[#D93829] text-white flex items-center justify-center mx-auto text-xl font-serif font-black shadow-[1px_2px_0px_rgba(0,0,0,0.15)] border border-[#B92B1E]">
               日
             </div>
 
             <div className="text-center space-y-1">
-              <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">
+              <h3 className="text-lg font-extrabold text-stone-900 dark:text-stone-100">
                 AI 일본어 맞춤 레벨 진단
               </h3>
               <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed max-w-xs mx-auto">
-                현재 실력에 꼭 맞는 단계(N5~N1)에서 시작할 수 있도록 <strong>빠른 5문항 진단</strong>을 진행합니다.
+                현재 실력에 꼭 맞는 단계(N5~N1)에서 시작할 수 있도록 <strong className="loft-marker">빠른 5문항 진단</strong>을 진행합니다.
               </p>
             </div>
 
-            <div className="p-3.5 bg-white dark:bg-stone-900/70 rounded-2xl border border-stone-200/80 dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 space-y-2">
+            <div className="p-3 bg-white dark:bg-stone-900/70 rounded-xl border border-[#DDD5C5] dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 space-y-1.5 shadow-xs">
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-rose-600" />
-                <span className="font-bold text-stone-800 dark:text-stone-100">진단 방식</span>
+                <Target className="w-4 h-4 text-[#D93829]" />
+                <span className="font-extrabold text-stone-800 dark:text-stone-100">진단 방식</span>
               </div>
               <p className="text-[11px] text-stone-500 leading-normal">
                 기초(N5)부터 1급(N1)까지 핵심 문장 5개를 풀고, 진단된 레벨부터 AI가 자동으로 어휘와 급수를 높여갑니다.
               </p>
             </div>
 
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-1">
               <button
                 onClick={handleStartTest}
-                className="w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-rose-900/20 active:scale-98 transition-all"
+                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-stone-800/20 active:scale-98 transition-all"
               >
                 <span>5문항 레벨 진단 시작하기 (1분 소요)</span>
                 <ChevronRight className="w-4 h-4" />
@@ -169,7 +178,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
 
               <button
                 onClick={handleSkipToN5}
-                className="w-full py-2.5 rounded-xl border border-stone-200 dark:border-stone-700 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 text-xs font-semibold hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+                className="w-full py-2 rounded-lg border border-[#DDD5C5] dark:border-stone-700 text-stone-600 hover:text-stone-900 dark:hover:text-stone-200 text-xs font-semibold hover:bg-[#F4EFE4] dark:hover:bg-stone-800 transition-colors"
               >
                 진단 없이 N5 (왕초보)부터 바로 시작하기
               </button>
@@ -181,24 +190,24 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
         {step === 'testing' && currentQ && (
           <div className="space-y-4 py-1">
             {/* Progress Bar */}
-            <div className="flex items-center justify-between text-xs text-stone-400">
-              <span className="font-bold text-rose-600">진단 문항 {currentIdx + 1} / 5</span>
-              <span className="font-mono text-[11px]">난이도: {currentQ.level}</span>
+            <div className="flex items-center justify-between text-xs text-stone-500">
+              <span className="font-extrabold text-[#D93829] font-mono">QUESTION {currentIdx + 1} / 5</span>
+              <span className="loft-hanko text-[9px] px-1 py-0.2">{currentQ.level}</span>
             </div>
 
-            <div className="w-full h-1.5 bg-stone-200 dark:bg-stone-800 rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#EFE9DC] dark:bg-stone-800 rounded-sm overflow-hidden border border-[#D5CCBA] dark:border-stone-700">
               <div
-                className="h-full bg-rose-600 rounded-full transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#FFE000] to-[#F59E0B] transition-all duration-300"
                 style={{ width: `${((currentIdx + 1) / 5) * 100}%` }}
               />
             </div>
 
             {/* Question Card */}
-            <div className="bg-white dark:bg-stone-900/80 rounded-2xl p-4 border border-stone-200/80 dark:border-stone-800 space-y-2">
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+            <div className="bg-white dark:bg-stone-900/80 rounded-xl p-4 border border-[#E5DEC9] dark:border-stone-800 border-l-4 border-l-[#D93829] space-y-1.5 shadow-xs">
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
                 Q{currentIdx + 1}
               </span>
-              <h4 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-snug">
+              <h4 className="text-base font-extrabold text-stone-900 dark:text-stone-100 leading-snug">
                 {currentQ.prompt}
               </h4>
               <p className="text-xs text-stone-500 dark:text-stone-400">
@@ -212,7 +221,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
                 <button
                   key={idx}
                   onClick={() => handleSelectOption(opt)}
-                  className="p-3.5 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 hover:border-rose-500 hover:bg-rose-50/50 dark:hover:bg-rose-950/30 text-sm font-semibold transition-all active:scale-98 text-center"
+                  className="p-3 rounded-lg border border-[#DDD5C5] dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 hover:border-stone-900 hover:bg-[#FDFBF7] text-sm font-semibold transition-all active:scale-98 text-center shadow-xs"
                 >
                   {opt}
                 </button>
@@ -233,12 +242,12 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
         {/* Result Step */}
         {step === 'result' && (
           <div className="space-y-4 py-2 text-center">
-            <div className="w-14 h-14 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/60 flex items-center justify-center mx-auto">
-              <Award className="w-8 h-8" />
+            <div className="w-12 h-12 rounded-lg bg-[#FFE000] text-stone-900 border border-stone-800/30 flex items-center justify-center mx-auto shadow-xs">
+              <Award className="w-7 h-7" />
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs text-stone-400 font-bold block">진단 완료 (5문항 중 {correctCount}문항 정답)</span>
+              <span className="text-xs text-stone-400 font-bold block font-mono">DIAGNOSIS COMPLETE ({correctCount} / 5)</span>
               <h3 className="text-2xl font-black text-stone-900 dark:text-stone-100">
                 【{diagnosedLevel}】 레벨로 시작합니다!
               </h3>
@@ -255,20 +264,20 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
               </p>
             </div>
 
-            <div className="p-3 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200/80 dark:border-stone-800 text-left text-xs text-stone-600 dark:text-stone-300 space-y-1">
+            <div className="p-3 bg-white dark:bg-stone-900 rounded-xl border border-[#DDD5C5] dark:border-stone-800 text-left text-xs text-stone-600 dark:text-stone-300 space-y-1 shadow-xs">
               <div className="flex items-center gap-1.5 font-bold text-stone-900 dark:text-stone-100">
-                <CheckCircle2 className="w-3.5 h-3.5 text-rose-600" />
-                <span>스마트 상태 저장 완료</span>
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>스마트 상태 영구 저장 완료</span>
               </div>
               <p className="text-[11px] text-stone-500 leading-normal">
-                진단된 레벨은 브라우저에 안전하게 영구 저장되며, 대화 실력 향상 시 AI가 알아서 다음 급수로 자동 레벨업합니다.
+                진단된 레벨은 브라우저(LocalStorage)에 안전하게 영구 보존되며, 실력 향상 시 AI가 알아서 다음 급수로 자동 승급합니다.
               </p>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-1">
               <button
                 onClick={handleFinish}
-                className="w-full py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md shadow-rose-900/20 active:scale-98 transition-all"
+                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs shadow-xs border border-stone-800/20 active:scale-98 transition-all"
               >
                 {diagnosedLevel} 단계로 AI 튜터와 대화 시작하기
               </button>

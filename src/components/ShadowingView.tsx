@@ -396,7 +396,6 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                       <span className="font-bold text-emerald-800 dark:text-emerald-300">
                         🎉 섀도잉 일치도: {shadowScore}점
                       </span>
-                      <span className="font-extrabold text-purple-600">+20 XP</span>
                     </div>
                     {userSpeechResult && (
                       <p className="text-slate-600 dark:text-slate-400 text-left">
@@ -630,7 +629,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   type="submit"
                   className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/20"
                 >
-                  채집장에 저장 (+25 XP)
+                  채집장에 저장
                 </button>
               </div>
             </form>

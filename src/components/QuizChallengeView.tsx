@@ -224,7 +224,7 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
             }
             className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
           >
-            정답 제출하기 (+25 XP)
+            정답 제출하기
           </button>
         ) : (
           <div className="space-y-4 pt-2">

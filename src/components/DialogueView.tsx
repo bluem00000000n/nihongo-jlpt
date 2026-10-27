@@ -279,7 +279,7 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
                   🎉 실전 회화 완료!
                 </h3>
                 <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
-                  모든 대화 턴을 성공적으로 끝마쳤습니다! (+50 XP 획득)
+                  모든 대화 턴을 성공적으로 끝마쳤습니다!
                 </p>
               </div>
               <button

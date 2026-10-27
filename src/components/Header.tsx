@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { UserStats } from '@/types';
-import { Flame, Sparkles, Settings2, Eye, BookOpen, Volume2, VolumeX, X } from 'lucide-react';
+import { Sparkles, Settings2, Eye, BookOpen, Volume2, VolumeX, X } from 'lucide-react';
 
 interface HeaderProps {
   stats: UserStats;
@@ -48,24 +48,16 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-1.5">
-            {/* Streak Counter */}
-            <div
-              className="flex items-center gap-1 px-2.5 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/70 dark:border-amber-900/50 rounded-full text-xs font-bold"
-              title={`${stats.streak}일 연속 학습 중`}
-            >
-              <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-              <span>{stats.streak}일</span>
-            </div>
-
+          <div className="flex items-center gap-2">
             {/* Quick Settings & AI Drawer Button */}
             <button
               onClick={() => setIsQuickSettingsOpen(true)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors border border-stone-200/70 dark:border-stone-700"
+              className="px-2.5 py-1.5 rounded-xl flex items-center gap-1.5 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors border border-stone-200/70 dark:border-stone-750 text-xs font-semibold"
               title="학습 설정 및 AI 엔진 선택"
               aria-label="설정"
             >
-              <Settings2 className="w-4 h-4" />
+              <Settings2 className="w-3.5 h-3.5" />
+              <span>설정</span>
             </button>
           </div>
         </div>

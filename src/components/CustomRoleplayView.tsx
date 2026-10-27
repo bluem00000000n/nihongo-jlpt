@@ -493,17 +493,11 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 text-center">
-              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                <span className="text-xs text-slate-400 block">문법 정확도 점수</span>
-                <strong className="text-2xl font-black text-teal-600">
-                  {finalReport.grammarAccuracyScore}점
-                </strong>
-              </div>
-              <div className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                <span className="text-xs text-slate-400 block">달성 보상</span>
-                <strong className="text-2xl font-black text-purple-600">+60 XP</strong>
-              </div>
+            <div className="p-3.5 rounded-2xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-center">
+              <span className="text-xs text-stone-400 block">문법 정확도 점수</span>
+              <strong className="text-2xl font-black text-rose-600">
+                {finalReport.grammarAccuracyScore}점
+              </strong>
             </div>
 
             <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 text-xs text-teal-900 dark:text-teal-200 leading-relaxed">

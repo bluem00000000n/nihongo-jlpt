@@ -225,7 +225,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                         ? 'text-emerald-600 dark:text-emerald-400'
                         : 'text-slate-300 hover:text-slate-500'
                     }`}
-                    title={isCompleted ? '완료 취소' : '학습 완료 체크 (+20 XP)'}
+                    title={isCompleted ? '완료 취소' : '학습 완료 체크'}
                   >
                     {isCompleted ? (
                       <CheckCircle2 className="w-5 h-5 fill-emerald-100 dark:fill-emerald-900" />
@@ -311,7 +311,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  {stats.completedGrammarIds.includes(activeGrammar.id) ? '학습 완료됨' : '완료 체크 (+20XP)'}
+                  {stats.completedGrammarIds.includes(activeGrammar.id) ? '학습 완료됨' : '완료 체크'}
                 </button>
                 <button
                   onClick={() => setActiveGrammar(null)}
@@ -460,7 +460,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                             disabled={!selected}
                             className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold rounded-lg transition-colors"
                           >
-                            정답 확인 (+15 XP)
+                            정답 확인
                           </button>
                         ) : (
                           <div

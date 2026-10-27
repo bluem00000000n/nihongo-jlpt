@@ -199,7 +199,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
               onClick={nextCard}
               className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-lg shadow-amber-500/25"
             >
-              알고 있음! 다음 (+5 XP)
+              알고 있음! 다음 단어
             </button>
           </div>
         </div>

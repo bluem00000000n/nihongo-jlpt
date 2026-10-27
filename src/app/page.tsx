@@ -12,9 +12,11 @@ import { ShadowingView } from '@/components/ShadowingView';
 import { VocabView } from '@/components/VocabView';
 import { KanaView } from '@/components/KanaView';
 import { QuizChallengeView } from '@/components/QuizChallengeView';
+import { DialogueView } from '@/components/DialogueView';
 import { AISettingsModal } from '@/components/AISettingsModal';
 import { grammarData } from '@/data/grammar';
 import { vocabData } from '@/data/vocab';
+import { dialogueScenarios } from '@/data/dialogues';
 import { loadUserStats, saveUserStats, defaultStats } from '@/utils/storage';
 import { UserStats } from '@/types';
 
@@ -131,6 +133,15 @@ export default function Home() {
           {activeTab === 'vocab' && (
             <VocabView
               vocabList={vocabData}
+              stats={stats}
+              onUpdateStats={handleUpdateStats}
+              onAddXP={handleAddXP}
+            />
+          )}
+
+          {activeTab === 'dialogue' && (
+            <DialogueView
+              scenarios={dialogueScenarios}
               stats={stats}
               onUpdateStats={handleUpdateStats}
               onAddXP={handleAddXP}

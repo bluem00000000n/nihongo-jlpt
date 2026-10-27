@@ -6,12 +6,13 @@ export interface FuriganaWord {
 }
 
 export interface ExampleSentence {
-  id: string;
+  id?: string;
   japanese: string; // Plain Japanese or segmented
   ruby?: { kanji: string; furigana: string }[]; // For ruby rendering
   romaji: string;
   korean: string;
   nuance?: string;
+  audioText?: string;
 }
 
 export interface QuizQuestion {
@@ -90,7 +91,7 @@ export interface KanaCharacter {
   };
 }
 
-export type NavTab = 'n1_adaptive' | 'hands_free_call' | 'custom_roleplay' | 'grammar' | 'shadowing' | 'vocab' | 'kana' | 'quiz';
+export type NavTab = 'n1_adaptive' | 'hands_free_call' | 'custom_roleplay' | 'grammar' | 'shadowing' | 'vocab' | 'kana' | 'quiz' | 'dialogue';
 
 export interface AdaptiveLearnerState {
   currentLevel: JLPTLevel;

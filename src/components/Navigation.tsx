@@ -10,6 +10,8 @@ import {
   Layers,
   Trophy,
   BookOpen,
+  MessageSquareText,
+  SpellCheck,
 } from 'lucide-react';
 import { NavTab } from '@/types';
 
@@ -29,7 +31,7 @@ export const Navigation: React.FC<NavigationProps> = ({
   totalGrammarCount,
 }) => {
   // Main 4 Mobile Bottom Tabs
-  const isStudyTab = ['grammar', 'shadowing', 'vocab', 'quiz', 'kana'].includes(activeTab);
+  const isStudyTab = ['grammar', 'shadowing', 'vocab', 'dialogue', 'quiz', 'kana'].includes(activeTab);
 
   const mainTabs = [
     {
@@ -53,18 +55,20 @@ export const Navigation: React.FC<NavigationProps> = ({
     {
       id: 'grammar' as NavTab,
       label: '학습실',
-      sub: '문법·섀도잉',
+      sub: '문법·섀도잉·회화',
       icon: BookOpen,
       isActiveOverride: isStudyTab,
     },
   ];
 
-  // Secondary sub-tabs for Study Mode (문법, 섀도잉, 어휘, 퀴즈)
+  // Secondary sub-tabs for Study Mode (문법, 섀도잉, 단어장, 실전 회화, 퀴즈, 가나)
   const studySubTabs = [
     { id: 'grammar' as NavTab, label: '급수별 문법', icon: BookMarked },
     { id: 'shadowing' as NavTab, label: '3단계 섀도잉', icon: Headphones },
     { id: 'vocab' as NavTab, label: '단어장', icon: Layers },
-    { id: 'quiz' as NavTab, label: '퀴즈', icon: Trophy },
+    { id: 'dialogue' as NavTab, label: '실전 회화', icon: MessageSquareText },
+    { id: 'quiz' as NavTab, label: '퀴즈 테스트', icon: Trophy },
+    { id: 'kana' as NavTab, label: '가나 차트', icon: SpellCheck },
   ];
 
   return (

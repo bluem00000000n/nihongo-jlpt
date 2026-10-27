@@ -110,9 +110,9 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Scenario Category / Selector Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+    <div className="space-y-4 max-w-md mx-auto pb-10">
+      {/* Scenario Category / Selector Cards (Horizontal swipe for mobile) */}
+      <div className="flex gap-2.5 overflow-x-auto pb-1.5 scrollbar-none">
         {scenarios.map((sc) => {
           const isSelected = selectedScenario.id === sc.id;
           const isCompleted = stats.completedDialogueIds.includes(sc.id);
@@ -121,10 +121,10 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
             <button
               key={sc.id}
               onClick={() => handleSelectScenario(sc)}
-              className={`p-3.5 rounded-2xl text-left border transition-all duration-200 flex flex-col justify-between ${
+              className={`min-w-[160px] p-3 rounded-2xl text-left border transition-all duration-200 flex flex-col justify-between shrink-0 ${
                 isSelected
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/25 border-emerald-600 scale-[1.02]'
-                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-emerald-400'
+                  ? 'bg-rose-600 text-white shadow-md shadow-rose-900/20 border-rose-600'
+                  : 'bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 border-stone-200 dark:border-stone-800 hover:border-rose-300'
               }`}
             >
               <div>

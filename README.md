@@ -1,4 +1,4 @@
-# nihongo (日本語) - 대화하며 JLPT 1급(N1) 합격까지
+# nihongo-jlpt (日本語) - 대화하며 JLPT 1급(N1) 합격까지
 
 > **설치 없이 웹 브라우저만 있으면 윈도우, Mac, 모바일 어디서나 24시간 자유롭게 실행되는 AI 일본어 회화 & 1급 합격 학습 도구**
 
@@ -28,7 +28,7 @@
 ## 🚀 실행 방법 (윈도우 / Mac 가리지 않는 크로스플랫폼)
 
 ### 방법 A. 웹 링크로 접속 (무설치 ⭐️ 가장 추천)
-- Vercel 등 클라우드에 배포 시 링크(`https://your-nihongo.vercel.app`) 클릭 한 번으로 설치 0초 즉시 실행!
+- Vercel 배포 시 링크([https://nihongo-jlpt.vercel.app](https://nihongo-jlpt.vercel.app)) 클릭 한 번으로 설치 0초 즉시 실행!
 
 ### 방법 B. 로컬에서 실행
 - **Windows**: `run.bat` 파일을 더블 클릭하면 브라우저가 자동으로 열립니다.

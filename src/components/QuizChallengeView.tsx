@@ -102,7 +102,7 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
           <div className="flex items-center gap-2 mb-1">
             <Trophy className="w-5 h-5 text-amber-300" />
             <span className="text-xs font-bold uppercase tracking-wider text-cyan-100">
-              nihongo 문장 조립 & 문법 챌린지
+              nihongo-jlpt 문장 조립 & 문법 챌린지
             </span>
           </div>
           <h2 className="text-2xl font-black">실전 퀴즈 테스트</h2>

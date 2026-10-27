@@ -1,11 +1,12 @@
 import { ComprehensiveReport, DialogueCorrectionItem, JLPTLevel } from '@/types';
 
-const REPORT_STORAGE_KEY = 'nihongo_comprehensive_reports_v1';
+const REPORT_STORAGE_KEY = 'nihongo_jlpt_comprehensive_reports_v1';
+const LEGACY_REPORT_KEY = 'nihongo_comprehensive_reports_v1';
 
 export function loadReports(): ComprehensiveReport[] {
   if (typeof window === 'undefined') return [];
   try {
-    const raw = localStorage.getItem(REPORT_STORAGE_KEY);
+    const raw = localStorage.getItem(REPORT_STORAGE_KEY) || localStorage.getItem(LEGACY_REPORT_KEY);
     if (!raw) return [];
     return JSON.parse(raw);
   } catch {

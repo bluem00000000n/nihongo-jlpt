@@ -339,7 +339,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm text-slate-900 dark:text-white">
-                  nihongo 맞춤 AI 튜터
+                  nihongo-jlpt 맞춤 AI 튜터
                 </span>
                 <span className="text-[10px] px-2 py-0.2 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold">
                   {learnerState.currentLevel} 맞춤 모드

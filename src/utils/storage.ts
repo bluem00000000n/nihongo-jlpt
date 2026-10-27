@@ -1,7 +1,7 @@
 import { UserStats } from '@/types';
 
-const STORAGE_KEY = 'nihongo_user_stats_v1';
-const LEGACY_STORAGE_KEY = 'bunpo_user_stats_v1';
+const STORAGE_KEY = 'nihongo_jlpt_user_stats_v1';
+const LEGACY_STORAGE_KEYS = ['nihongo_user_stats_v1', 'bunpo_user_stats_v1'];
 
 export const defaultStats: UserStats = {
   xp: 120,
@@ -25,7 +25,13 @@ export const defaultStats: UserStats = {
 export function loadUserStats(): UserStats {
   if (typeof window === 'undefined') return defaultStats;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      for (const legacy of LEGACY_STORAGE_KEYS) {
+        raw = localStorage.getItem(legacy);
+        if (raw) break;
+      }
+    }
     if (!raw) return defaultStats;
     const parsed = JSON.parse(raw);
     return { ...defaultStats, ...parsed };

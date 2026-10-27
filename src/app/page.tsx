@@ -160,7 +160,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 py-6 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© 2026 nihongo (日本語) - 대화하며 JLPT 1급(N1) 합격까지</p>
+          <p>© 2026 nihongo-jlpt (日本語) - 대화하며 JLPT 1급(N1) 합격까지</p>
           <div className="flex items-center gap-4 text-slate-400">
             <span>JLPT N5 ~ N1 대화 미션</span>
             <span>·</span>

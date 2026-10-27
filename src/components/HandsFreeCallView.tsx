@@ -346,7 +346,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
             </div>
 
             <div>
-              <h3 className="text-2xl font-black text-white">nihongo AI 원어민 튜터</h3>
+              <h3 className="text-2xl font-black text-white">nihongo-jlpt AI 원어민 튜터</h3>
               <p className="text-xs text-slate-400 mt-1">24시간 언제든 대화하는 실시간 음성 통화</p>
 
               {callState === 'calling' && (

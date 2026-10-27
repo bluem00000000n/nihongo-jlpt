@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'API 키가 입력되지 않았습니다.' }, { status: 400 });
     }
 
-    const systemPrompt = `당신은 사용자를 JLPT N5(기초)부터 N1(1급 합격)까지 단계별로 대화를 통해 성장시키는 'nihongo AI 튜터'입니다.
+    const systemPrompt = `당신은 사용자를 JLPT N5(기초)부터 N1(1급 합격)까지 단계별로 대화를 통해 성장시키는 'nihongo-jlpt AI 튜터'입니다.
 현재 학습자의 급수 레벨은 【${currentLevel}】 단계이며, 다음 급수 승급까지의 진행률은 【${levelProgress}%】입니다.
 
 [레벨별 대화 가이드라인]

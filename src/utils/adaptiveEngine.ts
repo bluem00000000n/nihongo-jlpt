@@ -1,6 +1,7 @@
 import { AdaptiveLearnerState, AdaptiveMessage, JLPTLevel, AISettings } from '@/types';
 
-const ADAPTIVE_STORAGE_KEY = 'nihongo_adaptive_learner_v1';
+const ADAPTIVE_STORAGE_KEY = 'nihongo_jlpt_adaptive_learner_v1';
+const LEGACY_ADAPTIVE_KEY = 'nihongo_adaptive_learner_v1';
 
 export const initialAdaptiveState: AdaptiveLearnerState = {
   currentLevel: 'N5',
@@ -16,7 +17,7 @@ export const initialAdaptiveState: AdaptiveLearnerState = {
 export function loadAdaptiveState(): AdaptiveLearnerState {
   if (typeof window === 'undefined') return initialAdaptiveState;
   try {
-    const raw = localStorage.getItem(ADAPTIVE_STORAGE_KEY);
+    const raw = localStorage.getItem(ADAPTIVE_STORAGE_KEY) || localStorage.getItem(LEGACY_ADAPTIVE_KEY);
     if (!raw) return initialAdaptiveState;
     return { ...initialAdaptiveState, ...JSON.parse(raw) };
   } catch {

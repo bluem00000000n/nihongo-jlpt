@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { GrammarItem, QuizQuestion, UserStats } from '@/types';
+import { GrammarItem, JLPTLevel, UserStats } from '@/types';
+import { jlptExamQuestions, JLPTExamQuestion } from '@/data/jlptExams';
 import { speechService } from '@/utils/speech';
-import { Trophy, CheckCircle2, RotateCcw, Volume2, Sparkles, AlertCircle } from 'lucide-react';
+import { Trophy, CheckCircle2, RotateCcw, Volume2, Sparkles, AlertCircle, ShieldCheck, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface QuizChallengeViewProps {
@@ -13,33 +14,22 @@ interface QuizChallengeViewProps {
 }
 
 export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
-  grammarList,
   stats,
   onAddXP,
 }) => {
-  // Aggregate all quizzes from grammar
-  const allQuizzes: { quiz: QuizQuestion; grammarTitle: string }[] = grammarList.flatMap((g) =>
-    g.quizzes.map((q) => ({ quiz: q, grammarTitle: g.title }))
-  );
-
+  const [selectedLevel, setSelectedLevel] = useState<JLPTLevel | 'ALL'>('ALL');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [score, setScore] = useState(0);
 
-  const currentItem = allQuizzes[currentIndex % (allQuizzes.length || 1)];
-  const quiz = currentItem?.quiz;
+  const filteredQuestions = jlptExamQuestions.filter(
+    (q) => selectedLevel === 'ALL' || q.level === selectedLevel
+  );
 
-  const handleWordClick = (word: string) => {
-    if (isAnswerChecked) return;
-    if (selectedWords.includes(word)) {
-      setSelectedWords(selectedWords.filter((w) => w !== word));
-    } else {
-      setSelectedWords([...selectedWords, word]);
-    }
-  };
+  const currentQ: JLPTExamQuestion | undefined =
+    filteredQuestions[currentIndex % (filteredQuestions.length || 1)];
 
   const handleOptionClick = (opt: string) => {
     if (isAnswerChecked) return;
@@ -47,18 +37,9 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
   };
 
   const handleCheckAnswer = () => {
-    if (!quiz || isAnswerChecked) return;
+    if (!currentQ || isAnswerChecked || !selectedOption) return;
 
-    let correct = false;
-    if (quiz.type === 'word_order') {
-      const correctArr = quiz.correctAnswer as string[];
-      correct =
-        selectedWords.length === correctArr.length &&
-        selectedWords.every((val, index) => val === correctArr[index]);
-    } else {
-      correct = selectedOption === quiz.correctAnswer;
-    }
-
+    const correct = selectedOption === currentQ.correctAnswer;
     setIsCorrect(correct);
     setIsAnswerChecked(true);
 
@@ -66,196 +47,200 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
       setScore((prev) => prev + 1);
       onAddXP(25);
       confetti({
-        particleCount: 45,
+        particleCount: 50,
         spread: 60,
+        origin: { y: 0.6 },
       });
-      if (stats.soundEnabled && quiz.audioText) {
-        speechService.speak(quiz.audioText);
+      if (stats.soundEnabled) {
+        speechService.speak(currentQ.correctAnswer);
       }
     }
   };
 
-  const handleNextQuestion = () => {
-    setSelectedWords([]);
+  const handleNext = () => {
     setSelectedOption(null);
     setIsAnswerChecked(false);
+    setIsCorrect(false);
     setCurrentIndex((prev) => prev + 1);
   };
 
-  const handleRestart = () => {
-    setCurrentIndex(0);
-    setSelectedWords([]);
+  const handleReset = () => {
     setSelectedOption(null);
     setIsAnswerChecked(false);
+    setIsCorrect(false);
+    setCurrentIndex(0);
     setScore(0);
   };
 
-  if (!quiz) {
-    return null;
+  if (!currentQ) {
+    return (
+      <div className="max-w-md mx-auto p-6 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 text-center">
+        선택한 조건의 기출문제가 없습니다.
+      </div>
+    );
   }
 
+  const levels: (JLPTLevel | 'ALL')[] = ['ALL', 'N5', 'N4', 'N3', 'N2', 'N1'];
+
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      {/* Top Banner */}
-      <div className="p-6 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-3xl text-white shadow-lg flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Trophy className="w-5 h-5 text-amber-300" />
-            <span className="text-xs font-bold uppercase tracking-wider text-cyan-100">
-              nihongo-jlpt 문장 조립 & 문법 챌린지
+    <div className="max-w-md mx-auto space-y-4 pb-10">
+      {/* Top Mobile Banner */}
+      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/60 flex items-center justify-center">
+              <Trophy className="w-4 h-4" />
+            </span>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <h2 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                  JLPT 공식 기출 테스트
+                </h2>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 font-bold border border-emerald-200/60">
+                  공식 출제 기준
+                </span>
+              </div>
+              <p className="text-[11px] text-stone-500 dark:text-stone-400">
+                문자·어휘, 문법 형식, 단문 독해 실전 문제풀이
+              </p>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <span className="text-base font-black text-rose-600 dark:text-rose-400 font-sans">
+              {score}개 정답
             </span>
           </div>
-          <h2 className="text-2xl font-black">실전 퀴즈 테스트</h2>
-          <p className="text-xs text-cyan-100 mt-1">
-            단어를 순서대로 터치하거나 올바른 어휘를 완성해 보세요.
-          </p>
         </div>
 
-        <div className="text-right">
-          <div className="text-3xl font-black text-amber-300">{score}</div>
-          <span className="text-xs text-cyan-100">맞춘 개수</span>
+        {/* Level Filters */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-stone-100 dark:border-stone-800">
+          {levels.map((lvl) => (
+            <button
+              key={lvl}
+              onClick={() => {
+                setSelectedLevel(lvl);
+                setCurrentIndex(0);
+                setSelectedOption(null);
+                setIsAnswerChecked(false);
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
+                selectedLevel === lvl
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'bg-stone-50 dark:bg-stone-900 text-stone-600 dark:text-stone-400 hover:bg-stone-100'
+              }`}
+            >
+              {lvl === 'ALL' ? '전체 급수' : lvl}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Quiz Card */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 sm:p-8 space-y-6">
-        <div className="flex items-center justify-between text-xs text-slate-400">
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            관련 문법: {currentItem.grammarTitle}
-          </span>
-          <span>
-            문제 {currentIndex + 1} / {allQuizzes.length}
+      {/* Main Question Card */}
+      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl border border-stone-200/90 dark:border-stone-800 shadow-sm p-5 space-y-4">
+        {/* Question Header & Authority Source */}
+        <div className="flex items-center justify-between text-xs pb-3 border-b border-stone-100 dark:border-stone-800">
+          <div className="flex items-center gap-1.5">
+            <span className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300 font-bold text-[10px]">
+              {currentQ.level}
+            </span>
+            <span className="font-semibold text-stone-600 dark:text-stone-300 text-xs">
+              {currentQ.section} · {currentQ.sectionDetail}
+            </span>
+          </div>
+
+          <span className="text-stone-400 text-[11px] font-mono">
+            {currentIndex + 1} / {filteredQuestions.length}
           </span>
         </div>
 
-        {/* Prompt */}
+        {/* Source Badge */}
+        <div className="flex items-center gap-1 text-[10px] text-stone-400">
+          <ShieldCheck className="w-3 h-3 text-emerald-600 shrink-0" />
+          <span>출처: {currentQ.sourceAuthority}</span>
+        </div>
+
+        {/* Question Prompt */}
         <div className="py-2">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
-            {quiz.prompt}
+          <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-relaxed font-sans">
+            {currentQ.prompt}
           </h3>
+          {currentQ.translation && isAnswerChecked && (
+            <p className="text-xs text-stone-500 mt-1.5 leading-snug">
+              해석: {currentQ.translation}
+            </p>
+          )}
         </div>
 
-        {/* Word Scramble Mode */}
-        {quiz.type === 'word_order' && quiz.words && (
-          <div className="space-y-4">
-            {/* Answer Display Box */}
-            <div className="min-h-16 p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border-2 border-dashed border-indigo-200 dark:border-indigo-900 flex flex-wrap gap-2 items-center">
-              {selectedWords.length === 0 ? (
-                <span className="text-xs text-slate-400 italic mx-auto">
-                  아래 단어들을 순서대로 터치하여 문장을 완성하세요
-                </span>
-              ) : (
-                selectedWords.map((w, idx) => (
-                  <button
-                    key={`${w}-${idx}`}
-                    onClick={() => handleWordClick(w)}
-                    disabled={isAnswerChecked}
-                    className="px-3.5 py-2 rounded-xl bg-indigo-600 text-white font-bold text-sm shadow-sm hover:bg-indigo-700 active:scale-95 transition-all"
-                  >
-                    {w}
-                  </button>
-                ))
-              )}
-            </div>
+        {/* Options */}
+        <div className="space-y-2 pt-1">
+          {currentQ.options.map((opt, idx) => {
+            const isThisSelected = selectedOption === opt;
+            let optClass = 'bg-stone-50 dark:bg-stone-900 text-stone-800 dark:text-stone-200 border-stone-200 dark:border-stone-700 hover:border-rose-400';
 
-            {/* Word choices */}
-            <div className="flex flex-wrap gap-2 justify-center pt-2">
-              {quiz.words.map((w) => {
-                const isUsed = selectedWords.includes(w);
-                return (
-                  <button
-                    key={w}
-                    onClick={() => handleWordClick(w)}
-                    disabled={isUsed || isAnswerChecked}
-                    className={`px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
-                      isUsed
-                        ? 'opacity-30 bg-slate-100 border-slate-200 text-slate-400 cursor-not-allowed'
-                        : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-100 hover:border-indigo-400 shadow-sm active:scale-95'
-                    }`}
-                  >
-                    {w}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Fill Blank Mode */}
-        {quiz.type === 'fill_blank' && quiz.options && (
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            {quiz.options.map((opt) => {
-              const isSelected = selectedOption === opt;
-              let style =
-                'bg-slate-50 dark:bg-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-800 dark:text-slate-200';
-
-              if (isAnswerChecked) {
-                if (opt === quiz.correctAnswer) {
-                  style = 'bg-emerald-500 border-emerald-600 text-white font-bold';
-                } else if (isSelected) {
-                  style = 'bg-rose-500 border-rose-600 text-white font-bold';
-                }
-              } else if (isSelected) {
-                style = 'bg-indigo-600 border-indigo-700 text-white font-bold';
+            if (isAnswerChecked) {
+              if (opt === currentQ.correctAnswer) {
+                optClass = 'bg-emerald-500 border-emerald-600 text-white font-bold';
+              } else if (isThisSelected) {
+                optClass = 'bg-rose-500 border-rose-600 text-white';
               }
-
-              return (
-                <button
-                  key={opt}
-                  onClick={() => handleOptionClick(opt)}
-                  disabled={isAnswerChecked}
-                  className={`p-4 rounded-xl border text-sm font-bold text-center transition-all ${style}`}
-                >
-                  {opt}
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Check or Next Action */}
-        {!isAnswerChecked ? (
-          <button
-            onClick={handleCheckAnswer}
-            disabled={
-              quiz.type === 'word_order'
-                ? selectedWords.length === 0
-                : selectedOption === null
+            } else if (isThisSelected) {
+              optClass = 'bg-rose-600 border-rose-600 text-white font-bold shadow-xs';
             }
-            className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/20 transition-all"
-          >
-            정답 제출하기
-          </button>
-        ) : (
-          <div className="space-y-4 pt-2">
-            <div
-              className={`p-4 rounded-2xl border text-sm leading-relaxed ${
-                isCorrect
-                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200'
-                  : 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200'
-              }`}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                {isCorrect ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 text-rose-600" />
-                )}
-                <strong className="font-bold">
-                  {isCorrect ? '정답입니다! 완벽해요!' : '아쉽네요! 다시 확인해 보세요.'}
-                </strong>
-              </div>
-              <p className="text-xs mt-1">{quiz.explanation}</p>
-            </div>
 
+            return (
+              <button
+                key={idx}
+                onClick={() => handleOptionClick(opt)}
+                disabled={isAnswerChecked}
+                className={`w-full p-3 rounded-xl border text-left text-xs font-medium transition-all active:scale-98 flex items-center justify-between ${optClass}`}
+              >
+                <span>{opt}</span>
+                {isAnswerChecked && opt === currentQ.correctAnswer && (
+                  <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Action Button: Check Answer or Next Question */}
+        <div className="pt-2">
+          {!isAnswerChecked ? (
             <button
-              onClick={handleNextQuestion}
-              className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/25 transition-all"
+              onClick={handleCheckAnswer}
+              disabled={!selectedOption}
+              className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white font-bold text-xs shadow-xs transition-all active:scale-98"
             >
-              다음 문제로 이동하기
+              정답 제출하기
             </button>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-3 animate-slide-up">
+              <div
+                className={`p-3.5 rounded-2xl text-xs leading-relaxed ${
+                  isCorrect
+                    ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-200 border border-emerald-200'
+                    : 'bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 border border-rose-200'
+                }`}
+              >
+                <span className="font-bold block mb-1">
+                  {isCorrect ? '🎉 정답입니다!' : '🤔 오답입니다!'}
+                </span>
+                <p className="text-[11px] leading-relaxed">
+                  💡 {currentQ.explanation}
+                </p>
+              </div>
+
+              <button
+                onClick={handleNext}
+                className="w-full py-3 rounded-xl bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-bold text-xs flex items-center justify-center gap-1 hover:opacity-90 transition-opacity"
+              >
+                <span>다음 기출문제 풀기</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import {
   Edit3,
   RotateCcw,
   Zap,
+  Shuffle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -81,6 +82,17 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
   const filteredScenarios = defaultRoleplayScenarios.filter(
     (s) => selectedCategory === 'ALL' || s.category === selectedCategory
   );
+
+  const handlePickRandomScenario = () => {
+    const pool = filteredScenarios.length > 0 ? filteredScenarios : defaultRoleplayScenarios;
+    const randomItem = pool[Math.floor(Math.random() * pool.length)];
+    setSelectedScenario(randomItem);
+    confetti({
+      particleCount: 40,
+      spread: 60,
+      origin: { y: 0.6 },
+    });
+  };
 
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputText;
@@ -250,48 +262,43 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         }}
         featureName="맞춤형 상황극 음성 대화"
       />
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-white/20 text-xs font-black uppercase tracking-wider flex items-center gap-1.5">
-                <Target className="w-3.5 h-3.5" />
-                맞춤형 상황극 (Roleplay)
-              </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-300 text-amber-950 text-xs font-bold">
-                비즈니스 · 여행 · 심층 토론
+      {/* Top Mobile Card */}
+      <div className="bg-white dark:bg-[#1E1D1B] rounded-3xl p-5 border border-stone-200/90 dark:border-stone-800 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 border border-teal-200/80 dark:border-teal-900/60 flex items-center justify-center">
+              <Target className="w-4 h-4" />
+            </span>
+            <div>
+              <h2 className="text-base font-bold text-stone-900 dark:text-stone-100 leading-tight">
+                실전 맞춤형 상황극 (Roleplay)
+              </h2>
+              <span className="text-[11px] text-stone-500 dark:text-stone-400">
+                실제 일본에서 마주치는 15+ 다양한 리얼 상황
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-              주제와 난이도를 선택해 실전처럼 대화하는 롤플레잉
-            </h2>
-            <p className="text-xs sm:text-sm text-teal-100 max-w-xl leading-relaxed">
-              신입사원, 바이어, 호텔 투숙객 등 원하는 역할을 맡아 AI와 미션을 달성하세요. 대화 중 실시간 교정과 종료 후 <strong>종합 피드백 리포트</strong>가 제공됩니다.
-            </p>
           </div>
 
           <button
-            onClick={onOpenAISettings}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-sm text-xs font-bold transition-all shadow-md shrink-0"
+            onClick={handlePickRandomScenario}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 text-xs font-bold active:scale-95 transition-all shadow-xs"
+            title="실전 상황극 무작위 랜덤 뽑기"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
-            <span>AI 엔진 설정 ({stats.aiSettings?.provider === 'built_in' ? '내장' : stats.aiSettings?.provider})</span>
+            <Shuffle className="w-3 h-3 text-rose-600" />
+            <span>랜덤 뽑기</span>
           </button>
         </div>
-      </div>
 
-      {/* Category Filter & Scenario Cards */}
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {/* Category Filter Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1 border-t border-stone-100 dark:border-stone-800">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? 'bg-teal-600 text-white shadow-md'
-                  : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-xs'
+                  : 'bg-stone-50 dark:bg-stone-900 text-stone-600 dark:text-stone-400 hover:bg-stone-100'
               }`}
             >
               {cat === 'ALL' ? '전체 상황극' : cat}
@@ -299,35 +306,36 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
           ))}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {/* Horizontal Scenario Carousel */}
+        <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
           {filteredScenarios.map((sc) => {
             const isSelected = selectedScenario.id === sc.id;
             return (
               <button
                 key={sc.id}
                 onClick={() => setSelectedScenario(sc)}
-                className={`p-4 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between ${
+                className={`min-w-[190px] max-w-[210px] p-3 rounded-2xl border text-left transition-all duration-200 flex flex-col justify-between shrink-0 ${
                   isSelected
-                    ? 'bg-teal-600 text-white border-teal-600 shadow-lg scale-[1.01]'
-                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-teal-400'
+                    ? 'bg-rose-600 text-white border-rose-600 shadow-sm'
+                    : 'bg-stone-50 dark:bg-stone-900/60 text-stone-800 dark:text-stone-200 border-stone-200/80 dark:border-stone-800 hover:border-rose-300'
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      className={`text-[9px] font-bold px-1.5 py-0.2 rounded-full ${
                         isSelected
-                          ? 'bg-teal-700 text-white'
-                          : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                          ? 'bg-rose-700 text-white'
+                          : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-stone-200/60 dark:border-stone-700'
                       }`}
                     >
                       {sc.category} · {sc.level}
                     </span>
                   </div>
-                  <h4 className="text-sm font-black line-clamp-1">{sc.title}</h4>
+                  <h4 className="text-xs font-bold line-clamp-1">{sc.title}</h4>
                   <p
-                    className={`text-xs mt-1.5 line-clamp-2 leading-relaxed ${
-                      isSelected ? 'text-teal-100' : 'text-slate-500 dark:text-slate-400'
+                    className={`text-[10px] mt-1 line-clamp-2 leading-relaxed ${
+                      isSelected ? 'text-rose-100' : 'text-stone-500 dark:text-stone-400'
                     }`}
                   >
                     {sc.situation}

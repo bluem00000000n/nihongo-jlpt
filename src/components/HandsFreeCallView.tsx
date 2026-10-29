@@ -766,10 +766,14 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
 
         {/* Central Avatar & Call Status */}
-        <div className="text-center py-4 flex flex-col items-center justify-center">
-          <div className="relative mb-3">
+        <div className={`text-center flex flex-col items-center justify-center transition-all ${
+          callState === 'connected' ? 'py-2' : 'py-5'
+        }`}>
+          <div className="relative mb-2">
             <div
-              className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
+              className={`rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
+                callState === 'connected' ? 'w-16 h-16' : 'w-24 h-24'
+              } ${
                 isAiSpeaking
                   ? 'bg-amber-100 border-[#FFE000] scale-105 shadow-xl ring-4 ring-[#FFE000]/40'
                   : isListening
@@ -779,24 +783,34 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
                   : 'bg-gray-100 border-gray-300'
               }`}
             >
-              <span className="text-4xl">{selectedCharacter.avatarIcon}</span>
+              <span className={callState === 'connected' ? 'text-2xl' : 'text-4xl'}>
+                {selectedCharacter.avatarIcon}
+              </span>
             </div>
 
             {/* Speaking audio wave indicator */}
             {isAiSpeaking && (
-              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-md bg-[#FFE000] text-[10px] font-black text-gray-950 shadow-md border border-gray-900 animate-bounce">
+              <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-md bg-[#FFE000] text-[9px] font-black text-gray-950 shadow-md border border-gray-900 animate-bounce">
                 강사 발화 중 🔊
               </span>
             )}
             {isListening && !isAiSpeaking && (
-              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-md bg-red-600 text-[10px] font-black text-white shadow-md animate-pulse">
+              <span className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-md bg-red-600 text-[9px] font-black text-white shadow-md animate-pulse">
                 🎙️ 듣는 중...
               </span>
             )}
           </div>
 
-          <h3 className="text-lg font-black text-gray-950">{selectedCharacter.name}</h3>
-          <p className="text-xs font-bold text-gray-600 mt-1">
+          <div className="flex items-center gap-1.5">
+            <h3 className="text-base font-black text-gray-950">{selectedCharacter.name}</h3>
+            {callState === 'connected' && (
+              <span className="text-[10px] text-gray-500 font-bold">
+                ({selectedCharacter.ageGroup} · {selectedCharacter.speechStyle})
+              </span>
+            )}
+          </div>
+
+          <p className="text-xs font-bold text-gray-600 mt-0.5">
             {callState === 'calling'
               ? '강사님께 전화 연결 중 (Ringing)...'
               : callState === 'connected'
@@ -812,7 +826,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
           {/* Microphone Live Status & Language Switcher */}
           {callState === 'connected' && (
-            <div className="mt-3 flex items-center gap-2">
+            <div className="mt-2 flex items-center gap-2">
               <button
                 onClick={() => setInputLang(inputLang === 'ja-JP' ? 'ko-KR' : 'ja-JP')}
                 className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 border border-gray-300 text-[11px] font-black text-gray-800 flex items-center gap-1 transition-colors"
@@ -831,52 +845,65 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           )}
         </div>
 
-        {/* Real-time Subtitles / Latest Speech & Live Transcript Bubble */}
-        <div className="my-2 min-h-[90px] flex flex-col justify-end space-y-2">
-          {interimTranscript && (
-            <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-3 animate-pulse shadow-sm">
-              <div className="flex items-center justify-between text-[11px] font-bold text-amber-900 mb-0.5">
-                <span className="flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
-                  실시간 음성 인식 중...
-                </span>
-                <span className="font-mono text-[9px] text-amber-700">LIVE PREVIEW</span>
-              </div>
-              <p className="text-sm font-black text-gray-950 leading-snug">&ldquo;{interimTranscript}&rdquo;</p>
-            </div>
-          )}
-
-          {currentSubtitle ? (
-            <div className="bg-gray-50 border border-gray-300 rounded-xl p-3.5 space-y-1 shadow-xs">
-              <div className="flex items-center justify-between text-xs text-gray-600">
-                <span className="font-black text-gray-950">{currentSubtitle.speaker}</span>
-                <span className="font-mono text-[9px] font-bold text-gray-500">REALTIME SPEECH</span>
-              </div>
-              <p className="text-sm font-bold text-gray-950 leading-snug">{currentSubtitle.text}</p>
-              {currentSubtitle.kr && (
-                <p className="text-xs text-gray-600 leading-snug">{currentSubtitle.kr}</p>
-              )}
-            </div>
-          ) : (
-            <div className="text-center py-3 text-xs font-bold text-gray-400">
-              {callState === 'connected' ? '강사님의 첫 질문을 듣고 답변해 보세요...' : '전화 연결 후 대화 내용이 실시간 표시됩니다.'}
-            </div>
-          )}
-        </div>
-
-        {/* Real-time Inline Feedback Pill */}
-        {latestCorrection && callState === 'connected' && (
-          <div className="mb-2 bg-red-50 border border-red-200 rounded-xl p-3 text-xs animate-slide-up shadow-xs">
-            <div className="flex items-center gap-1.5 text-red-600 font-black mb-1 text-xs">
-              <Edit3 className="w-3.5 h-3.5" />
-              <span>실시간 원어민 뉘앙스 교정</span>
-            </div>
-            <div className="text-gray-900 text-xs font-medium">
-              👉 <span className="text-red-700 font-black text-sm">{latestCorrection.improvedJapanese}</span>
-            </div>
-            <div className="text-[11px] text-gray-600 mt-1 font-medium">{latestCorrection.feedbackPoint}</div>
+        {/* Real-time Call Transcript & Live Speech Stream (Scrollable inside the card directly above controls) */}
+        <div className="my-2 flex-1 flex flex-col min-h-[180px] max-h-[300px] border border-gray-200 rounded-xl bg-gray-50/80 p-2.5 overflow-hidden">
+          <div className="flex items-center justify-between text-xs pb-1.5 border-b border-gray-200 text-gray-500 font-bold mb-2">
+            <span className="flex items-center gap-1.5 font-black text-gray-950">
+              <Radio className="w-3.5 h-3.5 text-red-600 animate-pulse" />
+              실시간 대화 녹취 ({callTranscripts.length}건)
+            </span>
+            <span className="font-mono text-[9px] font-bold text-gray-500">REALTIME SPEECH</span>
           </div>
-        )}
+
+          <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">
+            {callTranscripts.length === 0 ? (
+              <div className="text-center py-10 text-xs font-bold text-gray-400">
+                {callState === 'connected' ? '강사님의 첫 질문을 듣고 답변해 보세요...' : '전화 연결 후 대화 내용이 실시간 표시됩니다.'}
+              </div>
+            ) : (
+              callTranscripts.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`p-2.5 rounded-xl text-xs space-y-1 animate-fade-in ${
+                    msg.speaker === 'user'
+                      ? 'bg-amber-50 border border-amber-300 ml-4 text-gray-950 font-bold'
+                      : 'bg-white border border-gray-200 mr-4 border-l-4 border-l-red-600 text-gray-950 shadow-xs'
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-[10px] font-bold text-gray-500">
+                    <span className="text-gray-900 font-black">{msg.speakerName}</span>
+                    <span className="font-mono text-[9px] text-gray-400">{msg.timestamp}</span>
+                  </div>
+                  <p className="font-black text-sm text-gray-950 leading-snug">{msg.japanese}</p>
+                  {msg.korean && (
+                    <p className="text-xs text-gray-600 leading-snug font-medium">{msg.korean}</p>
+                  )}
+                  {msg.correction && (
+                    <div className="mt-1 pt-1 border-t border-dashed border-red-200 text-xs text-red-700 font-bold">
+                      👉 원어민 교정: {msg.correction.improvedJapanese} ({msg.correction.feedbackPoint})
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+
+            {/* Live interim preview when user is currently speaking */}
+            {interimTranscript && (
+              <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-2.5 animate-pulse shadow-sm ml-4 text-xs">
+                <div className="flex items-center justify-between text-[10px] font-black text-amber-900 mb-0.5">
+                  <span className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                    실시간 인식 중...
+                  </span>
+                  <span className="font-mono text-[9px] text-amber-700">LIVE PREVIEW</span>
+                </div>
+                <p className="text-xs font-black text-gray-950">&ldquo;{interimTranscript}&rdquo;</p>
+              </div>
+            )}
+
+            <div ref={transcriptsEndRef} />
+          </div>
+        </div>
 
         {/* In-Call Text Input Fallback (Guaranteeing 100% voice/text response) */}
         {callState === 'connected' && (
@@ -951,46 +978,6 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           )}
         </div>
       </div>
-
-      {/* Real-time Call Transcript Log (Live Notebook in Pure White) */}
-      {callTranscripts.length > 0 && (
-        <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
-          <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-xs font-mono text-gray-500">
-            <span className="font-black text-gray-900 text-xs">
-              📜 실시간 통화 녹취록 ({callTranscripts.length}건)
-            </span>
-            <span className="text-[10px] font-bold">LIVE TRANSCRIPT</span>
-          </div>
-
-          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-            {callTranscripts.map((msg) => (
-              <div
-                key={msg.id}
-                className={`p-3 rounded-xl text-xs space-y-1 ${
-                  msg.speaker === 'user'
-                    ? 'bg-amber-50 border border-amber-300 ml-5 text-gray-950 font-bold'
-                    : 'bg-gray-50 border border-gray-200 mr-5 border-l-4 border-l-red-600 text-gray-950'
-                }`}
-              >
-                <div className="flex items-center justify-between text-[11px] font-bold text-gray-600">
-                  <span className="text-gray-900 font-black">{msg.speakerName}</span>
-                  <span className="font-mono text-[10px] text-gray-500">{msg.timestamp}</span>
-                </div>
-                <p className="font-black text-sm text-gray-950 leading-snug">{msg.japanese}</p>
-                {msg.korean && (
-                  <p className="text-xs text-gray-600 leading-snug font-medium">{msg.korean}</p>
-                )}
-                {msg.correction && (
-                  <div className="mt-1.5 pt-1.5 border-t border-dashed border-red-200 text-xs text-red-700 font-bold">
-                    👉 교정: {msg.correction.improvedJapanese} ({msg.correction.feedbackPoint})
-                  </div>
-                )}
-              </div>
-            ))}
-            <div ref={transcriptsEndRef} />
-          </div>
-        </div>
-      )}
 
       {/* Comprehensive Session Report (Displayed after call ends - Pure White Card) */}
       {finalReport && (

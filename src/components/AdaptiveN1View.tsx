@@ -479,15 +479,15 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                     )}
                   </div>
 
-                  <p className="text-sm font-semibold tracking-wide leading-relaxed">
+                  <p className="text-sm font-bold tracking-wide leading-relaxed break-keep break-words">
                     {msg.japanese}
                   </p>
                   {stats.romajiEnabled && msg.romaji && (
-                    <p className="text-[11px] font-mono text-gray-400">{msg.romaji}</p>
+                    <p className="text-[11px] font-mono text-gray-500 break-all">{msg.romaji}</p>
                   )}
                   <p
-                    className={`text-[11px] ${
-                      msg.sender === 'user' ? 'text-amber-900' : 'text-gray-500'
+                    className={`text-xs break-keep break-words mt-1 ${
+                      msg.sender === 'user' ? 'text-amber-900 font-medium' : 'text-gray-600'
                     }`}
                   >
                     {msg.korean}
@@ -527,12 +527,12 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                         <button
                           key={rIdx}
                           onClick={() => handleSendMessage(reply.japanese)}
-                          className="px-3 py-2 rounded-lg bg-white border border-dashed border-gray-300 text-left hover:border-gray-500 transition-all text-xs active:scale-98 shadow-xs"
+                          className="px-3 py-2 rounded-xl bg-[#FDFCF9] border border-dashed border-[#DDD4C1] text-left hover:border-stone-800 transition-all text-xs active:scale-98 shadow-xs"
                         >
-                          <span className="font-bold text-gray-900 block">
+                          <span className="font-bold text-[#1C1917] block break-keep break-words">
                             {reply.japanese}
                           </span>
-                          <span className="text-[10px] text-gray-500 block mt-0.5">
+                          <span className="text-[11px] text-stone-500 block mt-0.5 break-keep break-words">
                             {reply.korean}
                           </span>
                         </button>

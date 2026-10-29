@@ -242,15 +242,15 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
                     </button>
                   </div>
 
-                  <p className="text-sm font-semibold tracking-wide leading-relaxed">{line.japanese}</p>
+                  <p className="text-sm font-bold tracking-wide leading-relaxed break-keep break-words">{line.japanese}</p>
                   {stats.romajiEnabled && (
-                    <p className="text-[11px] font-mono text-gray-400">
+                    <p className="text-[11px] font-mono text-gray-500 break-all">
                       {line.romaji}
                     </p>
                   )}
                   <p
-                    className={`text-xs ${
-                      line.isUser ? 'text-amber-900' : 'text-gray-600'
+                    className={`text-xs break-keep break-words mt-1 ${
+                      line.isUser ? 'text-amber-900 font-medium' : 'text-gray-600'
                     }`}
                   >
                     {line.korean}
@@ -325,8 +325,8 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <p className="text-sm font-bold">{opt.text}</p>
-                            <p className="text-xs text-gray-600 mt-0.5">
+                            <p className="text-sm font-bold break-keep break-words">{opt.text}</p>
+                            <p className="text-xs text-gray-600 mt-0.5 break-keep break-words">
                               {opt.korean}
                             </p>
                           </div>

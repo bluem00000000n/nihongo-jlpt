@@ -121,8 +121,8 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
           <span>TOTAL: {grammarList.length} ITEMS</span>
         </div>
 
-        {/* JLPT Level Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        {/* JLPT Level Tabs (Clean Responsive Grid) */}
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-0.5">
           {levels.map((lvl) => {
             const count =
               lvl === 'ALL'
@@ -140,18 +140,18 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
               <button
                 key={lvl}
                 onClick={() => setSelectedLevel(lvl)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`py-1.5 px-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 ${
                   isActive
                     ? 'bg-[#FFE000] text-gray-950 font-black shadow-xs border border-gray-900/20'
-                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+                    : 'bg-[#FDFCF9] text-gray-700 border border-[#DDD5C5] hover:bg-[#F2ECE1]'
                 }`}
               >
                 <span>{lvl === 'ALL' ? '전체' : lvl}</span>
                 <span
-                  className={`text-[9px] font-mono px-1.5 py-0.5 rounded-md ${
+                  className={`text-[9px] font-mono px-1 py-0.2 rounded-md ${
                     isActive
                       ? 'bg-gray-950 text-white font-bold'
-                      : 'bg-gray-100 text-gray-600'
+                      : 'bg-stone-200/70 text-gray-600'
                   }`}
                 >
                   {completedInLvl}/{count}
@@ -234,21 +234,21 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
 
               {/* Title & Meaning */}
               <div className="mt-2">
-                <h4 className="text-sm font-black text-gray-950 flex items-center gap-1.5">
+                <h4 className="text-sm font-black text-gray-950 flex items-center gap-1.5 break-keep">
                   <span className="loft-marker">{item.title}</span>
                 </h4>
-                <p className="text-xs text-gray-700 font-medium mt-1 leading-snug">
+                <p className="text-xs text-gray-800 font-medium mt-1 leading-relaxed break-keep break-words">
                   {item.meaning}
                 </p>
-                <div className="mt-2 text-xs text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-200 font-mono font-medium">
+                <div className="mt-2 text-xs text-stone-800 bg-[#F5EFE3] p-2 rounded-lg border border-[#E5DEC9] font-mono font-medium break-keep break-words">
                   접속: {item.connection}
                 </div>
               </div>
 
               {/* Quick sample preview */}
               {item.examples[0] && (
-                <div className="mt-2.5 pt-2 border-t border-dashed border-gray-200 flex items-center justify-between text-xs text-gray-600">
-                  <span className="truncate pr-2 font-serif text-[11px]">{item.examples[0].japanese}</span>
+                <div className="mt-2.5 pt-2 border-t border-dashed border-[#E5DEC9] flex items-center justify-between text-xs text-gray-600">
+                  <span className="truncate pr-2 font-serif text-[11px] break-keep">{item.examples[0].japanese}</span>
                   <div className="flex items-center gap-1 text-gray-950 font-black text-[11px] shrink-0">
                     <span>학습</span>
                     <ChevronRight className="w-3.5 h-3.5" />

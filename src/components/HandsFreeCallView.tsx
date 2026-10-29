@@ -874,12 +874,12 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
                     <span className="text-gray-900 font-black">{msg.speakerName}</span>
                     <span className="font-mono text-[9px] text-gray-400">{msg.timestamp}</span>
                   </div>
-                  <p className="font-black text-sm text-gray-950 leading-snug">{msg.japanese}</p>
+                  <p className="font-black text-sm text-gray-950 leading-snug break-keep break-words">{msg.japanese}</p>
                   {msg.korean && (
-                    <p className="text-xs text-gray-600 leading-snug font-medium">{msg.korean}</p>
+                    <p className="text-xs text-gray-600 leading-snug font-medium break-keep break-words">{msg.korean}</p>
                   )}
                   {msg.correction && (
-                    <div className="mt-1 pt-1 border-t border-dashed border-red-200 text-xs text-red-700 font-bold">
+                    <div className="mt-1 pt-1 border-t border-dashed border-red-200 text-xs text-red-700 font-bold break-keep break-words">
                       👉 원어민 교정: {msg.correction.improvedJapanese} ({msg.correction.feedbackPoint})
                     </div>
                   )}

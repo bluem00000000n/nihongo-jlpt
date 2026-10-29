@@ -77,17 +77,17 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
   return (
     <div className="space-y-4">
       {/* Top Controller */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-200 shadow-sm">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#FDFCF9] p-3.5 sm:p-4 rounded-2xl border border-[#E2D9C8] shadow-xs">
+        <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => {
               setKanaType('hiragana');
               setIsQuizMode(false);
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border text-center ${
               kanaType === 'hiragana' && !isQuizMode
                 ? 'bg-[#FFE000] text-gray-950 font-black border-gray-900/15 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                : 'bg-[#FAF7F0] text-[#5A5047] border-[#E2D9C8] hover:bg-[#F3ECE0]'
             }`}
           >
             히라가나 (ひらがな)
@@ -97,10 +97,10 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
               setKanaType('katakana');
               setIsQuizMode(false);
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border text-center ${
               kanaType === 'katakana' && !isQuizMode
                 ? 'bg-[#FFE000] text-gray-950 font-black border-gray-900/15 shadow-xs'
-                : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                : 'bg-[#FAF7F0] text-[#5A5047] border-[#E2D9C8] hover:bg-[#F3ECE0]'
             }`}
           >
             가타카나 (カタカナ)
@@ -109,10 +109,10 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
 
         <button
           onClick={startQuiz}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
+          className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
             isQuizMode
-              ? 'bg-gray-950 text-white font-black border-gray-950 shadow-xs'
-              : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50'
+              ? 'bg-[#2B2725] text-[#FAF7F0] font-black border-[#2B2725] shadow-xs'
+              : 'bg-[#FAF7F0] text-[#2B2725] border-[#E2D9C8] hover:bg-[#F3ECE0]'
           }`}
         >
           <HelpCircle className="w-4 h-4 text-[#D93829]" />
@@ -120,46 +120,46 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
         </button>
       </div>
 
-      {/* Quiz Mode Interface (Pure White) */}
+      {/* Quiz Mode Interface (Notebook Card) */}
       {isQuizMode && quizCard && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200 shadow-xl max-w-lg mx-auto text-center space-y-6 animate-fade-in text-gray-950">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-            <span className="text-[10px] font-mono font-bold text-red-600 uppercase tracking-wider">
+        <div className="bg-[#FDFCF9] rounded-2xl p-5 sm:p-8 border border-[#E2D9C8] shadow-md max-w-lg mx-auto text-center space-y-6 animate-fade-in text-[#2B2725]">
+          <div className="flex items-center justify-between pb-3 border-b border-[#E8E0D2]">
+            <span className="text-[10px] font-mono font-bold text-[#D93829] uppercase tracking-wider">
               {kanaType === 'hiragana' ? 'HIRAGANA QUIZ' : 'KATAKANA QUIZ'}
             </span>
             <button
               onClick={() => setIsQuizMode(false)}
-              className="text-xs text-gray-500 hover:text-gray-800 font-medium"
+              className="text-xs text-[#7A6E63] hover:text-[#2B2725] font-semibold"
             >
               차트 보기로 돌아가기
             </button>
           </div>
 
           <div>
-            <div className="text-7xl font-black text-gray-950 py-4 font-sans">
+            <div className="text-7xl font-black text-[#2B2725] py-4 font-sans select-none">
               {quizCard.kana}
             </div>
             <button
               onClick={() => speechService.speak(quizCard.kana)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 text-xs font-bold text-gray-800 hover:bg-gray-200 border border-gray-200"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FAF7F0] text-xs font-bold text-[#2B2725] hover:bg-[#F3ECE0] border border-[#E2D9C8]"
             >
-              <Volume2 className="w-3.5 h-3.5 text-gray-600" />
+              <Volume2 className="w-3.5 h-3.5 text-[#7A6E63]" />
               발음 다시 듣기
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
             {quizOptions.map((opt) => {
               const isSelected = userSelectedOpt === opt;
               const isCorrectOpt = opt.startsWith(quizCard.romaji);
               let btnClass =
-                'bg-white border-gray-300 text-gray-900 hover:border-gray-900 font-bold';
+                'bg-[#FAF7F0] border-[#E2D9C8] text-[#2B2725] hover:border-[#2B2725] font-bold';
 
               if (quizAnswered) {
                 if (isCorrectOpt) {
-                  btnClass = 'bg-emerald-600 border-emerald-700 text-white font-black';
+                  btnClass = 'bg-[#2E7D32] border-[#2E7D32] text-white font-black';
                 } else if (isSelected) {
-                  btnClass = 'bg-rose-600 border-rose-700 text-white font-bold';
+                  btnClass = 'bg-[#D93829] border-[#D93829] text-white font-bold';
                 }
               }
 
@@ -168,7 +168,7 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
                   key={opt}
                   onClick={() => handleAnswerQuiz(opt)}
                   disabled={quizAnswered}
-                  className={`p-3.5 rounded-xl border text-sm transition-all ${btnClass}`}
+                  className={`p-3 sm:p-3.5 rounded-xl border text-xs sm:text-sm transition-all break-keep break-words ${btnClass}`}
                 >
                   {opt}
                 </button>
@@ -178,12 +178,12 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
 
           {quizAnswered && (
             <div className="space-y-3 pt-2">
-              <p className="text-xs text-gray-600">
-                예시 단어: <strong className="text-gray-950">{quizCard.exampleWord?.word}</strong> ({quizCard.exampleWord?.meaning})
+              <p className="text-xs text-[#5A5047] break-keep">
+                예시 단어: <strong className="text-[#2B2725]">{quizCard.exampleWord?.word}</strong> ({quizCard.exampleWord?.meaning})
               </p>
               <button
                 onClick={pickNewQuizCard}
-                className="w-full py-3.5 bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm rounded-xl flex items-center justify-center gap-2 border border-gray-900/15 shadow-sm active:scale-98 transition-all"
+                className="w-full py-3.5 bg-[#FFE000] hover:bg-[#FACC15] text-[#2B2725] font-black text-sm rounded-xl flex items-center justify-center gap-2 border border-gray-900/15 shadow-sm active:scale-98 transition-all"
               >
                 <span>다음 가나 문제</span>
                 <ChevronRight className="w-4 h-4 stroke-[2.5]" />
@@ -193,15 +193,15 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
         </div>
       )}
 
-      {/* Kana 50 Sounds Grid (Pure White Design) */}
+      {/* Kana 50 Sounds Grid (Notebook Theme) */}
       {!isQuizMode && (
-        <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between text-[11px] text-gray-500 pb-2 border-b border-gray-100 font-mono font-medium">
-            <span>글자를 클릭하면 원어민 음성을 들을 수 있습니다.</span>
-            <span className="font-bold">TOTAL: {dataset.length}자</span>
+        <div className="bg-[#FDFCF9] rounded-2xl p-3.5 sm:p-5 border border-[#E2D9C8] shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-[#7A6E63] pb-2 border-b border-[#E8E0D2] font-mono font-medium gap-1">
+            <span className="break-keep">글자를 클릭하면 원어민 음성을 들을 수 있습니다.</span>
+            <span className="font-bold shrink-0">TOTAL: {dataset.length}자</span>
           </div>
 
-          <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 gap-2">
+          <div className="grid grid-cols-5 sm:grid-cols-5 md:grid-cols-10 gap-1.5 sm:gap-2">
             {dataset.map((item) => {
               const isSelected = selectedChar?.kana === item.kana;
 
@@ -209,19 +209,19 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
                 <button
                   key={item.kana}
                   onClick={() => playKana(item)}
-                  className={`p-2.5 sm:p-3 rounded-xl border flex flex-col items-center justify-center transition-all duration-150 hover:scale-105 active:scale-95 group ${
+                  className={`p-2 sm:p-2.5 rounded-xl border flex flex-col items-center justify-center transition-all duration-150 hover:scale-105 active:scale-95 group ${
                     isSelected
-                      ? 'bg-[#FFE000] border-gray-950 shadow-sm text-gray-950'
-                      : 'bg-white border-gray-200 hover:border-gray-400 text-gray-900'
+                      ? 'bg-[#FFE000] border-[#2B2725] shadow-xs text-[#2B2725]'
+                      : 'bg-[#FAF7F0] border-[#E8E0D2] hover:border-[#C8BCAB] text-[#2B2725]'
                   }`}
                 >
-                  <span className="text-2xl font-black transition-colors">
+                  <span className="text-xl sm:text-2xl font-black transition-colors">
                     {item.kana}
                   </span>
-                  <span className={`text-[11px] font-bold font-mono mt-0.5 ${isSelected ? 'text-gray-950' : 'text-red-600'}`}>
+                  <span className={`text-[10px] sm:text-[11px] font-bold font-mono mt-0.5 ${isSelected ? 'text-[#2B2725]' : 'text-[#D93829]'}`}>
                     {item.romaji}
                   </span>
-                  <span className={`text-[10px] ${isSelected ? 'text-gray-800 font-bold' : 'text-gray-500'}`}>
+                  <span className={`text-[9px] sm:text-[10px] ${isSelected ? 'text-[#2B2725] font-bold' : 'text-[#7A6E63]'}`}>
                     {item.koreanPronunciation}
                   </span>
                 </button>
@@ -231,27 +231,27 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
 
           {/* Bottom Card Detail for selected character */}
           {selectedChar && (
-            <div className="mt-4 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-amber-950">
+            <div className="mt-4 p-3.5 sm:p-4 rounded-xl bg-[#F5EFE3] border border-[#E2D9C8] flex items-center justify-between text-[#2B2725]">
               <div className="flex items-center gap-3">
-                <span className="text-3xl font-black text-gray-950">
+                <span className="text-2xl sm:text-3xl font-black text-[#2B2725]">
                   {selectedChar.kana}
                 </span>
-                <div>
+                <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-gray-950 text-sm">
+                    <span className="font-bold text-[#2B2725] text-xs sm:text-sm">
                       [{selectedChar.romaji}] {selectedChar.koreanPronunciation}
                     </span>
                   </div>
                   {selectedChar.exampleWord && (
-                    <p className="text-xs text-amber-900 mt-0.5 font-medium">
-                      단어 예시: <strong className="text-amber-950 font-bold">{selectedChar.exampleWord.word}</strong> ({selectedChar.exampleWord.meaning})
+                    <p className="text-xs text-[#5A5047] font-medium break-keep">
+                      단어 예시: <strong className="text-[#2B2725] font-bold">{selectedChar.exampleWord.word}</strong> ({selectedChar.exampleWord.meaning})
                     </p>
                   )}
                 </div>
               </div>
               <button
                 onClick={() => speechService.speak(selectedChar.kana)}
-                className="p-2.5 rounded-lg bg-gray-950 hover:bg-gray-800 text-white transition-colors"
+                className="p-2 sm:p-2.5 rounded-lg bg-[#2B2725] hover:bg-[#3E3835] text-white transition-colors shrink-0 ml-2"
                 title="소리 재생"
               >
                 <Volume2 className="w-4 h-4" />

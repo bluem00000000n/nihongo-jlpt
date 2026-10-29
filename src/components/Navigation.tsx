@@ -73,10 +73,10 @@ export const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <>
-      {/* Sub-bar for Study Mode tabs */}
+      {/* Sub-bar for Study Mode tabs (Clean 2-Row Responsive Grid on Mobile: 3 columns x 2 rows) */}
       {isStudyTab && (
         <div className="bg-[#FAF7F0] border-b border-[#E2D9C8] px-3 py-2 sticky top-[82px] z-30 shadow-xs">
-          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-md mx-auto">
+          <div className="grid grid-cols-3 gap-1.5 max-w-md mx-auto">
             {studySubTabs.map((sub, idx) => {
               const SubIcon = sub.icon;
               const isSelected = activeTab === sub.id;
@@ -84,17 +84,17 @@ export const Navigation: React.FC<NavigationProps> = ({
                 <button
                   key={sub.id}
                   onClick={() => onChangeTab(sub.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all duration-150 relative ${
+                  className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-2 rounded-xl text-[11px] sm:text-xs transition-all duration-150 relative truncate ${
                     isSelected
-                      ? 'bg-[#FFE000] text-gray-950 font-black shadow-xs border border-gray-950/20'
-                      : 'bg-gray-50 text-gray-800 border border-gray-300 hover:bg-gray-100 font-bold'
+                      ? 'bg-[#FFE000] text-[#1C1917] font-black shadow-xs border border-gray-900/20 ring-1 ring-amber-400/40'
+                      : 'bg-[#FDFCF9] text-[#44403C] border border-[#DDD5C5] hover:bg-[#F2ECE1] font-bold'
                   }`}
                 >
-                  <span className="text-[10px] font-mono text-gray-500 font-bold">0{idx + 1}</span>
-                  <SubIcon className="w-3.5 h-3.5" />
-                  <span>{sub.label}</span>
+                  <span className="text-[10px] font-mono text-stone-500 font-bold shrink-0">0{idx + 1}</span>
+                  <SubIcon className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{sub.label}</span>
                   {isSelected && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#D93829] inline-block -ml-0.5" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#D93829] inline-block shrink-0 -ml-0.5" />
                   )}
                 </button>
               );

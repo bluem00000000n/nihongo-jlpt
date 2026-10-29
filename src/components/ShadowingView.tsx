@@ -224,40 +224,40 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
         </div>
       </div>
 
-      {/* Sub Tabs */}
-      <div className="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto scrollbar-none">
+      {/* Sub Tabs (Responsive 3-Column Grid) */}
+      <div className="grid grid-cols-3 gap-1.5 border-b border-[#E2D9C8] pb-2.5">
         <button
           onClick={() => setSubTab('player')}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all truncate ${
             subTab === 'player'
-              ? 'bg-gray-950 text-white shadow-xs font-black'
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+              ? 'bg-[#1C1917] text-white shadow-xs font-black'
+              : 'bg-[#FDFCF9] text-[#57534E] border border-[#DDD5C5] hover:bg-[#F2ECE1]'
           }`}
         >
-          <Headphones className="w-3.5 h-3.5" />
-          3단계 AI 섀도잉 플레이어
+          <Headphones className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">3단계 섀도잉</span>
         </button>
         <button
           onClick={() => setSubTab('vault')}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all truncate ${
             subTab === 'vault'
-              ? 'bg-gray-950 text-white shadow-xs font-black'
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+              ? 'bg-[#1C1917] text-white shadow-xs font-black'
+              : 'bg-[#FDFCF9] text-[#57534E] border border-[#DDD5C5] hover:bg-[#F2ECE1]'
           }`}
         >
-          <BookOpen className="w-3.5 h-3.5" />
-          실전 문장 채집장 ({sentences.length})
+          <BookOpen className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">문장 채집장 ({sentences.length})</span>
         </button>
         <button
           onClick={() => setSubTab('roadmap')}
-          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+          className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all truncate ${
             subTab === 'roadmap'
-              ? 'bg-gray-950 text-white shadow-xs font-black'
-              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
+              ? 'bg-[#1C1917] text-white shadow-xs font-black'
+              : 'bg-[#FDFCF9] text-[#57534E] border border-[#DDD5C5] hover:bg-[#F2ECE1]'
           }`}
         >
-          <Calendar className="w-3.5 h-3.5" />
-          3개월 주차별 체크리스트
+          <Calendar className="w-3.5 h-3.5 shrink-0" />
+          <span className="truncate">3개월 로드맵</span>
         </button>
       </div>
 

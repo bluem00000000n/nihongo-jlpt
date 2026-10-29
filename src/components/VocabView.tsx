@@ -112,34 +112,35 @@ export const VocabView: React.FC<VocabViewProps> = ({
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Top Main Section Switcher - LOFT Stationery Aesthetic */}
-      <div className="bg-white border-2 border-gray-200 rounded-2xl p-2.5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 relative">
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+      {/* Top Study Section Selector (Kanji vs Vocab) */}
+      <div className="bg-[#FDFCF9] border border-[#E2D9C8] rounded-2xl p-2.5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 relative">
+        <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
           <button
             onClick={() => setStudySection('kanji')}
-            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 ${
+            className={`px-3 sm:px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 truncate ${
               studySection === 'kanji'
                 ? 'bg-[#FFE000] text-gray-950 shadow-xs border border-gray-900/15'
-                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-[#DDD5C5]'
             }`}
           >
-            <Lightbulb className="w-4 h-4 text-amber-600" />
-            한자 암기박사 (스토리텔링)
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-900 text-white font-mono">
+            <Lightbulb className="w-4 h-4 text-amber-600 shrink-0" />
+            <span className="truncate">한자 암기박사</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-900 text-white font-mono shrink-0">
               {kanjiMasterData.length}
             </span>
           </button>
 
           <button
             onClick={() => setStudySection('vocab')}
-            className={`flex-1 sm:flex-initial px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 ${
+            className={`px-3 sm:px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 truncate ${
               studySection === 'vocab'
                 ? 'bg-[#FFE000] text-gray-950 shadow-xs border border-gray-900/15'
-                : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-[#DDD5C5]'
             }`}
           >
-            <BookOpen className="w-4 h-4 text-blue-600" />
-            JLPT 필수 어휘장
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 text-gray-800 font-mono">
+            <BookOpen className="w-4 h-4 text-blue-600 shrink-0" />
+            <span className="truncate">JLPT 필수 어휘</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-200 text-gray-800 font-mono shrink-0">
               {vocabList.length}
             </span>
           </button>
@@ -159,40 +160,42 @@ export const VocabView: React.FC<VocabViewProps> = ({
       {studySection === 'kanji' && (
         <div className="space-y-6">
           {/* Controls Bar */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="bg-[#FDFCF9] border border-[#E2D9C8] rounded-2xl p-4 shadow-xs space-y-3">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               {/* Level Filter Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto scrollbar-none pb-1 sm:pb-0">
-                <span className="text-xs font-bold text-[#8C826D] mr-1 flex items-center gap-1 shrink-0">
+              <div className="flex items-center gap-1.5 flex-wrap w-full sm:w-auto">
+                <span className="text-xs font-bold text-[#7A6E63] mr-1 flex items-center gap-1 shrink-0">
                   <Tag className="w-3 h-3" /> 급수:
                 </span>
-                {levels.map((lvl) => (
-                  <button
-                    key={lvl}
-                    onClick={() => {
-                      setSelectedKanjiLevel(lvl);
-                      setKanjiCardIndex(0);
-                      setKanjiFlipped(false);
-                    }}
-                    className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all ${
-                      selectedKanjiLevel === lvl
-                        ? 'bg-[#1C1C1E] text-[#F5A623] shadow-sm'
-                        : 'bg-white text-[#5C5645] hover:bg-[#F2ECE1] border border-[#DDD5BF]'
-                    }`}
-                  >
-                    {lvl}
-                  </button>
-                ))}
+                <div className="grid grid-cols-6 sm:flex sm:items-center gap-1 flex-1 sm:flex-initial">
+                  {levels.map((lvl) => (
+                    <button
+                      key={lvl}
+                      onClick={() => {
+                        setSelectedKanjiLevel(lvl);
+                        setKanjiCardIndex(0);
+                        setKanjiFlipped(false);
+                      }}
+                      className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold transition-all text-center ${
+                        selectedKanjiLevel === lvl
+                          ? 'bg-[#2B2725] text-[#FFE000] shadow-xs'
+                          : 'bg-[#FAF7F0] text-[#5A5047] hover:bg-[#F3ECE0] border border-[#E2D9C8]'
+                      }`}
+                    >
+                      {lvl}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* View Toggle */}
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto justify-end">
                 <button
                   onClick={() => setKanjiViewMode('card')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                     kanjiViewMode === 'card'
-                      ? 'bg-[#1C1C1E] text-white'
-                      : 'bg-white text-[#555] border border-[#DDD5BF] hover:bg-[#F0ECE1]'
+                      ? 'bg-[#2B2725] text-white'
+                      : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
                   <Rotate3d className="w-3.5 h-3.5" />
@@ -200,10 +203,10 @@ export const VocabView: React.FC<VocabViewProps> = ({
                 </button>
                 <button
                   onClick={() => setKanjiViewMode('list')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                     kanjiViewMode === 'list'
-                      ? 'bg-[#1C1C1E] text-white'
-                      : 'bg-white text-[#555] border border-[#DDD5BF] hover:bg-[#F0ECE1]'
+                      ? 'bg-[#2B2725] text-white'
+                      : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5" />
@@ -214,7 +217,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
 
             {/* Search Input */}
             <div className="relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8C826D]" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7A6E63]" />
               <input
                 type="text"
                 value={kanjiSearch}
@@ -224,7 +227,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                   setKanjiFlipped(false);
                 }}
                 placeholder="한자, 훈음(예: 목욕할 욕, 골 곡), 부수, 음독/훈독 검색..."
-                className="w-full pl-10 pr-4 py-2 bg-white border border-[#DED7C2] rounded-xl text-xs sm:text-sm text-[#1C1C1E] placeholder:text-[#9A9380] focus:outline-none focus:ring-2 focus:ring-[#F5A623]"
+                className="w-full pl-10 pr-4 py-2 bg-[#FAF7F0] border border-[#E2D9C8] rounded-xl text-xs sm:text-sm text-[#2B2725] placeholder:text-[#9A9380] focus:outline-none focus:ring-2 focus:ring-[#D93829]"
               />
             </div>
           </div>
@@ -297,7 +300,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                           <Lightbulb className="w-3.5 h-3.5" />
                           한자 암기박사 비법 공식
                         </div>
-                        <p className="text-xs sm:text-sm text-[#4A3800] leading-relaxed font-medium">
+                        <p className="text-xs sm:text-sm text-[#4A3800] leading-relaxed font-medium break-keep break-words">
                           {currentKanjiCard.story}
                         </p>
                       </div>
@@ -322,7 +325,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                                   {c.reading}
                                 </span>
                               </div>
-                              <p className="text-[11px] text-[#6E6754] truncate mt-0.5">
+                              <p className="text-[11px] text-[#6E6754] break-keep break-words leading-tight mt-0.5">
                                 {c.korean}
                               </p>
                             </div>
@@ -406,8 +409,8 @@ export const VocabView: React.FC<VocabViewProps> = ({
 
           {/* Kanji List Mode */}
           {kanjiViewMode === 'list' && (
-            <div className="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm space-y-3">
-              <div className="text-xs text-[#7A725D] font-mono px-1">
+            <div className="bg-[#FDFCF9] border border-[#E2D9C8] rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+              <div className="text-xs text-[#7A6E63] font-mono px-1">
                 총 {filteredKanji.length}개의 한자가 검색되었습니다.
               </div>
 
@@ -415,27 +418,27 @@ export const VocabView: React.FC<VocabViewProps> = ({
                 {filteredKanji.map((k) => (
                   <div
                     key={k.id}
-                    className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:bg-white/50 px-2 rounded-xl transition-all"
+                    className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group hover:bg-[#FAF7F0] px-2 rounded-xl transition-all"
                   >
                     <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-2xl font-serif font-black text-[#1C1C1E]">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-2xl font-serif font-black text-[#2B2725]">
                           {k.kanji}
                         </span>
-                        <span className="text-sm font-bold text-[#9A6208]">
+                        <span className="text-sm font-bold text-[#D93829]">
                           {k.hanjaSound}
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#1C1C1E] text-[#F5A623]">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2B2725] text-[#FFE000]">
                           {k.level}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#EFE8D6] text-[#68604C] border border-[#DDD4BD]">
+                        <span className="text-[10px] px-2 py-0.5 rounded-md bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8]">
                           {k.radical} · {k.strokes}획
                         </span>
                       </div>
 
                       {/* 암기 비법 요약 */}
-                      <p className="text-xs text-[#524B3B] leading-relaxed">
-                        <span className="text-[#9A6208] font-bold mr-1">💡 비법:</span>
+                      <p className="text-xs text-[#5A5047] leading-relaxed break-keep break-words">
+                        <span className="text-[#D93829] font-bold mr-1">💡 비법:</span>
                         {k.story}
                       </p>
 
@@ -445,7 +448,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                           <span
                             key={i}
                             onClick={() => playSpeech(c.word)}
-                            className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-white border border-[#DDD5BF] text-[#333] cursor-pointer hover:border-[#F5A623]"
+                            className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-[#FAF7F0] border border-[#E2D9C8] text-[#2B2725] cursor-pointer hover:border-[#D93829] break-keep"
                           >
                             <strong>{c.word}</strong> ({c.reading}): {c.korean}
                           </span>
@@ -456,7 +459,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                     <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                       <button
                         onClick={() => playSpeech(k.kanji)}
-                        className="p-2 rounded-xl bg-white border border-[#DDD5BF] hover:bg-[#F5A623]/20 text-[#6B6350] hover:text-black transition-all"
+                        className="p-2 rounded-xl bg-[#FAF7F0] border border-[#E2D9C8] hover:bg-[#F3ECE0] text-[#5A5047] hover:text-[#2B2725] transition-all"
                         title="발음 듣기"
                       >
                         <Volume2 className="w-4 h-4" />
@@ -476,10 +479,10 @@ export const VocabView: React.FC<VocabViewProps> = ({
       {studySection === 'vocab' && (
         <div className="space-y-6">
           {/* Vocab Controls */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="bg-[#FDFCF9] border border-[#E2D9C8] rounded-2xl p-4 shadow-xs space-y-3">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
               {/* Category filters */}
-              <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
+              <div className="grid grid-cols-2 sm:flex sm:items-center gap-1.5 w-full sm:w-auto">
                 {categories.map((cat) => (
                   <button
                     key={cat}
@@ -488,10 +491,10 @@ export const VocabView: React.FC<VocabViewProps> = ({
                       setVocabCardIndex(0);
                       setVocabFlipped(false);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all text-center ${
                       selectedCategory === cat
-                        ? 'bg-[#1C1C1E] text-[#FFFBE8] shadow-sm'
-                        : 'bg-white text-[#5C5645] border border-[#DDD5BF] hover:bg-[#F2ECE1]'
+                        ? 'bg-[#2B2725] text-[#FFE000] shadow-xs'
+                        : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                     }`}
                   >
                     {cat === 'ALL' ? '전체 카테고리' : cat}
@@ -500,13 +503,13 @@ export const VocabView: React.FC<VocabViewProps> = ({
               </div>
 
               {/* View mode toggle */}
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => setVocabViewMode('card')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 ${
                     vocabViewMode === 'card'
-                      ? 'bg-[#1C1C1E] text-white'
-                      : 'bg-white text-[#5C5645] border border-[#DDD5BF] hover:bg-[#F2ECE1]'
+                      ? 'bg-[#2B2725] text-white'
+                      : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
                   <Rotate3d className="w-3.5 h-3.5" />
@@ -514,10 +517,10 @@ export const VocabView: React.FC<VocabViewProps> = ({
                 </button>
                 <button
                   onClick={() => setVocabViewMode('list')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 ${
                     vocabViewMode === 'list'
-                      ? 'bg-[#1C1C1E] text-white'
-                      : 'bg-white text-[#5C5645] border border-[#DDD5BF] hover:bg-[#F2ECE1]'
+                      ? 'bg-[#2B2725] text-white'
+                      : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
                   <Layers className="w-3.5 h-3.5" />
@@ -528,7 +531,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
 
             {/* Level Filter and Search */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              <div className="flex items-center gap-1 w-full sm:w-auto">
+              <div className="grid grid-cols-6 sm:flex items-center gap-1 w-full sm:w-auto">
                 {levels.map((lvl) => (
                   <button
                     key={lvl}
@@ -537,10 +540,10 @@ export const VocabView: React.FC<VocabViewProps> = ({
                       setVocabCardIndex(0);
                       setVocabFlipped(false);
                     }}
-                    className={`px-2.5 py-1 rounded-md text-[11px] font-mono font-bold transition-all ${
+                    className={`px-2 py-1 rounded-md text-[11px] font-mono font-bold transition-all text-center ${
                       selectedVocabLevel === lvl
-                        ? 'bg-[#1C1C1E] text-[#F5A623]'
-                        : 'bg-white text-[#6B6350] border border-[#DDD5BF] hover:bg-[#F2ECE1]'
+                        ? 'bg-[#2B2725] text-[#FFE000]'
+                        : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                     }`}
                   >
                     {lvl}
@@ -549,7 +552,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
               </div>
 
               <div className="relative flex-1 w-full">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#8C826D]" />
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#7A6E63]" />
                 <input
                   type="text"
                   value={vocabSearch}
@@ -559,7 +562,7 @@ export const VocabView: React.FC<VocabViewProps> = ({
                     setVocabFlipped(false);
                   }}
                   placeholder="단어, 발음, 한국어 뜻 검색..."
-                  className="w-full pl-9 pr-4 py-1.5 bg-white border border-[#DED7C2] rounded-xl text-xs sm:text-sm text-[#1C1C1E] placeholder:text-[#9A9380] focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
+                  className="w-full pl-9 pr-4 py-1.5 bg-[#FAF7F0] border border-[#E2D9C8] rounded-xl text-xs sm:text-sm text-[#2B2725] placeholder:text-[#9A9380] focus:outline-none focus:ring-2 focus:ring-[#D93829]"
                 />
               </div>
             </div>
@@ -684,48 +687,53 @@ export const VocabView: React.FC<VocabViewProps> = ({
 
           {/* Vocab List Mode */}
           {vocabViewMode === 'list' && (
-            <div className="bg-white border border-gray-200 rounded-3xl p-5 shadow-sm space-y-3">
+            <div className="bg-[#FDFCF9] border border-[#E2D9C8] rounded-2xl p-4 sm:p-5 shadow-xs space-y-3">
+              <div className="text-xs text-[#7A6E63] font-mono px-1">
+                총 {filteredVocab.length}개의 단어가 검색되었습니다.
+              </div>
               <div className="divide-y divide-[#EADFC7]">
                 {filteredVocab.map((item) => (
                   <div
                     key={item.id}
-                    className="py-3 flex items-center justify-between gap-4 group hover:bg-white/50 px-2 rounded-xl transition-all"
+                    className="py-3 flex items-center justify-between gap-3 group hover:bg-[#FAF7F0] px-2 rounded-xl transition-all"
                   >
                     <div className="space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-base font-bold text-[#1C1C1E]">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-base font-bold text-[#2B2725]">
                           {item.kanji}
                         </span>
-                        <span className="text-xs text-[#9A6208] font-medium">
+                        <span className="text-xs text-[#D93829] font-medium">
                           ({item.kana})
                         </span>
-                        <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#1C1C1E] text-[#F5A623]">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#2B2725] text-[#FFE000]">
                           {item.level}
                         </span>
                       </div>
-                      <p className="text-xs font-semibold text-[#4A4435]">
+                      <p className="text-xs font-semibold text-[#2B2725] break-keep">
                         {item.korean}
                       </p>
-                      <p className="text-[11px] text-[#7A725D]">
+                      <p className="text-[11px] text-[#7A6E63] break-keep">
                         {item.exampleJp} · {item.exampleKr}
                       </p>
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <button
                         onClick={() => playSpeech(item.kanji)}
-                        className="p-2 rounded-xl bg-white border border-[#DDD5BF] hover:bg-[#F2ECE1] text-[#4A4435]"
+                        className="p-2 rounded-xl bg-[#FAF7F0] border border-[#E2D9C8] hover:bg-[#F3ECE0] text-[#5A5047] hover:text-[#2B2725] transition-all"
+                        title="발음 듣기"
                       >
                         <Volume2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={(e) => toggleSaveWord(item.id, e)}
-                        className="p-2 rounded-xl text-[#8C826D] hover:text-[#F5A623]"
+                        className="p-2 rounded-xl text-[#7A6E63] hover:text-[#D93829] transition-colors"
+                        title="단어 저장"
                       >
                         <Bookmark
                           className={`w-4 h-4 ${
                             stats.savedVocabIds.includes(item.id)
-                              ? 'fill-[#F5A623] text-[#F5A623]'
+                              ? 'fill-[#D93829] text-[#D93829]'
                               : ''
                           }`}
                         />

@@ -170,11 +170,11 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
 
         {/* Question Prompt */}
         <div className="p-3.5 bg-white rounded-xl border border-gray-200 border-l-4 border-l-[#D93829] shadow-xs">
-          <h3 className="text-sm sm:text-base font-black text-gray-950 leading-relaxed font-sans">
+          <h3 className="text-sm sm:text-base font-black text-gray-950 leading-relaxed font-sans break-keep break-words">
             {currentQ.prompt}
           </h3>
           {currentQ.translation && isAnswerChecked && (
-            <p className="text-xs text-gray-600 mt-2 leading-snug pt-2 border-t border-dashed border-gray-200">
+            <p className="text-xs text-gray-600 mt-2 leading-relaxed pt-2 border-t border-dashed border-gray-200 break-keep break-words">
               해석: {currentQ.translation}
             </p>
           )}
@@ -204,13 +204,13 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
                 className={`w-full p-3 rounded-xl border text-left text-xs font-bold transition-all active:scale-98 flex items-center justify-between shadow-xs ${optClass}`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-md bg-gray-100 flex items-center justify-center font-mono font-bold text-[10px] text-gray-700">
+                  <span className="w-5 h-5 rounded-md bg-gray-100 flex items-center justify-center font-mono font-bold text-[10px] text-gray-700 shrink-0">
                     {idx + 1}
                   </span>
-                  <span>{opt}</span>
+                  <span className="break-keep break-words">{opt}</span>
                 </div>
                 {isAnswerChecked && opt === currentQ.correctAnswer && (
-                  <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-white shrink-0 ml-2" />
                 )}
               </button>
             );

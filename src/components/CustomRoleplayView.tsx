@@ -432,8 +432,8 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
                     </button>
                   )}
                 </div>
-                <p className="text-sm font-semibold leading-relaxed">{chat.japanese}</p>
-                <p className={`text-xs ${chat.sender === 'user' ? 'text-amber-900' : 'text-gray-500'}`}>
+                <p className="text-sm font-bold leading-relaxed break-keep break-words text-[#1C1917]">{chat.japanese}</p>
+                <p className={`text-xs break-keep break-words mt-1 ${chat.sender === 'user' ? 'text-amber-900 font-medium' : 'text-gray-600'}`}>
                   {chat.korean}
                 </p>
               </div>

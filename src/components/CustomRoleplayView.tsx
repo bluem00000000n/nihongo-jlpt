@@ -265,10 +265,10 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
       />
       {/* Top Mobile Card (LOFT Stationery Memo) */}
       <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5">
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT ROLEPLAY</span>
-            <span>REAL-LIFE SCENARIOS</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">ROLEPLAY</span>
+            <span className="text-gray-800">REAL-LIFE SCENARIOS</span>
           </div>
           <span>TOTAL: 10 SCENARIOS</span>
         </div>
@@ -394,7 +394,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Message Stream */}
-        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-[#FDFCF9] dark:bg-[#181715] loft-dot-bg">
+        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-white">
           {chatLog.map((chat, idx) => (
             <div
               key={idx}

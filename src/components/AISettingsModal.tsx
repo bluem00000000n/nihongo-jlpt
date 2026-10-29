@@ -126,7 +126,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
           <div>
             <div className="flex items-center gap-1.5 mb-1">
               <span className="px-2 py-0.5 rounded-md bg-[#FFE000] text-gray-950 text-[10px] font-black border border-gray-900/10">
-                LOFT AI ENGINE
+                AI ENGINE
               </span>
               <span className="text-[10px] font-mono font-bold text-gray-500">PROVIDER SETTING</span>
             </div>

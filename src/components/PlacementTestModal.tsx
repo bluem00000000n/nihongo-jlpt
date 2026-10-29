@@ -133,12 +133,12 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
       <div className="w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 p-5 flex flex-col max-h-[90vh] overflow-hidden text-gray-900">
         {/* Top Header Strip */}
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500 mb-2">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 mb-2">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT TEST</span>
-            <span>DIAGNOSIS SHEET</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">LEVEL TEST</span>
+            <span className="font-bold text-gray-800">DIAGNOSIS SHEET</span>
           </div>
-          <span>NO. 001</span>
+          <span className="font-bold">NO. 001</span>
         </div>
 
         {/* Intro Step */}

@@ -113,10 +113,10 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
     <div className="space-y-4">
       {/* Top filter and search bar (LOFT Stationery Header) */}
       <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT GRAMMAR</span>
-            <span>INDEX & NOTE</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">JLPT GRAMMAR</span>
+            <span className="text-gray-800">INDEX & NOTE</span>
           </div>
           <span>TOTAL: {grammarList.length} ITEMS</span>
         </div>

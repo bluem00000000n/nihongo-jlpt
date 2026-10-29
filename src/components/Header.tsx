@@ -27,27 +27,10 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      {/* LOFT Stationery Notebook Spine & Brand Header */}
-      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 transition-colors">
-        {/* Notebook Top Spiral Wire Motif (Rollbahn / Maruman style ring holes) */}
-        <div className="w-full bg-[#24221F] py-1 px-4 flex items-center justify-between border-b border-gray-800">
-          <div className="flex items-center gap-1.5 overflow-hidden">
-            {Array.from({ length: 14 }).map((_, i) => (
-              <div
-                key={i}
-                className="w-2.5 h-1.5 rounded-full bg-gradient-to-b from-stone-400 to-stone-600 shadow-inner border border-stone-700/60 flex-shrink-0"
-              />
-            ))}
-          </div>
-          <div className="flex items-center gap-2 text-[9px] font-mono tracking-widest text-stone-300">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black rounded-xs text-[8px]">LOFT</span>
-            <span className="hidden sm:inline">NOTEBOOK</span>
-            <span className="text-stone-400">NO. 2026</span>
-          </div>
-        </div>
-
-        <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
-          {/* Logo and Brand in Stationery Note style */}
+      {/* Brand Header */}
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-200 transition-colors shadow-xs">
+        <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Logo and Brand */}
           <div className="flex items-center gap-2.5">
             {/* Japanese Hanko Inkan Seal Mark */}
             <div className="w-8 h-8 rounded-lg bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)] border border-[#B92B1E]">
@@ -73,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Header Controls */}
           <div className="flex items-center gap-2">
-            {/* Quick Settings Button styled like stationery label */}
+            {/* Quick Settings Button */}
             <button
               onClick={() => setIsQuickSettingsOpen(true)}
               className="px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-gray-950 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-300 text-xs font-black shadow-xs"
@@ -94,7 +77,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-gray-200">
               <div className="flex items-center gap-2">
                 <Settings2 className="w-4 h-4 text-gray-700" />
-                <h3 className="font-black text-sm text-gray-950">학습 및 발음 설정 (LOFT SETTING)</h3>
+                <h3 className="font-black text-sm text-gray-950">학습 및 발음 설정</h3>
               </div>
               <button
                 onClick={() => setIsQuickSettingsOpen(false)}

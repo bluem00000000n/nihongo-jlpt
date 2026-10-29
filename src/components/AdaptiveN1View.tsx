@@ -277,14 +277,13 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       {/* Flagship Header: Mobile Adaptive Level Card (LOFT Stationery Memo Note) */}
       <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5 relative overflow-hidden">
         {/* Top Stationery Tape Strip & Perforation */}
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT NOTE</span>
-            <span>MEMO: ADAPTIVE JLPT</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">ADAPTIVE JLPT</span>
+            <span className="text-gray-800">LEVEL MEMO</span>
           </div>
           <div className="flex items-center gap-2">
-            <span>DATE: 2026.10.27</span>
-            <span className="font-bold text-stone-700 dark:text-stone-300">P.01</span>
+            <span>P.01</span>
           </div>
         </div>
 
@@ -429,8 +428,8 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
           <span>GRID 5mm · N1 CHAT</span>
         </div>
 
-        {/* Messages Stream with Dot Grid Texture */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#FDFCF9] dark:bg-[#181715] loft-dot-bg">
+        {/* Messages Stream */}
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-white">
           {messages.map((msg) => (
             <div
               key={msg.id}

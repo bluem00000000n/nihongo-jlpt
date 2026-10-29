@@ -76,9 +76,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#EDE7DC] dark:bg-[#121110] text-stone-900 dark:text-stone-100 flex justify-center font-sans transition-colors antialiased">
-      {/* Mobile-First Centered Container (Japanese LOFT Notebook Paper) */}
-      <div className="w-full max-w-md min-h-screen bg-[#FAF7F0] dark:bg-[#181715] shadow-[0_4px_30px_rgba(40,30,20,0.12)] border-x border-[#E2D9C8] dark:border-stone-800 flex flex-col relative loft-grid-bg">
+    <div className="min-h-screen bg-gray-100 flex justify-center font-sans antialiased text-gray-950">
+      {/* Mobile-First Centered Container (Pure White) */}
+      <div className="w-full max-w-md min-h-screen bg-white border-x border-gray-200 flex flex-col relative shadow-sm">
         {/* Global Mobile Header */}
         <Header
           stats={stats}

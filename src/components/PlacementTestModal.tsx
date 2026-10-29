@@ -149,20 +149,20 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
             </div>
 
             <div className="text-center space-y-1">
-              <h3 className="text-lg font-extrabold text-stone-900 dark:text-stone-100">
+              <h3 className="text-lg font-extrabold text-gray-950">
                 AI 일본어 맞춤 레벨 진단
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 leading-relaxed max-w-xs mx-auto">
+              <p className="text-xs text-gray-600 leading-relaxed max-w-xs mx-auto">
                 현재 실력에 꼭 맞는 단계(N5~N1)에서 시작할 수 있도록 <strong className="loft-marker">빠른 5문항 진단</strong>을 진행합니다.
               </p>
             </div>
 
-            <div className="p-3 bg-white dark:bg-stone-900/70 rounded-xl border border-[#DDD5C5] dark:border-stone-800 text-xs text-stone-600 dark:text-stone-300 space-y-1.5 shadow-xs">
+            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-700 space-y-1.5 shadow-xs">
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-[#D93829]" />
-                <span className="font-extrabold text-stone-800 dark:text-stone-100">진단 방식</span>
+                <span className="font-extrabold text-gray-950">진단 방식</span>
               </div>
-              <p className="text-[11px] text-stone-500 leading-normal">
+              <p className="text-[11px] text-gray-600 leading-normal">
                 기초(N5)부터 1급(N1)까지 핵심 문장 5개를 풀고, 진단된 레벨부터 AI가 자동으로 어휘와 급수를 높여갑니다.
               </p>
             </div>
@@ -170,7 +170,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
             <div className="space-y-2 pt-1">
               <button
                 onClick={handleStartTest}
-                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-stone-800/20 active:scale-98 transition-all"
+                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-gray-900/20 active:scale-98 transition-all"
               >
                 <span>5문항 레벨 진단 시작하기 (1분 소요)</span>
                 <ChevronRight className="w-4 h-4" />
@@ -178,7 +178,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
 
               <button
                 onClick={handleSkipToN5}
-                className="w-full py-2 rounded-lg border border-[#DDD5C5] dark:border-stone-700 text-stone-600 hover:text-stone-900 dark:hover:text-stone-200 text-xs font-semibold hover:bg-[#F4EFE4] dark:hover:bg-stone-800 transition-colors"
+                className="w-full py-2 rounded-lg border border-gray-300 text-gray-700 hover:text-gray-950 text-xs font-semibold hover:bg-gray-50 transition-colors"
               >
                 진단 없이 N5 (왕초보)부터 바로 시작하기
               </button>
@@ -190,12 +190,12 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
         {step === 'testing' && currentQ && (
           <div className="space-y-4 py-1">
             {/* Progress Bar */}
-            <div className="flex items-center justify-between text-xs text-stone-500">
+            <div className="flex items-center justify-between text-xs text-gray-500">
               <span className="font-extrabold text-[#D93829] font-mono">QUESTION {currentIdx + 1} / 5</span>
               <span className="loft-hanko text-[9px] px-1 py-0.2">{currentQ.level}</span>
             </div>
 
-            <div className="w-full h-2 bg-[#EFE9DC] dark:bg-stone-800 rounded-sm overflow-hidden border border-[#D5CCBA] dark:border-stone-700">
+            <div className="w-full h-2 bg-gray-200 rounded-sm overflow-hidden border border-gray-300">
               <div
                 className="h-full bg-gradient-to-r from-[#FFE000] to-[#F59E0B] transition-all duration-300"
                 style={{ width: `${((currentIdx + 1) / 5) * 100}%` }}
@@ -203,14 +203,14 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
             </div>
 
             {/* Question Card */}
-            <div className="bg-white dark:bg-stone-900/80 rounded-xl p-4 border border-[#E5DEC9] dark:border-stone-800 border-l-4 border-l-[#D93829] space-y-1.5 shadow-xs">
-              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300">
+            <div className="bg-white rounded-xl p-4 border border-gray-200 border-l-4 border-l-[#D93829] space-y-1.5 shadow-xs">
+              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded-xs bg-gray-100 text-gray-700">
                 Q{currentIdx + 1}
               </span>
-              <h4 className="text-base font-extrabold text-stone-900 dark:text-stone-100 leading-snug">
+              <h4 className="text-base font-extrabold text-gray-950 leading-snug">
                 {currentQ.prompt}
               </h4>
-              <p className="text-xs text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-gray-600">
                 {currentQ.subPrompt}
               </p>
             </div>
@@ -221,7 +221,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
                 <button
                   key={idx}
                   onClick={() => handleSelectOption(opt)}
-                  className="p-3 rounded-lg border border-[#DDD5C5] dark:border-stone-700 bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 hover:border-stone-900 hover:bg-[#FDFBF7] text-sm font-semibold transition-all active:scale-98 text-center shadow-xs"
+                  className="p-3 rounded-lg border border-gray-300 bg-white text-gray-950 hover:border-gray-950 hover:bg-gray-50 text-sm font-semibold transition-all active:scale-98 text-center shadow-xs"
                 >
                   {opt}
                 </button>
@@ -231,7 +231,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
             <div className="pt-2 text-center">
               <button
                 onClick={handleSkipToN5}
-                className="text-[11px] text-stone-400 hover:text-stone-600 underline"
+                className="text-[11px] text-gray-500 hover:text-gray-800 underline"
               >
                 테스트 건너뛰고 N5 기초로 시작
               </button>
@@ -242,16 +242,16 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
         {/* Result Step */}
         {step === 'result' && (
           <div className="space-y-4 py-2 text-center">
-            <div className="w-12 h-12 rounded-lg bg-[#FFE000] text-stone-900 border border-stone-800/30 flex items-center justify-center mx-auto shadow-xs">
+            <div className="w-12 h-12 rounded-lg bg-[#FFE000] text-gray-950 border border-gray-900/30 flex items-center justify-center mx-auto shadow-xs">
               <Award className="w-7 h-7" />
             </div>
 
             <div className="space-y-1">
-              <span className="text-xs text-stone-400 font-bold block font-mono">DIAGNOSIS COMPLETE ({correctCount} / 5)</span>
-              <h3 className="text-2xl font-black text-stone-900 dark:text-stone-100">
+              <span className="text-xs text-gray-500 font-bold block font-mono">DIAGNOSIS COMPLETE ({correctCount} / 5)</span>
+              <h3 className="text-2xl font-black text-gray-950">
                 【{diagnosedLevel}】 레벨로 시작합니다!
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 pt-1 max-w-xs mx-auto leading-relaxed">
+              <p className="text-xs text-gray-600 pt-1 max-w-xs mx-auto leading-relaxed">
                 {diagnosedLevel === 'N5'
                   ? '기초 문법과 쉬운 일상 인사부터 차근차근 시작하여 자연스럽게 급수를 높여갑니다.'
                   : diagnosedLevel === 'N4'
@@ -264,12 +264,12 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
               </p>
             </div>
 
-            <div className="p-3 bg-white dark:bg-stone-900 rounded-xl border border-[#DDD5C5] dark:border-stone-800 text-left text-xs text-stone-600 dark:text-stone-300 space-y-1 shadow-xs">
-              <div className="flex items-center gap-1.5 font-bold text-stone-900 dark:text-stone-100">
+            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-left text-xs text-gray-700 space-y-1 shadow-xs">
+              <div className="flex items-center gap-1.5 font-bold text-gray-950">
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
                 <span>스마트 상태 영구 저장 완료</span>
               </div>
-              <p className="text-[11px] text-stone-500 leading-normal">
+              <p className="text-[11px] text-gray-600 leading-normal">
                 진단된 레벨은 브라우저(LocalStorage)에 안전하게 영구 보존되며, 실력 향상 시 AI가 알아서 다음 급수로 자동 승급합니다.
               </p>
             </div>
@@ -277,7 +277,7 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
             <div className="pt-1">
               <button
                 onClick={handleFinish}
-                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs shadow-xs border border-stone-800/20 active:scale-98 transition-all"
+                className="w-full py-3 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-extrabold text-xs shadow-xs border border-gray-900/20 active:scale-98 transition-all"
               >
                 {diagnosedLevel} 단계로 AI 튜터와 대화 시작하기
               </button>

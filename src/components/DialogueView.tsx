@@ -123,32 +123,30 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
               onClick={() => handleSelectScenario(sc)}
               className={`min-w-[160px] p-3 rounded-2xl text-left border transition-all duration-200 flex flex-col justify-between shrink-0 ${
                 isSelected
-                  ? 'bg-rose-600 text-white shadow-md shadow-rose-900/20 border-rose-600'
-                  : 'bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-200 border-stone-200 dark:border-stone-800 hover:border-rose-300'
+                  ? 'bg-[#FFE000] text-gray-950 font-black shadow-sm border-gray-900'
+                  : 'bg-white text-gray-800 border-gray-200 hover:border-gray-400'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                       isSelected
-                        ? 'bg-emerald-700 text-white'
-                        : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                        ? 'bg-gray-950 text-white'
+                        : 'bg-gray-100 text-gray-700 border border-gray-200'
                     }`}
                   >
                     {sc.category}
                   </span>
                   {isCompleted && (
                     <CheckCircle2
-                      className={`w-4 h-4 ${
-                        isSelected ? 'text-white' : 'text-emerald-500'
-                      }`}
+                      className="w-4 h-4 text-emerald-600 fill-emerald-100"
                     />
                   )}
                 </div>
-                <h4 className="text-xs font-bold line-clamp-2 leading-snug">{sc.title}</h4>
+                <h4 className="text-xs font-black line-clamp-2 leading-snug">{sc.title}</h4>
               </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] opacity-80">
+              <div className="mt-3 flex items-center justify-between text-[11px] opacity-80 font-mono">
                 <span>{sc.level}</span>
                 <span>{sc.lines.length}턴</span>
               </div>
@@ -157,27 +155,27 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
         })}
       </div>
 
-      {/* Main Roleplay Arena */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl overflow-hidden">
+      {/* Main Roleplay Arena (Pure White LOFT Notebook Design) */}
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         {/* Scenario Header */}
-        <div className="p-6 bg-gradient-to-r from-emerald-600 to-teal-700 text-white">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 bg-white text-gray-950 border-b border-gray-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/20">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-gray-100 border border-gray-200 text-gray-700">
                   {selectedScenario.category}
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-white/20">
+                <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black bg-[#FFE000] text-gray-950 border border-gray-900/15">
                   {selectedScenario.level}
                 </span>
               </div>
-              <h2 className="text-2xl font-black tracking-tight">{selectedScenario.title}</h2>
-              <p className="text-xs text-emerald-100 mt-1 max-w-2xl">{selectedScenario.situation}</p>
+              <h2 className="text-xl font-black tracking-tight text-gray-950">{selectedScenario.title}</h2>
+              <p className="text-xs text-gray-600 mt-1 max-w-2xl">{selectedScenario.situation}</p>
             </div>
 
             <button
               onClick={handleResetScenario}
-              className="self-start sm:self-center flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold transition-colors"
+              className="self-start sm:self-center flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 text-xs font-bold transition-colors"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               처음부터 다시하기
@@ -187,8 +185,8 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
 
         {/* Culture tip bar */}
         {selectedScenario.cultureTip && (
-          <div className="px-6 py-3 bg-amber-50 dark:bg-amber-950/40 border-b border-amber-200/60 dark:border-amber-900/40 flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
-            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="px-4 sm:px-5 py-2.5 bg-amber-50 border-b border-amber-200 flex items-start gap-2.5 text-xs text-amber-950 font-medium">
+            <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
             <p>
               <strong className="font-bold">일본 문화 꿀팁: </strong>
               {selectedScenario.cultureTip}
@@ -197,23 +195,23 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
         )}
 
         {/* Chat Stream History */}
-        <div className="p-6 space-y-5 max-h-[480px] overflow-y-auto bg-slate-50/50 dark:bg-slate-900/40">
+        <div className="p-4 sm:p-5 space-y-4 max-h-[480px] overflow-y-auto bg-white">
           {selectedScenario.lines.slice(0, currentStepIndex + 1).map((line, idx) => {
             const isLatest = idx === currentStepIndex;
 
             return (
               <div
                 key={line.id}
-                className={`flex gap-3 items-start animate-in fade-in duration-300 ${
+                className={`flex gap-2.5 items-start animate-fade-in ${
                   line.isUser ? 'flex-row-reverse' : ''
                 }`}
               >
                 {/* Avatar */}
                 <div
-                  className={`w-10 h-10 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-sm ${
+                  className={`w-8 h-8 rounded-xl flex items-center justify-center text-base shrink-0 shadow-xs border ${
                     line.isUser
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
+                      ? 'bg-[#FFE000] text-gray-950 border-gray-900/20 font-black'
+                      : 'bg-gray-100 text-gray-800 border-gray-200'
                   }`}
                 >
                   {line.avatar}
@@ -221,46 +219,38 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
 
                 {/* Message Bubble */}
                 <div
-                  className={`max-w-md rounded-2xl p-4 shadow-sm space-y-1.5 ${
+                  className={`max-w-md rounded-2xl p-3.5 shadow-xs space-y-1.5 ${
                     line.isUser
-                      ? 'bg-indigo-600 text-white rounded-tr-none'
-                      : 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-700 rounded-tl-none'
+                      ? 'bg-amber-50 text-gray-950 border border-amber-300 rounded-tr-xs font-bold'
+                      : 'bg-white text-gray-950 border border-gray-200 border-l-4 border-l-blue-600 rounded-tl-xs'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
                     <span
-                      className={`text-xs font-bold ${
-                        line.isUser ? 'text-indigo-200' : 'text-slate-500 dark:text-slate-400'
+                      className={`text-[10px] font-mono font-bold ${
+                        line.isUser ? 'text-amber-800' : 'text-gray-500'
                       }`}
                     >
                       {line.speaker}
                     </span>
                     <button
                       onClick={() => playSpeech(line.japanese)}
-                      className={`p-1 rounded-lg transition-colors ${
-                        line.isUser
-                          ? 'hover:bg-indigo-700 text-indigo-200'
-                          : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400'
-                      }`}
+                      className="p-1 rounded text-gray-400 hover:text-gray-700 transition-colors"
                       title="소리 듣기"
                     >
-                      <Volume2 className="w-3.5 h-3.5" />
+                      <Volume2 className="w-3.5 h-3.5 text-gray-600" />
                     </button>
                   </div>
 
-                  <p className="text-base font-bold tracking-wide">{line.japanese}</p>
+                  <p className="text-sm font-semibold tracking-wide leading-relaxed">{line.japanese}</p>
                   {stats.romajiEnabled && (
-                    <p
-                      className={`text-xs font-mono ${
-                        line.isUser ? 'text-indigo-200' : 'text-slate-400'
-                      }`}
-                    >
+                    <p className="text-[11px] font-mono text-gray-400">
                       {line.romaji}
                     </p>
                   )}
                   <p
                     className={`text-xs ${
-                      line.isUser ? 'text-indigo-100' : 'text-slate-600 dark:text-slate-400'
+                      line.isUser ? 'text-amber-900' : 'text-gray-600'
                     }`}
                   >
                     {line.korean}
@@ -272,19 +262,19 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
 
           {/* Finished Celebration Banner */}
           {isFinished && (
-            <div className="p-8 text-center bg-emerald-50 dark:bg-emerald-950/40 rounded-3xl border border-emerald-200 dark:border-emerald-800 space-y-4 animate-in zoom-in-95 duration-300">
-              <Award className="w-14 h-14 text-emerald-600 mx-auto animate-bounce" />
+            <div className="p-6 text-center bg-gray-50 rounded-2xl border border-gray-200 space-y-3 animate-fade-in">
+              <Award className="w-12 h-12 text-[#D93829] mx-auto animate-bounce" />
               <div>
-                <h3 className="text-2xl font-black text-emerald-900 dark:text-emerald-100">
+                <h3 className="text-xl font-black text-gray-950">
                   🎉 실전 회화 완료!
                 </h3>
-                <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1">
+                <p className="text-xs text-gray-600 mt-1">
                   모든 대화 턴을 성공적으로 끝마쳤습니다!
                 </p>
               </div>
               <button
                 onClick={handleResetScenario}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition-all"
+                className="px-6 py-2.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs shadow-xs border border-gray-900/15 transition-all"
               >
                 다시 연습하기
               </button>
@@ -294,35 +284,35 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
 
         {/* Action Panel for Current Step */}
         {!isFinished && (
-          <div className="p-6 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+          <div className="p-4 sm:p-5 border-t border-gray-200 bg-white">
             {currentLine.isUser ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 animate-ping" />
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
+                    <span className="text-xs font-black text-gray-950">
                       내 차례 (상황에 맞는 가장 자연스러운 일본어를 선택하세요)
                     </span>
                   </div>
-                  <span className="text-xs font-medium text-slate-400">
+                  <span className="text-xs font-mono font-bold text-gray-500">
                     진행률: {currentStepIndex + 1} / {selectedScenario.lines.length}
                   </span>
                 </div>
 
                 {/* Multiple choice roleplay options */}
-                <div className="grid grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 gap-2">
                   {currentLine.roleplayOptions?.map((opt, i) => {
                     const isSelected = userSelectedOption === i;
                     let style =
-                      'bg-slate-50 dark:bg-slate-700/60 hover:bg-slate-100 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100';
+                      'bg-white hover:bg-gray-50 border-gray-200 text-gray-950';
 
                     if (isOptionEvaluated) {
                       if (opt.isCorrect) {
                         style =
-                          'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500 text-emerald-900 dark:text-emerald-200';
+                          'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold';
                       } else if (isSelected) {
                         style =
-                          'bg-rose-50 dark:bg-rose-950/60 border-rose-500 text-rose-900 dark:text-rose-200';
+                          'bg-rose-50 border-rose-500 text-rose-950';
                       }
                     }
 
@@ -331,17 +321,17 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
                         key={i}
                         onClick={() => handleSelectOption(i)}
                         disabled={isOptionEvaluated}
-                        className={`p-4 rounded-xl border text-left transition-all ${style}`}
+                        className={`p-3.5 rounded-xl border text-left transition-all ${style}`}
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <p className="text-sm font-bold">{opt.text}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            <p className="text-xs text-gray-600 mt-0.5">
                               {opt.korean}
                             </p>
                           </div>
                           {isOptionEvaluated && (
-                            <span className="text-sm font-bold">
+                            <span className="text-xs font-black">
                               {opt.isCorrect ? '✅ 정답' : '❌ 오답'}
                             </span>
                           )}
@@ -357,11 +347,11 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
                     <div
                       className={`p-3.5 rounded-xl text-xs leading-relaxed ${
                         currentLine.roleplayOptions?.[userSelectedOption]?.isCorrect
-                          ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200'
-                          : 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200'
+                          ? 'bg-emerald-50 text-emerald-950 border border-emerald-200'
+                          : 'bg-rose-50 text-rose-950 border border-rose-200'
                       }`}
                     >
-                      <strong className="block font-bold mb-0.5">
+                      <strong className="block font-black mb-0.5">
                         {currentLine.roleplayOptions?.[userSelectedOption]?.isCorrect
                           ? '👏 훌륭합니다!'
                           : '💡 팁:'}

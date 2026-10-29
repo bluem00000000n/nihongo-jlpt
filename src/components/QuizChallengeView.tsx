@@ -74,7 +74,7 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
 
   if (!currentQ) {
     return (
-      <div className="max-w-md mx-auto p-6 bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 text-center">
+      <div className="max-w-md mx-auto p-6 bg-white rounded-2xl border border-gray-200 text-center text-gray-900 font-bold">
         선택한 조건의 기출문제가 없습니다.
       </div>
     );
@@ -147,34 +147,34 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
       {/* Main Question Card (LOFT Notebook Exam Page) */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-4">
         {/* Question Header & Authority Source */}
-        <div className="flex items-center justify-between text-xs pb-2.5 border-b border-[#E5DEC9] dark:border-stone-800">
+        <div className="flex items-center justify-between text-xs pb-2.5 border-b border-gray-100">
           <div className="flex items-center gap-1.5">
             <span className="loft-hanko text-[9px] px-1 py-0.2">
               {currentQ.level}
             </span>
-            <span className="font-bold text-stone-700 dark:text-stone-300 text-xs font-sans">
+            <span className="font-bold text-gray-800 text-xs font-sans">
               {currentQ.section} · {currentQ.sectionDetail}
             </span>
           </div>
 
-          <span className="text-stone-500 text-[11px] font-mono">
+          <span className="text-gray-500 text-[11px] font-mono font-bold">
             NO. {currentIndex + 1} / {filteredQuestions.length}
           </span>
         </div>
 
         {/* Source Badge */}
-        <div className="flex items-center gap-1 text-[10px] text-stone-500">
+        <div className="flex items-center gap-1 text-[10px] text-gray-500">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>공식 출처: {currentQ.sourceAuthority}</span>
         </div>
 
         {/* Question Prompt */}
-        <div className="p-3 bg-white dark:bg-[#22201D] rounded-xl border border-[#E5DEC9] dark:border-stone-750 border-l-4 border-l-[#D93829] shadow-xs">
-          <h3 className="text-sm sm:text-base font-extrabold text-stone-900 dark:text-stone-100 leading-relaxed font-sans">
+        <div className="p-3.5 bg-white rounded-xl border border-gray-200 border-l-4 border-l-[#D93829] shadow-xs">
+          <h3 className="text-sm sm:text-base font-black text-gray-950 leading-relaxed font-sans">
             {currentQ.prompt}
           </h3>
           {currentQ.translation && isAnswerChecked && (
-            <p className="text-xs text-stone-500 mt-2 leading-snug pt-2 border-t border-dashed border-stone-200 dark:border-stone-700">
+            <p className="text-xs text-gray-600 mt-2 leading-snug pt-2 border-t border-dashed border-gray-200">
               해석: {currentQ.translation}
             </p>
           )}
@@ -184,16 +184,16 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
         <div className="space-y-2 pt-1">
           {currentQ.options.map((opt, idx) => {
             const isThisSelected = selectedOption === opt;
-            let optClass = 'bg-white dark:bg-stone-850 text-stone-800 dark:text-stone-200 border-[#DDD5C5] dark:border-stone-700 hover:border-stone-800';
+            let optClass = 'bg-white text-gray-900 border-gray-300 hover:border-gray-800';
 
             if (isAnswerChecked) {
               if (opt === currentQ.correctAnswer) {
-                optClass = 'bg-[#10B981] border-emerald-600 text-white font-bold shadow-xs';
+                optClass = 'bg-emerald-600 border-emerald-700 text-white font-black shadow-xs';
               } else if (isThisSelected) {
-                optClass = 'bg-[#D93829] border-[#B92B1E] text-white';
+                optClass = 'bg-rose-600 border-rose-700 text-white font-bold';
               }
             } else if (isThisSelected) {
-              optClass = 'bg-[#FFE000] border-stone-900 text-stone-900 font-extrabold shadow-[1px_2px_0px_rgba(0,0,0,0.15)]';
+              optClass = 'bg-[#FFE000] border-gray-950 text-gray-950 font-black shadow-xs';
             }
 
             return (
@@ -201,10 +201,10 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
                 key={idx}
                 onClick={() => handleOptionClick(opt)}
                 disabled={isAnswerChecked}
-                className={`w-full p-3 rounded-lg border text-left text-xs font-medium transition-all active:scale-98 flex items-center justify-between shadow-xs ${optClass}`}
+                className={`w-full p-3 rounded-xl border text-left text-xs font-bold transition-all active:scale-98 flex items-center justify-between shadow-xs ${optClass}`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-sm bg-black/5 dark:bg-white/10 flex items-center justify-center font-mono font-bold text-[10px]">
+                  <span className="w-5 h-5 rounded-md bg-gray-100 flex items-center justify-center font-mono font-bold text-[10px] text-gray-700">
                     {idx + 1}
                   </span>
                   <span>{opt}</span>
@@ -223,7 +223,7 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
             <button
               onClick={handleCheckAnswer}
               disabled={!selectedOption}
-              className="w-full py-2.5 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-stone-900 font-extrabold text-xs shadow-xs transition-all active:scale-98 border border-stone-800/20"
+              className="w-full py-3 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-black text-xs shadow-xs transition-all active:scale-98 border border-gray-900/15"
             >
               정답 제출하기
             </button>
@@ -232,19 +232,19 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
               <div
                 className={`p-3.5 rounded-xl text-xs leading-relaxed shadow-xs ${
                   isCorrect
-                    ? 'bg-[#ECFDF5] dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 border border-emerald-200'
-                    : 'bg-[#FFF1F2] dark:bg-rose-950/40 text-rose-950 dark:text-rose-200 border border-rose-200'
+                    ? 'bg-emerald-50 text-emerald-950 border border-emerald-200'
+                    : 'bg-rose-50 text-rose-950 border border-rose-200'
                 }`}
               >
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className="loft-hanko text-[9px] px-1 py-0.2">
                     {isCorrect ? '正解' : '解説'}
                   </span>
-                  <span className="font-extrabold">
+                  <span className="font-black">
                     {isCorrect ? '🎉 정답입니다!' : '🤔 오답입니다!'}
                   </span>
                 </div>
-                <p className="text-[11px] leading-relaxed">
+                <p className="text-[11px] leading-relaxed font-medium">
                   💡 {currentQ.explanation}
                 </p>
               </div>

@@ -23,9 +23,9 @@ export const FuriganaText: React.FC<FuriganaTextProps> = ({
   if (!ruby || ruby.length === 0 || !showFurigana) {
     return (
       <div className={`inline-flex flex-col ${className}`}>
-        <span className="font-medium text-slate-800 dark:text-slate-100">{japanese}</span>
+        <span className="font-bold text-gray-950">{japanese}</span>
         {showRomaji && romaji && (
-          <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">{romaji}</span>
+          <span className="text-xs font-mono text-gray-500 mt-0.5">{romaji}</span>
         )}
       </div>
     );
@@ -51,7 +51,7 @@ export const FuriganaText: React.FC<FuriganaTextProps> = ({
       renderedElements.push(
         <ruby key={`ruby-${index}`} className="ruby-text mx-0.5 align-middle">
           {item.kanji}
-          <rt className="text-[11px] font-normal text-indigo-600 dark:text-indigo-400 select-none">
+          <rt className="text-[10px] font-bold text-red-600 select-none">
             {item.furigana}
           </rt>
         </ruby>
@@ -70,11 +70,11 @@ export const FuriganaText: React.FC<FuriganaTextProps> = ({
 
   return (
     <div className={`inline-flex flex-col ${className}`}>
-      <span className="font-medium text-slate-800 dark:text-slate-100 text-lg leading-relaxed">
+      <span className="font-bold text-gray-950 text-lg leading-relaxed">
         {renderedElements}
       </span>
       {showRomaji && romaji && (
-        <span className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-1">{romaji}</span>
+        <span className="text-xs font-mono text-gray-500 mt-1">{romaji}</span>
       )}
     </div>
   );

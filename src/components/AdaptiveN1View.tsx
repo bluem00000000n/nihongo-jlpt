@@ -296,10 +296,10 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             </span>
             <div>
               <div className="flex items-center gap-1.5">
-                <h2 className="text-base font-extrabold text-stone-900 dark:text-stone-100 tracking-tight">
+                <h2 className="text-base font-extrabold text-gray-950 tracking-tight">
                   {learnerState.currentLevel} 단계 대화
                 </h2>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-xs bg-[#FFE000] text-stone-900 font-extrabold border border-stone-800/20 shadow-xs">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-xs bg-[#FFE000] text-gray-950 font-black border border-gray-900/15 shadow-xs">
                   {learnerState.currentLevel === 'N5'
                     ? '왕초보'
                     : learnerState.currentLevel === 'N4'
@@ -311,7 +311,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                     : '1급 마스터'}
                 </span>
               </div>
-              <p className="text-[11px] text-stone-600 dark:text-stone-400 mt-0.5">
+              <p className="text-[11px] text-gray-600 mt-0.5">
                 실력에 맞춰 알아서 1급(N1)까지 자동 승급
               </p>
             </div>
@@ -320,7 +320,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
           <div className="flex items-center gap-1.5">
             <button
               onClick={() => setIsPlacementModalOpen(true)}
-              className="text-[11px] text-stone-800 dark:text-stone-200 font-bold flex items-center gap-1 py-1 px-2 rounded-md bg-white dark:bg-stone-800 hover:bg-[#F2ECE1] border border-[#DDD5C5] dark:border-stone-700 shadow-xs"
+              className="text-[11px] text-gray-800 font-bold flex items-center gap-1 py-1 px-2 rounded-md bg-white hover:bg-gray-50 border border-gray-300 shadow-xs"
               title="5문항 빠른 레벨 진단 테스트"
             >
               <Target className="w-3 h-3 text-[#D93829]" />
@@ -328,7 +328,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             </button>
             <button
               onClick={handleResetLevel}
-              className="text-[11px] text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 flex items-center gap-1 py-1 px-1.5 rounded-md hover:bg-stone-200/60"
+              className="text-[11px] text-gray-500 hover:text-gray-900 flex items-center gap-1 py-1 px-1.5 rounded-md hover:bg-gray-100"
               title="N5 기초로 초기화"
             >
               <RotateCcw className="w-3 h-3" />
@@ -338,23 +338,23 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         </div>
 
         {/* Level Progress Gauge (Stationery Ruler Style) */}
-        <div className="space-y-1 bg-white/70 dark:bg-stone-900/60 p-2.5 rounded-xl border border-[#E5DEC9] dark:border-stone-800">
+        <div className="space-y-1 bg-gray-50 p-2.5 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between text-xs">
-            <span className="text-stone-600 dark:text-stone-400 font-medium text-[11px]">
+            <span className="text-gray-600 font-medium text-[11px]">
               📏 승급 게이지 (Ruler Gauge)
             </span>
             <span className="font-extrabold text-[#D93829] font-mono">
               {learnerState.levelProgress}%
             </span>
           </div>
-          <div className="relative w-full h-3 bg-[#EFE9DC] dark:bg-stone-800 rounded-sm overflow-hidden border border-[#D5CCBA] dark:border-stone-700">
+          <div className="relative w-full h-3 bg-gray-200 rounded-sm overflow-hidden border border-gray-300">
             {/* Ruler ticks */}
             <div className="absolute inset-0 flex justify-between px-1 pointer-events-none z-10 opacity-30">
-              <span className="border-r border-stone-600 h-full"></span>
-              <span className="border-r border-stone-600 h-2"></span>
-              <span className="border-r border-stone-600 h-full"></span>
-              <span className="border-r border-stone-600 h-2"></span>
-              <span className="border-r border-stone-600 h-full"></span>
+              <span className="border-r border-gray-600 h-full"></span>
+              <span className="border-r border-gray-600 h-2"></span>
+              <span className="border-r border-gray-600 h-full"></span>
+              <span className="border-r border-gray-600 h-2"></span>
+              <span className="border-r border-gray-600 h-full"></span>
             </div>
             <div
               className="h-full bg-gradient-to-r from-[#FFE000] to-[#F59E0B] transition-all duration-500"
@@ -373,8 +373,8 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                 onClick={() => handleManualLevelSelect(item.level)}
                 className={`py-1.5 rounded-md text-center transition-all ${
                   isCurrent
-                    ? 'bg-[#FFE000] text-stone-900 font-extrabold shadow-[1px_2px_0px_rgba(0,0,0,0.15)] border border-stone-800/30'
-                    : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-400 hover:bg-[#F2ECE1] border border-[#E2D9C8] dark:border-stone-750 font-medium'
+                    ? 'bg-[#FFE000] text-gray-950 font-extrabold shadow-sm border border-gray-900/20'
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 font-medium'
                 }`}
               >
                 <div className="text-xs font-bold leading-tight font-mono">{item.level}</div>
@@ -385,10 +385,10 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         </div>
 
         {/* AI Memory Awareness Note (Yellow Sticky Note Style) */}
-        <div className="p-2.5 bg-[#FEF9C3] dark:bg-[#2A2616] rounded-lg border border-[#FDE047] dark:border-yellow-900/60 flex items-start gap-2 text-[11px] text-stone-800 dark:text-stone-200 shadow-xs">
-          <Brain className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div className="p-2.5 bg-amber-50 rounded-lg border border-amber-200 flex items-start gap-2 text-[11px] text-amber-950 shadow-xs">
+          <Brain className="w-3.5 h-3.5 text-amber-700 shrink-0 mt-0.5" />
           <div className="leading-snug">
-            <span className="font-extrabold text-amber-900 dark:text-amber-300">【AI 메모】 </span>
+            <span className="font-extrabold text-amber-900">【AI 메모】 </span>
             {learnerState.notes[learnerState.notes.length - 1]}
           </div>
         </div>
@@ -417,13 +417,13 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         </div>
       )}
 
-      {/* Main Conversation Card (LOFT Dot-Grid Notebook Page) */}
+      {/* Main Conversation Card (Dot-Grid Notebook Page) */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[520px]">
         {/* Notebook Page Header Strip */}
-        <div className="px-4 py-2 bg-[#F5EFE3] dark:bg-[#23211D] border-b border-[#E5DEC9] dark:border-stone-800 flex items-center justify-between text-[10px] font-mono text-stone-500">
+        <div className="px-4 py-2 bg-white border-b border-gray-200 flex items-center justify-between text-[10px] font-mono text-gray-500">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#D93829]" />
-            <span className="font-bold text-stone-700 dark:text-stone-300">CONVERSATION MEMO</span>
+            <span className="font-bold text-gray-700">CONVERSATION MEMO</span>
           </div>
           <span>GRID 5mm · N1 CHAT</span>
         </div>
@@ -440,7 +440,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
               <div
                 className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold shrink-0 shadow-xs ${
                   msg.sender === 'user'
-                    ? 'bg-[#FFE000] text-stone-900 border border-stone-800/30'
+                    ? 'bg-[#FFE000] text-gray-950 border border-gray-900/30'
                     : 'bg-[#D93829] text-white font-serif'
                 }`}
               >
@@ -456,14 +456,14 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                 <div
                   className={`rounded-xl p-3.5 shadow-xs space-y-1.5 ${
                     msg.sender === 'user'
-                      ? 'bg-[#FEF9C3] dark:bg-[#2C2718] text-stone-900 dark:text-stone-100 border border-[#FDE047] dark:border-yellow-900/60 rounded-tr-xs'
-                      : 'bg-white dark:bg-[#22201D] text-stone-900 dark:text-stone-100 border border-[#E2D9C8] dark:border-stone-750 border-l-4 border-l-[#D93829] rounded-tl-xs'
+                      ? 'bg-amber-50 text-gray-950 border border-amber-300 rounded-tr-xs font-bold'
+                      : 'bg-white text-gray-950 border border-gray-200 border-l-4 border-l-[#D93829] rounded-tl-xs'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span
                       className={`text-[10px] font-mono font-bold ${
-                        msg.sender === 'user' ? 'text-amber-800 dark:text-amber-300' : 'text-stone-500'
+                        msg.sender === 'user' ? 'text-amber-800' : 'text-gray-500'
                       }`}
                     >
                       {msg.sender === 'user' ? 'USER NOTE' : `AI TUTOR [${msg.level}]`}
@@ -471,10 +471,10 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                     {msg.sender === 'ai' && (
                       <button
                         onClick={() => speechService.speak(msg.audioText || msg.japanese)}
-                        className="p-1 rounded-sm text-stone-400 hover:text-stone-700 dark:hover:text-stone-200"
+                        className="p-1 rounded-sm text-gray-400 hover:text-gray-700"
                         title="원어민 발음 듣기"
                       >
-                        <Volume2 className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
+                        <Volume2 className="w-3.5 h-3.5 text-gray-600" />
                       </button>
                     )}
                   </div>
@@ -483,11 +483,11 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                     {msg.japanese}
                   </p>
                   {stats.romajiEnabled && msg.romaji && (
-                    <p className="text-[11px] font-mono text-stone-400">{msg.romaji}</p>
+                    <p className="text-[11px] font-mono text-gray-400">{msg.romaji}</p>
                   )}
                   <p
                     className={`text-[11px] ${
-                      msg.sender === 'user' ? 'text-amber-900 dark:text-amber-200' : 'text-stone-500 dark:text-stone-400'
+                      msg.sender === 'user' ? 'text-amber-900' : 'text-gray-500'
                     }`}
                   >
                     {msg.korean}
@@ -496,20 +496,20 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
 
                 {/* Real-time Inline Grammar Correction (Red-Pen Teacher Hanko Style) */}
                 {msg.correction && (
-                  <div className="p-3 rounded-xl bg-[#FFF1F2] dark:bg-[#2B181A] border border-[#FECDD3] dark:border-rose-900/60 text-xs space-y-1.5 shadow-xs animate-slide-up">
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs space-y-1.5 shadow-xs animate-slide-up">
                     <div className="flex items-center gap-1.5 text-[#D93829] font-bold text-[11px]">
                       <span className="loft-hanko text-[9px] px-1 py-0.2">添削</span>
                       <span>원어민 첨삭 교정</span>
                     </div>
                     <div className="text-[11px]">
-                      <span className="text-stone-400 line-through mr-1.5">
+                      <span className="text-gray-400 line-through mr-1.5">
                         {msg.correction.originalText}
                       </span>
-                      <span className="text-[#D93829] dark:text-rose-300 font-bold loft-marker">
+                      <span className="text-[#D93829] font-bold loft-marker">
                         👉 {msg.correction.improvedJapanese}
                       </span>
                     </div>
-                    <p className="text-[10px] text-stone-600 dark:text-rose-300 pt-1 border-t border-[#FECDD3]/60 dark:border-rose-900/40">
+                    <p className="text-[10px] text-gray-600 pt-1 border-t border-rose-200">
                       💡 {msg.correction.feedbackPoint}
                     </p>
                   </div>
@@ -518,7 +518,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                 {/* Suggested Quick Replies (Perforated Sticky Stub Style) */}
                 {msg.suggestedReplies && msg.suggestedReplies.length > 0 && (
                   <div className="space-y-1 pt-1">
-                    <span className="text-[10px] font-mono font-bold text-stone-500 flex items-center gap-1">
+                    <span className="text-[10px] font-mono font-bold text-gray-500 flex items-center gap-1">
                       <Sparkles className="w-3 h-3 text-[#D93829]" />
                       QUICK RESPONSE:
                     </span>
@@ -527,12 +527,12 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
                         <button
                           key={rIdx}
                           onClick={() => handleSendMessage(reply.japanese)}
-                          className="px-3 py-2 rounded-lg bg-white dark:bg-stone-850 border border-dashed border-[#DDD4C1] dark:border-stone-700 text-left hover:border-stone-800 transition-all text-xs active:scale-98 shadow-xs"
+                          className="px-3 py-2 rounded-lg bg-white border border-dashed border-gray-300 text-left hover:border-gray-500 transition-all text-xs active:scale-98 shadow-xs"
                         >
-                          <span className="font-bold text-stone-800 dark:text-stone-100 block">
+                          <span className="font-bold text-gray-900 block">
                             {reply.japanese}
                           </span>
-                          <span className="text-[10px] text-stone-500 dark:text-stone-400 block mt-0.5">
+                          <span className="text-[10px] text-gray-500 block mt-0.5">
                             {reply.korean}
                           </span>
                         </button>
@@ -545,7 +545,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
           ))}
 
           {isTyping && (
-            <div className="flex gap-2 items-center text-xs text-stone-500">
+            <div className="flex gap-2 items-center text-xs text-gray-500">
               <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
               <span>AI가 노트를 작성하고 있습니다...</span>
             </div>
@@ -570,7 +570,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
               className={`p-2.5 rounded-lg transition-all border ${
                 isMicOn
                   ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
-                  : 'bg-white dark:bg-stone-850 text-stone-700 dark:text-stone-300 border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F2ECE1]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
               }`}
               title={isMicOn ? '듣는 중... (터치 시 중단)' : '음성으로 말하기'}
             >
@@ -582,13 +582,13 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={`[${learnerState.currentLevel}] 일본어로 메모 작성`}
-              className="flex-1 px-3 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-stone-800"
+              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
             />
 
             <button
               type="submit"
               disabled={!inputText.trim() || isTyping}
-              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-stone-900 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-stone-800/20 flex items-center justify-center"
+              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-gray-900/20 flex items-center justify-center"
             >
               <Send className="w-4 h-4" />
             </button>

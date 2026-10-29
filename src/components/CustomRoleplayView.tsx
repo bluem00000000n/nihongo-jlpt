@@ -279,10 +279,10 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               劇
             </span>
             <div>
-              <h2 className="text-base font-extrabold text-stone-900 dark:text-stone-100 leading-tight">
+              <h2 className="text-base font-black text-gray-950 leading-tight">
                 실전 맞춤형 상황극 (Roleplay)
               </h2>
-              <span className="text-[11px] text-stone-500 dark:text-stone-400">
+              <span className="text-[11px] text-gray-600 font-medium">
                 실제 일본에서 마주치는 10+ 리얼 상황
               </span>
             </div>
@@ -290,7 +290,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
 
           <button
             onClick={handlePickRandomScenario}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 border border-stone-800/20 text-xs font-extrabold active:scale-95 transition-all shadow-[1px_2px_0px_rgba(0,0,0,0.1)]"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border border-gray-900/15 text-xs font-black active:scale-95 transition-all shadow-xs"
             title="실전 상황극 무작위 랜덤 뽑기"
           >
             <Shuffle className="w-3.5 h-3.5" />
@@ -304,10 +304,10 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1 rounded-sm text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                 selectedCategory === cat
-                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900 shadow-xs'
-                  : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F4EFE4]'
+                  ? 'bg-gray-950 text-white shadow-xs'
+                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
             >
               {cat === 'ALL' ? '전체 상황극' : cat}
@@ -325,26 +325,26 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
                 onClick={() => setSelectedScenario(sc)}
                 className={`min-w-[190px] max-w-[210px] p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between shrink-0 ${
                   isSelected
-                    ? 'bg-[#FFE000] text-stone-900 border-stone-900 shadow-[1px_2px_0px_rgba(0,0,0,0.15)]'
-                    : 'bg-white dark:bg-stone-850 text-stone-800 dark:text-stone-200 border-[#DDD5C5] dark:border-stone-750 hover:border-stone-800'
+                    ? 'bg-[#FFE000] text-gray-950 border-gray-900 shadow-sm font-bold'
+                    : 'bg-white text-gray-800 border-gray-200 hover:border-gray-400'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <span
-                      className={`text-[9px] font-bold px-1.5 py-0.2 rounded-xs ${
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md ${
                         isSelected
-                          ? 'bg-stone-900 text-white'
-                          : 'bg-[#F5EFE3] dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-[#E5DEC9] dark:border-stone-700'
+                          ? 'bg-gray-950 text-white'
+                          : 'bg-gray-100 text-gray-700 border border-gray-200'
                       }`}
                     >
                       {sc.category} · {sc.level}
                     </span>
                   </div>
-                  <h4 className="text-xs font-extrabold line-clamp-1">{sc.title}</h4>
+                  <h4 className="text-xs font-black line-clamp-1">{sc.title}</h4>
                   <p
                     className={`text-[10px] mt-1 line-clamp-2 leading-relaxed ${
-                      isSelected ? 'text-stone-800 font-medium' : 'text-stone-500 dark:text-stone-400'
+                      isSelected ? 'text-gray-900 font-medium' : 'text-gray-500'
                     }`}
                   >
                     {sc.situation}
@@ -359,33 +359,33 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
       {/* Main Roleplay Chat Box (LOFT Notebook Page) */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
         {/* Scenario Header Bar */}
-        <div className="p-4 bg-[#35312C] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#25221E]">
+        <div className="p-4 bg-white text-gray-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/15 rounded-xs text-stone-200 font-mono">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 rounded-md text-gray-700 font-mono border border-gray-200">
                 내 역할: {selectedScenario.userRole}
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/15 rounded-xs text-stone-200 font-mono">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 rounded-md text-gray-700 font-mono border border-gray-200">
                 상대: {selectedScenario.aiRole}
               </span>
             </div>
-            <h3 className="text-base font-extrabold tracking-tight">{selectedScenario.title}</h3>
-            <p className="text-xs text-amber-300 mt-1 max-w-xl">
-              🎯 <strong>미션 목표: </strong>{selectedScenario.missionGoal}
+            <h3 className="text-base font-black tracking-tight text-gray-950">{selectedScenario.title}</h3>
+            <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg p-2 mt-1.5 max-w-xl font-medium">
+              🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
             </p>
           </div>
 
           <div className="flex items-center gap-2">
             <button
               onClick={handleFinishRoleplay}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 text-xs font-black shadow-xs transition-all border border-stone-800/30"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-xs transition-all border border-gray-900/15"
             >
               <Award className="w-3.5 h-3.5" />
               완료 & 리포트
             </button>
             <button
               onClick={() => initScenario(selectedScenario)}
-              className="p-1.5 rounded-md bg-white/10 hover:bg-white/20 text-white"
+              className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 transition-colors"
               title="상황극 다시 시작"
             >
               <RotateCcw className="w-4 h-4" />
@@ -405,7 +405,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               <div
                 className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold shrink-0 shadow-xs ${
                   chat.sender === 'user'
-                    ? 'bg-[#FFE000] text-stone-900 border border-stone-800/30'
+                    ? 'bg-[#FFE000] text-gray-950 border border-gray-900/30'
                     : 'bg-[#D93829] text-white font-serif'
                 }`}
               >
@@ -415,25 +415,25 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               <div
                 className={`max-w-[85%] p-3.5 rounded-xl space-y-1 shadow-xs ${
                   chat.sender === 'user'
-                    ? 'bg-[#FEF9C3] dark:bg-[#2C2718] text-stone-900 dark:text-stone-100 border border-[#FDE047] dark:border-yellow-900/60 rounded-tr-xs'
-                    : 'bg-white dark:bg-[#22201D] text-stone-900 dark:text-stone-100 border border-[#E2D9C8] dark:border-stone-750 border-l-4 border-l-[#D93829] rounded-tl-xs'
+                    ? 'bg-amber-50 text-gray-950 border border-amber-300 rounded-tr-xs font-bold'
+                    : 'bg-white text-gray-950 border border-gray-200 border-l-4 border-l-[#D93829] rounded-tl-xs'
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className={`text-[10px] font-mono font-bold ${chat.sender === 'user' ? 'text-amber-800 dark:text-amber-300' : 'text-stone-500'}`}>
+                  <span className={`text-[10px] font-mono font-bold ${chat.sender === 'user' ? 'text-amber-800' : 'text-gray-500'}`}>
                     {chat.sender === 'user' ? selectedScenario.userRole : selectedScenario.aiRole}
                   </span>
                   {chat.sender === 'ai' && (
                     <button
                       onClick={() => speechService.speak(chat.japanese, 0.88)}
-                      className="p-1 rounded text-stone-400 hover:text-stone-700"
+                      className="p-1 rounded text-gray-400 hover:text-gray-700"
                     >
-                      <Volume2 className="w-3.5 h-3.5 text-stone-600 dark:text-stone-300" />
+                      <Volume2 className="w-3.5 h-3.5 text-gray-600" />
                     </button>
                   )}
                 </div>
                 <p className="text-sm font-semibold leading-relaxed">{chat.japanese}</p>
-                <p className={`text-xs ${chat.sender === 'user' ? 'text-amber-900 dark:text-amber-200' : 'text-stone-500 dark:text-stone-400'}`}>
+                <p className={`text-xs ${chat.sender === 'user' ? 'text-amber-900' : 'text-gray-500'}`}>
                   {chat.korean}
                 </p>
               </div>
@@ -441,7 +441,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
           ))}
 
           {isTyping && (
-            <div className="flex gap-2 items-center text-xs text-stone-500 animate-pulse">
+            <div className="flex gap-2 items-center text-xs text-gray-500 animate-pulse">
               <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
               <span>{selectedScenario.aiRole}가 답변을 작성하고 있습니다...</span>
             </div>
@@ -465,7 +465,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               className={`p-2.5 rounded-lg transition-all border ${
                 isMicOn
                   ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
-                  : 'bg-white dark:bg-stone-850 text-stone-700 dark:text-stone-300 border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F2ECE1]'
+                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
               }`}
               title="음성으로 말하기"
             >
@@ -477,13 +477,13 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={`[${selectedScenario.userRole}] 역할로 일본어로 답변`}
-              className="flex-1 px-3 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-stone-800"
+              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
             />
 
             <button
               type="submit"
               disabled={!inputText.trim() || isTyping}
-              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-stone-900 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-stone-800/20 flex items-center justify-center"
+              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-gray-900/20 flex items-center justify-center"
             >
               <Send className="w-4 h-4" />
             </button>

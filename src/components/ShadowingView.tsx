@@ -182,37 +182,42 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
   const progressPercent = Math.round((completedGoalsCount / goals.length) * 100);
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner for 3-Month Shadowing */}
-      <div className="bg-gradient-to-r from-orange-500 via-rose-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="space-y-4">
+      {/* Top Banner for 3-Month Shadowing (Pure White Design) */}
+      <div className="bg-white rounded-2xl p-4 sm:p-5 border border-gray-200 shadow-sm space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
+          <div className="flex items-center gap-1.5">
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">SHADOWING</span>
+            <span className="text-gray-800">3-STEP TRAINING</span>
+          </div>
+          <span>PROGRESS: {progressPercent}%</span>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider">
-                실전 리스닝 트레이닝
+              <span className="w-7 h-7 rounded-md bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-xs border border-[#B92B1E]">
+                影
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-300 text-amber-950 text-xs font-black">
-                ✨ 3단계 AI 섀도잉
-              </span>
+              <h2 className="text-lg font-black tracking-tight text-gray-950">
+                3개월 마스터 로드맵 & 3단계 섀도잉
+              </h2>
             </div>
-            <h2 className="text-2xl font-black tracking-tight">
-              3개월 마스터 로드맵 & 3단계 섀도잉
-            </h2>
-            <p className="text-xs text-orange-100 max-w-xl">
-              무작정 두꺼운 문법책 대신, 실전 문장 채집과 3단계 섀도잉으로 3개월 만에 일본어 귀와 입을 틔우세요!
+            <p className="text-xs text-gray-600 max-w-xl">
+              원어민 소리 집중 ➔ 자막 이해 ➔ 0.5초 섀도잉으로 3개월 만에 일본어 귀와 입을 틔우세요!
             </p>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="mt-5 pt-4 border-t border-white/20">
-          <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+        <div className="pt-2">
+          <div className="flex items-center justify-between text-xs font-bold mb-1.5 text-gray-700">
             <span>3개월 독학 로드맵 달성률</span>
-            <span>{progressPercent}% ({completedGoalsCount}/{goals.length} 완료)</span>
+            <span className="font-mono text-red-600 font-black">{progressPercent}% ({completedGoalsCount}/{goals.length} 완료)</span>
           </div>
-          <div className="w-full h-2.5 bg-black/20 rounded-full overflow-hidden">
+          <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
             <div
-              className="h-full bg-amber-300 rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#FFE000] to-[#F59E0B] rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -220,62 +225,62 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto scrollbar-none">
         <button
           onClick={() => setSubTab('player')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             subTab === 'player'
-              ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
-              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              ? 'bg-gray-950 text-white shadow-xs font-black'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
           }`}
         >
-          <Headphones className="w-4 h-4" />
+          <Headphones className="w-3.5 h-3.5" />
           3단계 AI 섀도잉 플레이어
         </button>
         <button
           onClick={() => setSubTab('vault')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             subTab === 'vault'
-              ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
-              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              ? 'bg-gray-950 text-white shadow-xs font-black'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
           }`}
         >
-          <BookOpen className="w-4 h-4" />
+          <BookOpen className="w-3.5 h-3.5" />
           실전 문장 채집장 ({sentences.length})
         </button>
         <button
           onClick={() => setSubTab('roadmap')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+          className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             subTab === 'roadmap'
-              ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25'
-              : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+              ? 'bg-gray-950 text-white shadow-xs font-black'
+              : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
           }`}
         >
-          <Calendar className="w-4 h-4" />
+          <Calendar className="w-3.5 h-3.5" />
           3개월 주차별 체크리스트
         </button>
       </div>
 
       {/* 1. 3-Step Shadowing Player */}
       {subTab === 'player' && currentSentence && (
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between text-xs text-slate-400">
-            <span className="px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300 font-bold">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 space-y-5">
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-950 border border-amber-200 font-bold text-[10px]">
               출처: {currentSentence.source}
             </span>
-            <span>
+            <span className="font-mono font-bold">
               {currentIndex + 1} / {sentences.length}
             </span>
           </div>
 
           {/* 3 Step Indicator Tabs */}
-          <div className="grid grid-cols-3 gap-2 p-1.5 bg-slate-100 dark:bg-slate-700/60 rounded-2xl">
+          <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-gray-100 rounded-xl border border-gray-200">
             <button
               onClick={() => setShadowStep(1)}
-              className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+              className={`py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                 shadowStep === 1
-                  ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm'
-                  : 'text-slate-500'
+                  ? 'bg-white text-gray-950 font-black shadow-xs border border-gray-200'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>1단계</span>
@@ -283,10 +288,10 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
             </button>
             <button
               onClick={() => setShadowStep(2)}
-              className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+              className={`py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                 shadowStep === 2
-                  ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm'
-                  : 'text-slate-500'
+                  ? 'bg-white text-gray-950 font-black shadow-xs border border-gray-200'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>2단계</span>
@@ -294,10 +299,10 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
             </button>
             <button
               onClick={() => setShadowStep(3)}
-              className={`py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+              className={`py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                 shadowStep === 3
-                  ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-sm'
-                  : 'text-slate-500'
+                  ? 'bg-white text-gray-950 font-black shadow-xs border border-gray-200'
+                  : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>3단계</span>
@@ -306,24 +311,24 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
           </div>
 
           {/* Content Box */}
-          <div className="min-h-48 p-8 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700 flex flex-col items-center justify-center text-center space-y-4">
+          <div className="min-h-48 p-6 sm:p-8 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col items-center justify-center text-center space-y-4">
             {/* Step 1: Blind Listening */}
             {shadowStep === 1 && (
               <div className="space-y-4 animate-in fade-in duration-200">
-                <div className="w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-600 flex items-center justify-center mx-auto shadow-inner">
-                  <Headphones className="w-8 h-8 animate-pulse" />
+                <div className="w-14 h-14 rounded-full bg-amber-100 text-amber-900 flex items-center justify-center mx-auto shadow-inner border border-amber-200">
+                  <Headphones className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-slate-800 dark:text-slate-200">
+                  <h3 className="text-base sm:text-lg font-black text-gray-950">
                     글자를 보지 말고 소리에만 집중하세요
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-gray-600 mt-1">
                     원어민의 음절 박자와 억양(인토네이션)을 귀로 먼저 각인시키는 단계입니다.
                   </p>
                 </div>
                 <button
                   onClick={() => playAudio(currentSentence.japanese)}
-                  className="px-6 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-lg shadow-orange-500/25 flex items-center gap-2 mx-auto transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs shadow-xs border border-gray-900/15 flex items-center gap-2 mx-auto transition-all active:scale-95"
                 >
                   <Volume2 className="w-4 h-4" />
                   원어민 음성 듣기
@@ -341,16 +346,16 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   showFurigana={stats.furiganaEnabled}
                   showRomaji={stats.romajiEnabled}
                 />
-                <h4 className="text-base font-bold text-slate-900 dark:text-white mt-2">
+                <h4 className="text-base font-bold text-gray-950 mt-2">
                   {currentSentence.korean}
                 </h4>
-                <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 text-xs text-amber-900 dark:text-amber-200 text-left flex items-start gap-2">
-                  <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <p>{currentSentence.nuanceTip}</p>
+                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 text-left flex items-start gap-2">
+                  <Lightbulb className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <p className="font-medium">{currentSentence.nuanceTip}</p>
                 </div>
                 <button
                   onClick={() => playAudio(currentSentence.japanese)}
-                  className="p-2.5 rounded-xl bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300 transition-colors mx-auto inline-flex items-center gap-1.5 text-xs font-bold"
+                  className="p-2.5 rounded-xl bg-white border border-gray-300 text-gray-800 hover:bg-gray-100 transition-colors mx-auto inline-flex items-center gap-1.5 text-xs font-bold"
                 >
                   <Volume2 className="w-4 h-4" /> 다시 듣기
                 </button>
@@ -360,28 +365,28 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
             {/* Step 3: Shadowing with Mic */}
             {shadowStep === 3 && (
               <div className="space-y-4 animate-in fade-in duration-200 max-w-lg">
-                <p className="text-xs font-bold text-orange-600 dark:text-orange-400">
+                <p className="text-xs font-black text-red-600">
                   원어민이 말한 직후 0.5초 뒤에 그림자처럼 똑같이 따라 말하세요!
                 </p>
-                <h3 className="text-xl font-black text-slate-900 dark:text-white">
+                <h3 className="text-xl font-black text-gray-950">
                   {currentSentence.japanese}
                 </h3>
-                <p className="text-xs text-slate-500">{currentSentence.korean}</p>
+                <p className="text-xs text-gray-600">{currentSentence.korean}</p>
 
-                <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center justify-center gap-2.5">
                   <button
                     onClick={() => playAudio(currentSentence.japanese, 0.8)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center gap-1.5"
+                    className="px-4 py-2.5 rounded-xl bg-white border border-gray-300 text-gray-800 font-bold text-xs flex items-center gap-1.5 hover:bg-gray-100"
                   >
                     <Volume2 className="w-4 h-4" /> 가이드 음성
                   </button>
 
                   <button
                     onClick={handleStartShadowing}
-                    className={`px-6 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 shadow-lg transition-all ${
+                    className={`px-5 py-2.5 rounded-xl font-black text-xs flex items-center gap-2 shadow-xs transition-all border ${
                       isRecognizing
-                        ? 'bg-rose-500 text-white animate-pulse'
-                        : 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-500/25'
+                        ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
+                        : 'bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border-gray-900/15'
                     }`}
                   >
                     {isRecognizing ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -391,15 +396,15 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
                 {/* Score & Speech Feedback */}
                 {shadowScore !== null && (
-                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 text-xs space-y-1 animate-in zoom-in-95 duration-200">
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs space-y-1 animate-in zoom-in-95 duration-200">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-emerald-800 dark:text-emerald-300">
+                      <span className="font-black text-emerald-950">
                         🎉 섀도잉 일치도: {shadowScore}점
                       </span>
                     </div>
                     {userSpeechResult && (
-                      <p className="text-slate-600 dark:text-slate-400 text-left">
-                        내 발음 인식: <strong className="text-slate-900 dark:text-slate-100">{userSpeechResult}</strong>
+                      <p className="text-gray-700 text-left">
+                        내 발음 인식: <strong className="text-gray-950">{userSpeechResult}</strong>
                       </p>
                     )}
                   </div>
@@ -426,49 +431,49 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
       {/* 2. Sentence Mining Vault */}
       {subTab === 'vault' && (
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 sm:p-8 space-y-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-black text-slate-900 dark:text-white">
+              <h3 className="text-lg font-black text-gray-950">
                 나만의 실전 문장 채집장 (Sentence Mining)
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-gray-600 mt-1">
                 드라마, 브이로그, 유튜브에서 현지인이 진짜 쓰는 알짜배기 표현만 골라 모아두세요.
               </p>
             </div>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/25 transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs shadow-xs border border-gray-900/15 transition-all"
             >
               <Plus className="w-4 h-4" />
               새 문장 채집하기
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {sentences.map((st) => (
               <div
                 key={st.id}
-                className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200/80 dark:border-slate-600/60 space-y-2 hover:border-orange-300 transition-all"
+                className="p-4 rounded-xl bg-white border border-gray-200 shadow-xs space-y-2 hover:border-gray-400 transition-all"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-950 border border-amber-200">
                     {st.source}
                   </span>
                   <button
                     onClick={() => playAudio(st.japanese)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-orange-500 transition-colors"
+                    className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                   >
                     <Volume2 className="w-4 h-4" />
                   </button>
                 </div>
-                <h4 className="text-base font-bold text-slate-900 dark:text-white">
+                <h4 className="text-sm font-black text-gray-950">
                   {st.japanese}
                 </h4>
-                <p className="text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <p className="text-xs font-semibold text-gray-700">
                   {st.korean}
                 </p>
-                <p className="text-[11px] text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 p-2 rounded-lg">
+                <p className="text-[11px] text-amber-950 bg-amber-50 border border-amber-200 p-2 rounded-lg font-medium">
                   💡 {st.nuanceTip}
                 </p>
               </div>
@@ -479,12 +484,12 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
       {/* 3. 3-Month Weekly Checklist */}
       {subTab === 'roadmap' && (
-        <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 sm:p-8 space-y-6">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 space-y-5">
           <div>
-            <h3 className="text-xl font-black text-slate-900 dark:text-white">
+            <h3 className="text-lg font-black text-gray-950">
               방구석 3개월 일본어 마스터 로드맵
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-gray-600 mt-1">
               주차별 학습 목표를 하나씩 클리어하며 3개월 만에 일본어를 정복하세요!
             </p>
           </div>
@@ -501,7 +506,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
             return (
               <div key={month} className="space-y-3">
-                <h4 className="text-sm font-black text-slate-800 dark:text-slate-200 border-l-4 border-orange-500 pl-3">
+                <h4 className="text-xs font-black text-gray-950 border-l-4 border-[#D93829] pl-2.5">
                   {monthTitle}
                 </h4>
 
@@ -510,32 +515,32 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                     <div
                       key={g.id}
                       onClick={() => toggleGoal(g.id)}
-                      className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 select-none ${
+                      className={`p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3 select-none ${
                         g.completed
-                          ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800 text-slate-700'
-                          : 'bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600 hover:border-orange-400'
+                          ? 'bg-emerald-50/60 border-emerald-300 text-gray-700'
+                          : 'bg-white border-gray-200 hover:border-gray-400'
                       }`}
                     >
                       <button className="shrink-0 mt-0.5">
                         {g.completed ? (
                           <CheckCircle2 className="w-5 h-5 text-emerald-600 fill-emerald-100" />
                         ) : (
-                          <Circle className="w-5 h-5 text-slate-300 hover:text-slate-500" />
+                          <Circle className="w-5 h-5 text-gray-300 hover:text-gray-500" />
                         )}
                       </button>
 
                       <div className="space-y-0.5">
-                        <span className="text-[10px] font-bold text-slate-400">
+                        <span className="text-[10px] font-mono font-bold text-gray-500">
                           {g.month}개월 차 · {g.week}주차
                         </span>
                         <h5
-                          className={`text-xs font-bold ${
-                            g.completed ? 'line-through text-slate-400' : 'text-slate-900 dark:text-white'
+                          className={`text-xs font-black ${
+                            g.completed ? 'line-through text-gray-400' : 'text-gray-950'
                           }`}
                         >
                           {g.title}
                         </h5>
-                        <p className="text-[11px] text-slate-500">{g.description}</p>
+                        <p className="text-[11px] text-gray-600">{g.description}</p>
                       </div>
                     </div>
                   ))}
@@ -546,17 +551,17 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
         </div>
       )}
 
-      {/* Add Sentence Modal */}
+      {/* Add Sentence Modal (Pure White) */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-md w-full p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full p-6 space-y-4 text-gray-950">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <h3 className="text-base font-black text-gray-950">
                 새 일본어 표현 채집
               </h3>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center text-sm font-bold"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-sm font-bold transition-colors"
               >
                 ✕
               </button>
@@ -564,7 +569,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
             <form onSubmit={handleAddNewSentence} className="space-y-3">
               <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-gray-800 block mb-1">
                   일본어 문장 (한자/가나) *
                 </label>
                 <input
@@ -573,12 +578,12 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   value={newJp}
                   onChange={(e) => setNewJp(e.target.value)}
                   placeholder="예: まじで美味しかった！"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-gray-800 block mb-1">
                   한국어 의미 *
                 </label>
                 <input
@@ -587,12 +592,12 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   value={newKr}
                   onChange={(e) => setNewKr(e.target.value)}
                   placeholder="예: 진짜 맛있었어!"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-gray-800 block mb-1">
                   출처 (드라마/유튜브/브이로그)
                 </label>
                 <input
@@ -600,12 +605,12 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   value={newSource}
                   onChange={(e) => setNewSource(e.target.value)}
                   placeholder="예: 넷플릭스 일드, 도쿄 카페 브이로그"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-gray-800 block mb-1">
                   뉘앙스 & 나만의 메모
                 </label>
                 <input
@@ -613,7 +618,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                   value={newTip}
                   onChange={(e) => setNewTip(e.target.value)}
                   placeholder="예: 친구들끼리 감탄할 때 자주 쓰는 구어체"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs"
+                  className="w-full px-3.5 py-2.5 bg-white border border-gray-300 rounded-xl text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
                 />
               </div>
 
@@ -621,13 +626,13 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500"
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                 >
                   취소
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/20"
+                  className="px-5 py-2.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs shadow-xs border border-gray-900/15"
                 >
                   채집장에 저장
                 </button>

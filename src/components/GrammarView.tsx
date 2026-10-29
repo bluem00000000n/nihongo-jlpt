@@ -140,18 +140,18 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
               <button
                 key={lvl}
                 onClick={() => setSelectedLevel(lvl)}
-                className={`px-3 py-1.5 rounded-sm text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                   isActive
-                    ? 'bg-[#FFE000] text-stone-900 font-extrabold shadow-xs border border-stone-800/30'
-                    : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#DDD5C5] dark:border-stone-750 hover:bg-[#F4EFE4]'
+                    ? 'bg-[#FFE000] text-gray-950 font-black shadow-xs border border-gray-900/20'
+                    : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
                 }`}
               >
                 <span>{lvl === 'ALL' ? '전체' : lvl}</span>
                 <span
-                  className={`text-[9px] font-mono px-1 py-0.2 rounded-xs ${
+                  className={`text-[9px] font-mono px-1.5 py-0.5 rounded-md ${
                     isActive
-                      ? 'bg-stone-900 text-white'
-                      : 'bg-stone-100 dark:bg-stone-700 text-stone-500'
+                      ? 'bg-gray-950 text-white font-bold'
+                      : 'bg-gray-100 text-gray-600'
                   }`}
                 >
                   {completedInLvl}/{count}
@@ -163,13 +163,13 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
 
         {/* Search Input */}
         <div className="relative w-full">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="문법 검색 (예: ている, たら, 덕분에)"
-            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-stone-800"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-800"
           />
         </div>
       </div>
@@ -188,18 +188,18 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                 setSelectedQuizAnswers({});
                 setQuizSubmitted({});
               }}
-              className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer hover:shadow-md relative group bg-white dark:bg-[#1E1D1B] ${
+              className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer hover:shadow-md relative group bg-white ${
                 isCompleted
-                  ? 'border-emerald-300 dark:border-emerald-800 bg-[#F4FBF7] dark:bg-emerald-950/10'
-                  : 'border-[#E2D9C8] dark:border-stone-800 hover:border-stone-800'
+                  ? 'border-emerald-300 bg-emerald-50/30'
+                  : 'border-gray-200 hover:border-gray-400'
               }`}
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="loft-hanko text-[9px] px-1 py-0.2">
+                  <span className="loft-hanko text-[9px] px-1.5 py-0.5 font-bold">
                     {item.level}
                   </span>
-                  <span className="text-[11px] text-stone-500 font-mono">{item.category}</span>
+                  <span className="text-[11px] text-gray-500 font-mono font-medium">{item.category}</span>
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -207,8 +207,8 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                     onClick={(e) => toggleBookmark(item.id, e)}
                     className={`p-1.5 rounded-md transition-colors ${
                       isBookmarked
-                        ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/60'
-                        : 'text-stone-400 hover:text-stone-700 hover:bg-stone-100'
+                        ? 'text-amber-500 bg-amber-50'
+                        : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'
                     }`}
                     title="북마크"
                   >
@@ -218,13 +218,13 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                     onClick={(e) => toggleComplete(item.id, e)}
                     className={`p-1.5 rounded-md transition-colors ${
                       isCompleted
-                        ? 'text-emerald-600 dark:text-emerald-400'
-                        : 'text-stone-300 hover:text-stone-600'
+                        ? 'text-emerald-600'
+                        : 'text-gray-300 hover:text-gray-600'
                     }`}
                     title={isCompleted ? '완료 취소' : '학습 완료 체크'}
                   >
                     {isCompleted ? (
-                      <CheckCircle2 className="w-4.5 h-4.5 fill-emerald-100 dark:fill-emerald-900" />
+                      <CheckCircle2 className="w-4.5 h-4.5 fill-emerald-100" />
                     ) : (
                       <Circle className="w-4.5 h-4.5" />
                     )}
@@ -234,22 +234,22 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
 
               {/* Title & Meaning */}
               <div className="mt-2">
-                <h4 className="text-sm font-extrabold text-stone-900 dark:text-stone-100 flex items-center gap-1.5">
+                <h4 className="text-sm font-black text-gray-950 flex items-center gap-1.5">
                   <span className="loft-marker">{item.title}</span>
                 </h4>
-                <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-snug">
+                <p className="text-xs text-gray-700 font-medium mt-1 leading-snug">
                   {item.meaning}
                 </p>
-                <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200 font-mono">
+                <div className="mt-2 text-xs text-gray-700 bg-gray-50 p-2 rounded-lg border border-gray-200 font-mono font-medium">
                   접속: {item.connection}
                 </div>
               </div>
 
               {/* Quick sample preview */}
               {item.examples[0] && (
-                <div className="mt-2.5 pt-2 border-t border-dashed border-[#DDD5C5] dark:border-stone-800 flex items-center justify-between text-xs text-stone-600 dark:text-stone-400">
+                <div className="mt-2.5 pt-2 border-t border-dashed border-gray-200 flex items-center justify-between text-xs text-gray-600">
                   <span className="truncate pr-2 font-serif text-[11px]">{item.examples[0].japanese}</span>
-                  <div className="flex items-center gap-1 text-stone-900 dark:text-stone-100 font-extrabold text-[11px] shrink-0">
+                  <div className="flex items-center gap-1 text-gray-950 font-black text-[11px] shrink-0">
                     <span>학습</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
@@ -261,35 +261,35 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
       </div>
 
       {filteredGrammar.length === 0 && (
-        <div className="text-center py-12 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 p-8">
-          <BookOpen className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-          <h4 className="font-semibold text-slate-800 dark:text-slate-200">검색된 문법이 없습니다</h4>
-          <p className="text-sm text-slate-500 mt-1">다른 키워드나 JLPT 급수를 선택해 보세요.</p>
+        <div className="text-center py-12 bg-white rounded-2xl border border-dashed border-gray-300 p-8">
+          <BookOpen className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+          <h4 className="font-bold text-gray-900">검색된 문법이 없습니다</h4>
+          <p className="text-sm text-gray-500 mt-1">다른 키워드나 JLPT 급수를 선택해 보세요.</p>
         </div>
       )}
 
-      {/* Grammar Detail Modal */}
+      {/* Grammar Detail Modal (Pure White LOFT Notebook Design) */}
       {activeGrammar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
           <div
-            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 space-y-6"
+            className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-2xl w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 space-y-5 text-gray-950"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-start justify-between">
+            <div className="flex items-start justify-between pb-3 border-b border-gray-200">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-[#FFE000] text-gray-950 border border-gray-900/15">
                     {activeGrammar.level}
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">
+                  <span className="text-xs font-mono font-bold text-gray-500">
                     {activeGrammar.category}
                   </span>
                 </div>
-                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                <h2 className="text-2xl font-black text-gray-950">
                   {activeGrammar.title}
                 </h2>
-                <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1">
+                <p className="text-sm font-bold text-red-600 mt-1">
                   {activeGrammar.meaning}
                 </p>
               </div>
@@ -297,10 +297,10 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => toggleComplete(activeGrammar.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all border ${
                     stats.completedGrammarIds.includes(activeGrammar.id)
-                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                      : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200'
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200'
                   }`}
                 >
                   <CheckCircle2 className="w-4 h-4" />
@@ -308,7 +308,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                 </button>
                 <button
                   onClick={() => setActiveGrammar(null)}
-                  className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 flex items-center justify-center font-bold text-sm"
+                  className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition-colors"
                 >
                   ✕
                 </button>
@@ -316,35 +316,35 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
             </div>
 
             {/* Connection formula rule */}
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-1">
+            <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gray-500 block mb-1">
                 접속 방법 (Connection Rule)
               </span>
-              <p className="font-mono font-semibold text-indigo-600 dark:text-indigo-400 text-base">
+              <p className="font-mono font-bold text-gray-950 text-sm">
                 {activeGrammar.connection}
               </p>
             </div>
 
             {/* Detailed Explanation */}
             <div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-1.5">
-                <BookOpen className="w-4 h-4 text-indigo-500" />
+              <h4 className="text-xs font-black text-gray-950 mb-1.5 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4 text-gray-700" />
                 상세 해설
               </h4>
-              <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+              <p className="text-xs sm:text-sm leading-relaxed text-gray-800">
                 {activeGrammar.explanation}
               </p>
             </div>
 
             {/* Important Tip / Nuance */}
             {activeGrammar.importantTip && (
-              <div className="p-4 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/60 flex items-start gap-3">
-                <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+              <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+                <Lightbulb className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                 <div>
-                  <h5 className="text-xs font-bold text-amber-900 dark:text-amber-200 uppercase tracking-wider">
+                  <h5 className="text-[10px] font-mono font-bold text-amber-900 uppercase tracking-wider">
                     실전 뉘앙스 & 꿀팁
                   </h5>
-                  <p className="text-xs text-amber-800 dark:text-amber-300 mt-1 leading-relaxed">
+                  <p className="text-xs text-amber-950 mt-1 leading-relaxed font-medium">
                     {activeGrammar.importantTip}
                   </p>
                 </div>
@@ -353,15 +353,15 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
 
             {/* Example Sentences */}
             <div>
-              <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-indigo-500" />
+              <h4 className="text-xs font-black text-gray-950 mb-2 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-[#D93829]" />
                 실전 예문
               </h4>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {activeGrammar.examples.map((ex, idx) => (
                   <div
                     key={ex.id || idx}
-                    className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 space-y-2"
+                    className="p-3.5 rounded-xl bg-white border border-gray-200 shadow-xs space-y-1.5"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <FuriganaText
@@ -373,17 +373,17 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                       />
                       <button
                         onClick={() => playAudio(ex.japanese)}
-                        className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/70 dark:hover:bg-indigo-900/80 text-indigo-600 dark:text-indigo-400 shrink-0 transition-colors"
+                        className="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 shrink-0 transition-colors"
                         title="원어민 발음 듣기"
                       >
                         <Volume2 className="w-4 h-4" />
                       </button>
                     </div>
-                    <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                    <p className="text-xs sm:text-sm font-medium text-gray-800">
                       {ex.korean}
                     </p>
                     {ex.nuance && (
-                      <span className="inline-block text-[11px] text-slate-400 font-medium">
+                      <span className="inline-block text-[11px] text-gray-500 font-medium">
                         💡 {ex.nuance}
                       </span>
                     )}
@@ -395,11 +395,11 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
             {/* Quick Practice Quiz */}
             {activeGrammar.quizzes.length > 0 && (
               <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-1.5">
-                  <HelpCircle className="w-4 h-4 text-indigo-500" />
+                <h4 className="text-xs font-black text-gray-950 mb-2 flex items-center gap-1.5">
+                  <HelpCircle className="w-4 h-4 text-[#D93829]" />
                   즉석 이해도 체크
                 </h4>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {activeGrammar.quizzes.map((q) => {
                     const isSubmitted = quizSubmitted[q.id];
                     const selected = selectedQuizAnswers[q.id];
@@ -408,9 +408,9 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                     return (
                       <div
                         key={q.id}
-                        className="p-4 rounded-xl border border-indigo-100 dark:border-indigo-950 bg-indigo-50/30 dark:bg-indigo-950/20 space-y-3"
+                        className="p-3.5 rounded-xl border border-gray-200 bg-gray-50 space-y-2.5"
                       >
-                        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+                        <p className="text-xs sm:text-sm font-bold text-gray-950">
                           {q.prompt}
                         </p>
 
@@ -420,17 +420,17 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                             {q.options.map((opt) => {
                               const isThisSelected = selected === opt;
                               let btnClass =
-                                'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300';
+                                'bg-white border-gray-300 text-gray-900 font-bold hover:bg-gray-50';
                               if (isSubmitted) {
                                 if (opt === q.correctAnswer) {
                                   btnClass =
-                                    'bg-emerald-500 border-emerald-600 text-white font-bold';
+                                    'bg-emerald-600 border-emerald-700 text-white font-black';
                                 } else if (isThisSelected) {
-                                  btnClass = 'bg-rose-500 border-rose-600 text-white';
+                                  btnClass = 'bg-rose-600 border-rose-700 text-white font-bold';
                                 }
                               } else if (isThisSelected) {
                                 btnClass =
-                                  'bg-indigo-600 border-indigo-700 text-white font-bold';
+                                  'bg-gray-950 border-gray-950 text-white font-black';
                               }
 
                               return (
@@ -451,7 +451,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                           <button
                             onClick={() => handleCheckQuiz(q.id, q.correctAnswer)}
                             disabled={!selected}
-                            className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold rounded-lg transition-colors"
+                            className="w-full py-2.5 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 text-xs font-black rounded-lg transition-colors border border-gray-900/15"
                           >
                             정답 확인
                           </button>
@@ -459,8 +459,8 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                           <div
                             className={`p-3 rounded-lg text-xs leading-relaxed ${
                               isCorrect
-                                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200'
-                                : 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200'
+                                ? 'bg-emerald-50 text-emerald-950 border border-emerald-200'
+                                : 'bg-rose-50 text-rose-950 border border-rose-200'
                             }`}
                           >
                             <span className="font-bold block mb-1">

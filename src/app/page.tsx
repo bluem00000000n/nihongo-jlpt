@@ -69,7 +69,7 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FAF9F5] dark:bg-[#18181B]">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="w-9 h-9 border-3 border-rose-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -171,8 +171,8 @@ export default function Home() {
         )}
 
         {/* Footer info inside mobile frame */}
-        <footer className="border-t border-stone-200/70 dark:border-stone-800/80 bg-white/40 dark:bg-stone-900/40 py-4 px-4 text-center text-[11px] text-stone-400 mb-16">
-          <p className="font-medium">© 2026 nihongo-jlpt (日本語) · 1급 합격 AI 회화</p>
+        <footer className="border-t border-gray-100 bg-white py-4 px-4 text-center text-[11px] text-gray-500 mb-16">
+          <p className="font-bold">© 2026 nihongo-jlpt (日本語) · 1급 합격 AI 회화</p>
         </footer>
       </div>
     </div>

@@ -1010,10 +1010,10 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
               <button
                 type="submit"
                 disabled={!manualText.trim()}
-                className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-black text-xs rounded-xl border border-gray-900/10 shadow-xs flex items-center gap-1 transition-all"
+                className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-black text-xs rounded-xl border border-gray-900/10 shadow-xs flex items-center gap-1 transition-all whitespace-nowrap shrink-0"
               >
-                <Send className="w-3.5 h-3.5" />
-                <span>전송</span>
+                <Send className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">전송</span>
               </button>
             </div>
           </form>
@@ -1024,46 +1024,46 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           {callState === 'idle' || callState === 'ended' ? (
             <button
               onClick={checkMicAndStartCall}
-              className="w-full py-3.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm flex items-center justify-center gap-2 shadow-sm border border-gray-900/15 active:scale-98 transition-all"
+              className="w-full py-3.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm flex items-center justify-center gap-2 shadow-sm border border-gray-900/15 active:scale-98 transition-all whitespace-nowrap"
             >
-              <Phone className="w-5 h-5 fill-current" />
-              <span>전화일본어 시작 ({selectedCharacter.name})</span>
+              <Phone className="w-5 h-5 fill-current shrink-0" />
+              <span className="whitespace-nowrap">전화일본어 시작 ({selectedCharacter.name})</span>
             </button>
           ) : (
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-1.5">
               {/* Push to talk / Tap to talk main button */}
               <button
                 onClick={toggleListening}
-                className={`flex-2 py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black shadow-sm transition-all border ${
+                className={`flex-2 py-3 px-2 rounded-xl flex items-center justify-center gap-1 text-xs font-black shadow-sm transition-all border whitespace-nowrap shrink-0 ${
                   isListening
                     ? 'bg-red-600 text-white border-red-700 animate-pulse'
                     : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
                 }`}
               >
-                <Mic className="w-4 h-4 stroke-[2.5]" />
-                <span>{isListening ? '말씀하시는 중 (터치시 종료)' : '🎙️ 지금 말하기 (터치)'}</span>
+                <Mic className="w-4 h-4 stroke-[2.5] shrink-0" />
+                <span className="whitespace-nowrap">{isListening ? '말씀 중 (종료)' : '🎙️ 지금 말하기'}</span>
               </button>
 
               {/* Mute button */}
               <button
                 onClick={toggleMute}
-                className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-1 text-xs font-bold transition-all border ${
+                className={`flex-1 py-3 px-2 rounded-xl flex items-center justify-center gap-1 text-xs font-bold transition-all border whitespace-nowrap shrink-0 ${
                   isMuted
                     ? 'bg-amber-100 text-amber-900 border-amber-300'
                     : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200'
                 }`}
               >
-                {isMuted ? <MicOff className="w-4 h-4 text-amber-600" /> : <MicOff className="w-4 h-4 text-gray-500" />}
-                <span>{isMuted ? '음소거 됨' : '음소거'}</span>
+                {isMuted ? <MicOff className="w-4 h-4 text-amber-600 shrink-0" /> : <MicOff className="w-4 h-4 text-gray-500 shrink-0" />}
+                <span className="whitespace-nowrap">{isMuted ? '음소거됨' : '음소거'}</span>
               </button>
 
               {/* End call button */}
               <button
                 onClick={handleEndCall}
-                className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs flex items-center justify-center gap-1 shadow-sm active:scale-98 transition-all border border-red-700"
+                className="flex-1 py-3 px-2 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs flex items-center justify-center gap-1 shadow-sm active:scale-98 transition-all border border-red-700 whitespace-nowrap shrink-0"
               >
-                <PhoneOff className="w-4 h-4 fill-white" />
-                <span>종료</span>
+                <PhoneOff className="w-4 h-4 fill-white shrink-0" />
+                <span className="whitespace-nowrap">종료</span>
               </button>
             </div>
           )}

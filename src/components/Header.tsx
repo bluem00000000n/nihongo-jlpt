@@ -55,16 +55,16 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Header Controls */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             {/* Quick Settings Button */}
             <button
               onClick={() => setIsQuickSettingsOpen(true)}
-              className="px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-gray-950 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-300 text-xs font-black shadow-xs"
+              className="px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-gray-950 bg-gray-50 hover:bg-gray-100 transition-colors border border-gray-300 text-xs font-black shadow-xs whitespace-nowrap shrink-0"
               title="도쿄 표준 발음 및 학습 설정"
               aria-label="설정"
             >
-              <Settings2 className="w-3.5 h-3.5 text-gray-700" />
-              <span>설정</span>
+              <Settings2 className="w-3.5 h-3.5 text-gray-700 shrink-0" />
+              <span className="whitespace-nowrap">설정</span>
             </button>
           </div>
         </div>

@@ -84,39 +84,39 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
               setKanaType('hiragana');
               setIsQuizMode(false);
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border text-center ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border text-center whitespace-nowrap ${
               kanaType === 'hiragana' && !isQuizMode
                 ? 'bg-[#FFE000] text-gray-950 font-black border-gray-900/15 shadow-xs'
                 : 'bg-[#FAF7F0] text-[#5A5047] border-[#E2D9C8] hover:bg-[#F3ECE0]'
             }`}
           >
-            히라가나 (ひらがな)
+            <span className="whitespace-nowrap">히라가나 (ひらがな)</span>
           </button>
           <button
             onClick={() => {
               setKanaType('katakana');
               setIsQuizMode(false);
             }}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all border text-center ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold transition-all border text-center whitespace-nowrap ${
               kanaType === 'katakana' && !isQuizMode
                 ? 'bg-[#FFE000] text-gray-950 font-black border-gray-900/15 shadow-xs'
                 : 'bg-[#FAF7F0] text-[#5A5047] border-[#E2D9C8] hover:bg-[#F3ECE0]'
             }`}
           >
-            가타카나 (カタカナ)
+            <span className="whitespace-nowrap">가타카나 (カタカナ)</span>
           </button>
         </div>
 
         <button
           onClick={startQuiz}
-          className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border ${
+          className={`w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all border whitespace-nowrap shrink-0 ${
             isQuizMode
               ? 'bg-[#2B2725] text-[#FAF7F0] font-black border-[#2B2725] shadow-xs'
               : 'bg-[#FAF7F0] text-[#2B2725] border-[#E2D9C8] hover:bg-[#F3ECE0]'
           }`}
         >
-          <HelpCircle className="w-4 h-4 text-[#D93829]" />
-          <span>가나 암기 퀴즈 모드</span>
+          <HelpCircle className="w-4 h-4 text-[#D93829] shrink-0" />
+          <span className="whitespace-nowrap">가나 암기 퀴즈 모드</span>
         </button>
       </div>
 

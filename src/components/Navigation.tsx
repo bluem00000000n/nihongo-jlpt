@@ -129,7 +129,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 >
                   <Icon className="w-4.5 h-4.5 stroke-[2.2]" />
                 </div>
-                <span className="text-[11px] mt-1 tracking-tight">{tab.label}</span>
+                <span className="text-[11px] mt-1 tracking-tight whitespace-nowrap">{tab.label}</span>
 
                 {/* Hanko red stamp active dot */}
                 {isActive && (

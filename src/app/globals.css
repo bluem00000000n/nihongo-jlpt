@@ -42,6 +42,13 @@ body {
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* Ensure buttons and action pills preserve word integrity without awkward syllable breaking */
+button {
+  word-break: keep-all;
 }
 
 /* LOFT 5mm Graph Paper Grid Background (方眼ノート) */

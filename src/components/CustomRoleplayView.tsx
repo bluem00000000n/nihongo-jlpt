@@ -292,16 +292,16 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
               <span>TOTAL: {defaultRoleplayScenarios.length} SCENARIOS</span>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)] shrink-0">
                   劇
                 </span>
-                <div>
-                  <h2 className="text-base font-black text-[#2B2725] leading-tight">
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-sm sm:text-base font-black text-[#2B2725] leading-tight truncate">
                     실전 맞춤형 상황극 (Roleplay)
                   </h2>
-                  <span className="text-[11px] text-[#7A6E63] font-medium">
+                  <span className="text-[10px] sm:text-[11px] text-[#7A6E63] font-medium truncate block">
                     원하는 상황을 선택하여 대화를 시작하세요
                   </span>
                 </div>
@@ -309,11 +309,11 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
 
               <button
                 onClick={handlePickRandomScenario}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border border-gray-900/15 text-xs font-black active:scale-95 transition-all shadow-xs"
-                title="실전 상황극 무작위 랜덤 뽑기"
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border border-gray-900/15 text-xs font-black active:scale-95 transition-all shadow-xs whitespace-nowrap shrink-0"
+                title="실전 상황극 무작위 랜덤 추천"
               >
-                <Shuffle className="w-3.5 h-3.5" />
-                <span>🎲 랜덤 추천</span>
+                <Shuffle className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">🎲 랜덤 추천</span>
               </button>
             </div>
 
@@ -323,7 +323,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all text-center ${
+                  className={`px-2 py-1.5 rounded-lg text-xs font-bold transition-all text-center whitespace-nowrap truncate ${
                     selectedCategory === cat
                       ? 'bg-[#2B2725] text-[#FAF7F0] shadow-xs'
                       : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
@@ -428,41 +428,41 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm overflow-hidden flex flex-col animate-fade-in">
           {/* Scenario Header Bar */}
           <div className="p-3.5 sm:p-4 bg-[#F5EFE3] text-[#2B2725] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E2D9C8]">
-            <div className="space-y-1">
+            <div className="space-y-1 min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={exitToScenarioList}
-                  className="px-2.5 py-1 rounded-lg bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] text-xs font-bold transition-colors shadow-2xs"
+                  className="px-2.5 py-1 rounded-lg bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] text-xs font-bold transition-colors shadow-2xs whitespace-nowrap shrink-0"
                 >
                   ← 상황극 목록
                 </button>
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#5A5047] font-mono border border-[#E2D9C8]">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#5A5047] font-mono border border-[#E2D9C8] whitespace-nowrap shrink-0">
                   내 역할: {selectedScenario.userRole}
                 </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#D93829] font-mono border border-[#E2D9C8]">
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#D93829] font-mono border border-[#E2D9C8] whitespace-nowrap shrink-0">
                   상대: {selectedScenario.aiRole}
                 </span>
               </div>
-              <h3 className="text-sm sm:text-base font-black tracking-tight text-[#2B2725]">{selectedScenario.title}</h3>
+              <h3 className="text-sm sm:text-base font-black tracking-tight text-[#2B2725] truncate">{selectedScenario.title}</h3>
               <p className="text-xs text-amber-950 bg-amber-50/80 border border-amber-200/80 rounded-lg p-2 max-w-xl font-medium break-keep">
                 🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
               </p>
             </div>
 
-            <div className="flex items-center gap-2 self-end sm:self-center">
+            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
               <button
                 onClick={handleFinishRoleplay}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-xs transition-all border border-gray-900/15"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-xs transition-all border border-gray-900/15 whitespace-nowrap shrink-0"
               >
-                <Award className="w-3.5 h-3.5" />
-                완료 & 리포트
+                <Award className="w-3.5 h-3.5 shrink-0" />
+                <span className="whitespace-nowrap">완료 & 리포트</span>
               </button>
               <button
                 onClick={restartScenario}
-                className="p-2 rounded-xl bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] transition-colors"
+                className="p-2 rounded-xl bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] transition-colors shrink-0"
                 title="상황극 다시 시작"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-4 h-4 shrink-0" />
               </button>
             </div>
           </div>

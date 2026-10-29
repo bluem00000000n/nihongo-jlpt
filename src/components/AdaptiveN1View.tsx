@@ -317,22 +317,22 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
               onClick={() => setIsPlacementModalOpen(true)}
-              className="text-[11px] text-gray-800 font-bold flex items-center gap-1 py-1 px-2 rounded-md bg-white hover:bg-gray-50 border border-gray-300 shadow-xs"
+              className="text-[11px] text-gray-800 font-bold flex items-center gap-1 py-1 px-2 rounded-md bg-white hover:bg-gray-50 border border-gray-300 shadow-xs whitespace-nowrap shrink-0"
               title="5문항 빠른 레벨 진단 테스트"
             >
               <Target className="w-3 h-3 text-[#D93829]" />
-              <span>레벨 진단</span>
+              <span className="whitespace-nowrap">레벨 진단</span>
             </button>
             <button
               onClick={handleResetLevel}
-              className="text-[11px] text-gray-500 hover:text-gray-900 flex items-center gap-1 py-1 px-1.5 rounded-md hover:bg-gray-100"
+              className="text-[11px] text-gray-500 hover:text-gray-900 flex items-center gap-1 py-1 px-1.5 rounded-md hover:bg-gray-100 whitespace-nowrap shrink-0"
               title="N5 기초로 초기화"
             >
               <RotateCcw className="w-3 h-3" />
-              <span>리셋</span>
+              <span className="whitespace-nowrap">리셋</span>
             </button>
           </div>
         </div>

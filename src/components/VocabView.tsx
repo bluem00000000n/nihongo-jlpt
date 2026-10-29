@@ -192,25 +192,25 @@ export const VocabView: React.FC<VocabViewProps> = ({
               <div className="grid grid-cols-2 gap-2 w-full sm:w-auto justify-end">
                 <button
                   onClick={() => setKanjiViewMode('card')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                     kanjiViewMode === 'card'
                       ? 'bg-[#2B2725] text-white'
                       : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
-                  <Rotate3d className="w-3.5 h-3.5" />
-                  카드 모드
+                  <Rotate3d className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">카드 모드</span>
                 </button>
                 <button
                   onClick={() => setKanjiViewMode('list')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all whitespace-nowrap shrink-0 ${
                     kanjiViewMode === 'list'
                       ? 'bg-[#2B2725] text-white'
                       : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
-                  <Layers className="w-3.5 h-3.5" />
-                  목록 모드
+                  <Layers className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">목록 모드</span>
                 </button>
               </div>
             </div>
@@ -506,25 +506,25 @@ export const VocabView: React.FC<VocabViewProps> = ({
               <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
                 <button
                   onClick={() => setVocabViewMode('card')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
                     vocabViewMode === 'card'
                       ? 'bg-[#2B2725] text-white'
                       : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
-                  <Rotate3d className="w-3.5 h-3.5" />
-                  플래시카드
+                  <Rotate3d className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">플래시카드</span>
                 </button>
                 <button
                   onClick={() => setVocabViewMode('list')}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 ${
                     vocabViewMode === 'list'
                       ? 'bg-[#2B2725] text-white'
                       : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
                   }`}
                 >
-                  <Layers className="w-3.5 h-3.5" />
-                  단어 목록
+                  <Layers className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">단어 목록</span>
                 </button>
               </div>
             </div>

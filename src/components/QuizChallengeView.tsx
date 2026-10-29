@@ -94,27 +94,27 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
           <span className="font-bold">QUESTION SHEET</span>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-lg bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-xs">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="w-8 h-8 rounded-lg bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-xs shrink-0">
               試
             </span>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <h2 className="text-base font-black text-gray-950">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <h2 className="text-sm sm:text-base font-black text-gray-950 truncate">
                   JLPT 공식 기출 테스트
                 </h2>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#FFE000] text-gray-950 font-black border border-gray-900/15 shadow-xs">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#FFE000] text-gray-950 font-black border border-gray-900/15 shadow-xs whitespace-nowrap shrink-0">
                   공식 기준
                 </span>
               </div>
-              <p className="text-xs text-gray-600 font-medium">
+              <p className="text-[11px] text-gray-600 font-medium truncate">
                 문자·어휘, 문법 형식, 단문 독해 실전 문제풀이
               </p>
             </div>
           </div>
 
-          <div className="text-right">
+          <div className="text-right whitespace-nowrap shrink-0">
             <span className="text-sm font-black text-red-600 font-mono">
               {score}개 정답
             </span>

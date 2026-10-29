@@ -317,7 +317,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           return;
         }
 
-        // For interim speech: debounce 1.4s of silence to automatically commit
+        // For interim speech: debounce 650ms of silence to automatically commit with high responsiveness
         if (interim.trim() && !isMutedRef.current) {
           if (silenceDebounceRef.current) clearTimeout(silenceDebounceRef.current);
           silenceDebounceRef.current = setTimeout(() => {
@@ -333,7 +333,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
               stopRecognitionSafely();
               handleIncomingUserSpeech(textToSend);
             }
-          }, 1400);
+          }, 650);
         }
       };
 

@@ -275,9 +275,9 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       />
 
       {/* Flagship Header: Mobile Adaptive Level Card (LOFT Stationery Memo Note) */}
-      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5 relative overflow-hidden">
+      <div className="bg-[#FDFCF9] rounded-2xl p-4 border border-[#E2D9C8] shadow-sm space-y-3.5 relative overflow-hidden">
         {/* Top Stationery Tape Strip & Perforation */}
-        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
+        <div className="flex items-center justify-between pb-2 border-b border-[#EAE3D2] text-[10px] font-mono text-[#78716C] font-bold">
           <div className="flex items-center gap-1.5">
             <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">ADAPTIVE JLPT</span>
             <span className="text-gray-800">LEVEL MEMO</span>
@@ -418,18 +418,18 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       )}
 
       {/* Main Conversation Card (Dot-Grid Notebook Page) */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[520px]">
+      <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm overflow-hidden flex flex-col h-[520px]">
         {/* Notebook Page Header Strip */}
-        <div className="px-4 py-2 bg-white border-b border-gray-200 flex items-center justify-between text-[10px] font-mono text-gray-500">
+        <div className="px-4 py-2 bg-[#F5EFE3] border-b border-[#E5DEC9] flex items-center justify-between text-[10px] font-mono text-[#78716C]">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-[#D93829]" />
-            <span className="font-bold text-gray-700">CONVERSATION MEMO</span>
+            <span className="font-bold text-[#44403C]">CONVERSATION MEMO</span>
           </div>
           <span>GRID 5mm · N1 CHAT</span>
         </div>
 
         {/* Messages Stream */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-white">
+        <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-[#FAF7F0] loft-grid-bg">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -555,7 +555,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         </div>
 
         {/* Input Bar (Stationery Pencil Box Style) */}
-        <div className="p-2.5 bg-white border-t border-gray-200">
+        <div className="p-2.5 bg-[#FDFCF9] border-t border-[#E2D9C8]">
           <form
             onSubmit={(e) => {
               e.preventDefault();

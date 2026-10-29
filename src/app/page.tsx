@@ -69,16 +69,16 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#FAF7F0]">
         <div className="w-9 h-9 border-3 border-rose-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center font-sans antialiased text-gray-950">
-      {/* Mobile-First Centered Container (Pure White) */}
-      <div className="w-full max-w-md min-h-screen bg-white border-x border-gray-200 flex flex-col relative shadow-sm">
+    <div className="min-h-screen bg-[#EDE7DC] flex justify-center font-sans antialiased text-[#1C1917]">
+      {/* Mobile-First Centered Container (Japanese Stationery Notebook Paper with 5mm grid) */}
+      <div className="w-full max-w-md min-h-screen bg-[#FAF7F0] border-x border-[#E2D9C8] flex flex-col relative shadow-[0_4px_30px_rgba(40,30,20,0.12)] loft-grid-bg">
         {/* Global Mobile Header */}
         <Header
           stats={stats}
@@ -171,7 +171,7 @@ export default function Home() {
         )}
 
         {/* Footer info inside mobile frame */}
-        <footer className="border-t border-gray-100 bg-white py-4 px-4 text-center text-[11px] text-gray-500 mb-16">
+        <footer className="border-t border-[#E2D9C8] bg-[#FAF7F0]/80 py-4 px-4 text-center text-[11px] text-[#78716C] mb-16">
           <p className="font-bold">© 2026 nihongo-jlpt (日本語) · 1급 합격 AI 회화</p>
         </footer>
       </div>

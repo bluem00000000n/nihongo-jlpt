@@ -749,10 +749,10 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
       </div>
 
-      {/* Main Calling Card (Pure White with Crisp High-Contrast Display) */}
-      <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 flex flex-col justify-between min-h-[460px] relative overflow-hidden">
+      {/* Main Calling Card (Warm Stationery Notebook Paper Design) */}
+      <div className="bg-[#FDFCF9] rounded-2xl border-2 border-[#E2D9C8] shadow-md p-5 flex flex-col justify-between min-h-[460px] relative overflow-hidden">
         {/* Top Info Bar */}
-        <div className="flex items-center justify-between text-xs text-gray-600 pb-3 border-b border-gray-200">
+        <div className="flex items-center justify-between text-xs text-gray-600 pb-3 border-b border-[#E5DEC9]">
           <div className="flex items-center gap-2">
             <span className={`w-2.5 h-2.5 rounded-full ${callState === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
             <span className="font-mono font-bold text-gray-900 text-xs">
@@ -846,13 +846,13 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
 
         {/* Real-time Call Transcript & Live Speech Stream (Scrollable inside the card directly above controls) */}
-        <div className="my-2 flex-1 flex flex-col min-h-[180px] max-h-[300px] border border-gray-200 rounded-xl bg-gray-50/80 p-2.5 overflow-hidden">
-          <div className="flex items-center justify-between text-xs pb-1.5 border-b border-gray-200 text-gray-500 font-bold mb-2">
+        <div className="my-2 flex-1 flex flex-col min-h-[180px] max-h-[300px] border border-[#E2D9C8] rounded-xl bg-[#FAF7F0] loft-grid-bg p-2.5 overflow-hidden">
+          <div className="flex items-center justify-between text-xs pb-1.5 border-b border-[#E5DEC9] text-[#78716C] font-bold mb-2">
             <span className="flex items-center gap-1.5 font-black text-gray-950">
               <Radio className="w-3.5 h-3.5 text-red-600 animate-pulse" />
               실시간 대화 녹취 ({callTranscripts.length}건)
             </span>
-            <span className="font-mono text-[9px] font-bold text-gray-500">REALTIME SPEECH</span>
+            <span className="font-mono text-[9px] font-bold text-[#78716C]">REALTIME SPEECH</span>
           </div>
 
           <div className="flex-1 overflow-y-auto space-y-2.5 pr-1">

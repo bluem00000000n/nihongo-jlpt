@@ -75,7 +75,7 @@ export const Navigation: React.FC<NavigationProps> = ({
     <>
       {/* Sub-bar for Study Mode tabs */}
       {isStudyTab && (
-        <div className="bg-white border-b border-gray-200 px-3 py-2 sticky top-[82px] z-30 shadow-xs">
+        <div className="bg-[#FAF7F0] border-b border-[#E2D9C8] px-3 py-2 sticky top-[82px] z-30 shadow-xs">
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none max-w-md mx-auto">
             {studySubTabs.map((sub, idx) => {
               const SubIcon = sub.icon;
@@ -104,7 +104,7 @@ export const Navigation: React.FC<NavigationProps> = ({
       )}
 
       {/* Fixed Mobile Bottom Tab Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 pb-[env(safe-area-inset-bottom,8px)] pt-1.5 shadow-md">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#FAF7F0] border-t border-[#E2D9C8] pb-[env(safe-area-inset-bottom,8px)] pt-1.5 shadow-md">
         <div className="max-w-md mx-auto px-3 flex items-center justify-around">
           {mainTabs.map((tab, idx) => {
             const Icon = tab.icon;

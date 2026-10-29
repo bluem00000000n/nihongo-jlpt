@@ -263,7 +263,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
 
       {/* 1. 3-Step Shadowing Player */}
       {subTab === 'player' && currentSentence && (
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 sm:p-6 space-y-5">
+        <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm p-5 sm:p-6 space-y-5">
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-950 border border-amber-200 font-bold text-[10px]">
               출처: {currentSentence.source}
@@ -311,7 +311,7 @@ export const ShadowingView: React.FC<ShadowingViewProps> = ({ stats, onAddXP }) 
           </div>
 
           {/* Content Box */}
-          <div className="min-h-48 p-6 sm:p-8 rounded-2xl bg-gray-50 border border-gray-200 flex flex-col items-center justify-center text-center space-y-4">
+          <div className="min-h-48 p-6 sm:p-8 rounded-2xl bg-[#FAF7F0] loft-grid-bg border border-[#E2D9C8] flex flex-col items-center justify-center text-center space-y-4">
             {/* Step 1: Blind Listening */}
             {shadowStep === 1 && (
               <div className="space-y-4 animate-in fade-in duration-200">

@@ -357,20 +357,20 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
       </div>
 
       {/* Main Roleplay Chat Box (LOFT Notebook Page) */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm overflow-hidden flex flex-col">
         {/* Scenario Header Bar */}
-        <div className="p-4 bg-white text-gray-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200">
+        <div className="p-4 bg-[#F5EFE3] text-[#1C1917] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E5DEC9]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 rounded-md text-gray-700 font-mono border border-gray-200">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/80 rounded-md text-gray-800 font-mono border border-[#E2D9C8]">
                 내 역할: {selectedScenario.userRole}
               </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-gray-100 rounded-md text-gray-700 font-mono border border-gray-200">
+              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/80 rounded-md text-gray-800 font-mono border border-[#E2D9C8]">
                 상대: {selectedScenario.aiRole}
               </span>
             </div>
             <h3 className="text-base font-black tracking-tight text-gray-950">{selectedScenario.title}</h3>
-            <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg p-2 mt-1.5 max-w-xl font-medium">
+            <p className="text-xs text-amber-950 bg-amber-50/80 border border-amber-200/80 rounded-lg p-2 mt-1.5 max-w-xl font-medium">
               🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
             </p>
           </div>
@@ -385,7 +385,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
             </button>
             <button
               onClick={() => initScenario(selectedScenario)}
-              className="p-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 transition-colors"
+              className="p-2 rounded-xl bg-white hover:bg-gray-100 text-gray-700 border border-[#E2D9C8] transition-colors"
               title="상황극 다시 시작"
             >
               <RotateCcw className="w-4 h-4" />
@@ -394,7 +394,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Message Stream */}
-        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-white">
+        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-[#FAF7F0] loft-grid-bg">
           {chatLog.map((chat, idx) => (
             <div
               key={idx}
@@ -451,7 +451,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Input Bar */}
-        <div className="p-2.5 bg-white border-t border-gray-200">
+        <div className="p-2.5 bg-[#FDFCF9] border-t border-[#E2D9C8]">
           <form
             onSubmit={(e) => {
               e.preventDefault();

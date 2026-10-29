@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #111827;
+  --background: #FAF7F0;
+  --foreground: #1C1917;
   --loft-yellow: #FFE000;
-  --loft-cream: #FFFFFF;
-  --loft-kraft: #F9FAFB;
-  --loft-grid: rgba(0, 0, 0, 0.035);
-  --loft-rule: rgba(0, 0, 0, 0.07);
-  --loft-ink: #111827;
-  --loft-hanko: #DC2626;
+  --loft-cream: #FAF7F0;
+  --loft-kraft: #EFE9DC;
+  --loft-grid: rgba(180, 160, 135, 0.16);
+  --loft-rule: rgba(180, 160, 135, 0.22);
+  --loft-ink: #1C1917;
+  --loft-hanko: #D93829;
   color-scheme: light;
 }
 
@@ -20,18 +20,18 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Force crisp clean white background regardless of system dark mode preference */
+/* Maintain warm notebook stationery background regardless of system dark mode preference */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #FFFFFF;
-    --foreground: #111827;
+    --background: #FAF7F0;
+    --foreground: #1C1917;
     --loft-yellow: #FFE000;
-    --loft-cream: #FFFFFF;
-    --loft-kraft: #F9FAFB;
-    --loft-grid: rgba(0, 0, 0, 0.035);
-    --loft-rule: rgba(0, 0, 0, 0.07);
-    --loft-ink: #111827;
-    --loft-hanko: #DC2626;
+    --loft-cream: #FAF7F0;
+    --loft-kraft: #EFE9DC;
+    --loft-grid: rgba(180, 160, 135, 0.16);
+    --loft-rule: rgba(180, 160, 135, 0.22);
+    --loft-ink: #1C1917;
+    --loft-hanko: #D93829;
     color-scheme: light;
   }
 }

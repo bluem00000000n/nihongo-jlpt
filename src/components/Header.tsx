@@ -20,9 +20,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   const aiProviderName =
     stats.aiSettings?.provider === 'openai'
-      ? 'ChatGPT'
+      ? `ChatGPT (${stats.aiSettings.isConnected ? '연결됨' : '미연결'})`
       : stats.aiSettings?.provider === 'gemini'
-      ? 'Gemini'
+      ? `Google Gemini (${stats.aiSettings.isConnected ? '기본 연결됨' : '연결됨'})`
       : '내장 AI';
 
   return (

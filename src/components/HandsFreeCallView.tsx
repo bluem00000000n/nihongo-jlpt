@@ -249,7 +249,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     let replyKr = '';
     let itemCorrection: DialogueCorrectionItem | null = null;
 
-    if (aiConfig && aiConfig.provider !== 'built_in' && aiConfig.apiKey) {
+    if (aiConfig && aiConfig.provider !== 'built_in' && (aiConfig.apiKey || aiConfig.provider === 'gemini')) {
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',

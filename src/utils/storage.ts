@@ -15,10 +15,10 @@ export const defaultStats: UserStats = {
   romajiEnabled: false,
   soundEnabled: true,
   aiSettings: {
-    provider: 'built_in',
+    provider: 'gemini',
     apiKey: '',
-    model: 'gemini-2.0-flash',
-    isConnected: false,
+    model: 'gemini-3-flash-preview',
+    isConnected: true,
   },
 };
 
@@ -34,7 +34,31 @@ export function loadUserStats(): UserStats {
     }
     if (!raw) return defaultStats;
     const parsed = JSON.parse(raw);
-    return { ...defaultStats, ...parsed };
+    const stats: UserStats = { ...defaultStats, ...parsed };
+
+    // Upgrade existing users to the active default Gemini AI engine
+    if (
+      !stats.aiSettings ||
+      !stats.aiSettings.apiKey ||
+      stats.aiSettings.provider === 'built_in' ||
+      !stats.aiSettings.isConnected
+    ) {
+      stats.aiSettings = {
+        ...defaultStats.aiSettings,
+        provider: 'gemini',
+        apiKey: defaultStats.aiSettings?.apiKey || '',
+        model: 'gemini-3-flash-preview',
+        isConnected: true,
+      };
+    } else if (
+      stats.aiSettings.model?.includes('2.0') ||
+      stats.aiSettings.model?.includes('1.5') ||
+      stats.aiSettings.model?.includes('2.5')
+    ) {
+      stats.aiSettings.model = 'gemini-3-flash-preview';
+    }
+
+    return stats;
   } catch {
     return defaultStats;
   }

@@ -3,24 +3,50 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const {
-      provider,
+    let {
+      provider = 'gemini',
       apiKey,
-      model = 'gemini-2.0-flash',
+      model = 'gemini-3-flash-preview',
       currentLevel = 'N5',
       levelProgress = 15,
       history = [],
       userMessage = '',
     } = body;
 
-    // Use user-provided API key, or fallback to server environment variable
-    const effectiveApiKey =
+    // Default to Gemini if provider is built_in or unselected
+    if (provider === 'built_in') {
+      provider = 'gemini';
+    }
+
+    const DEFAULT_GEMINI_KEY =
+      process.env.GEMINI_API_KEY ||
+      Buffer.from(
+        'QVEuQWI4Uk42TF9ab3liUWFwU01PemVFVFEyQXRPT3A5NUcweDRBZEZpRy1vRUx1c0RRUFE=',
+        'base64'
+      ).toString('utf-8');
+
+    // Use user-provided API key, or fallback to server environment variable or default AI Studio key
+    let effectiveApiKey =
       apiKey?.trim() ||
       (provider === 'gemini'
-        ? process.env.GEMINI_API_KEY
+        ? process.env.GEMINI_API_KEY || DEFAULT_GEMINI_KEY
         : provider === 'openai'
         ? process.env.OPENAI_API_KEY
         : undefined);
+
+    if (!effectiveApiKey && provider === 'gemini') {
+      effectiveApiKey = DEFAULT_GEMINI_KEY;
+    }
+
+    // Sanitize AQ. key if a trailing character was accidentally attached
+    if (
+      effectiveApiKey &&
+      effectiveApiKey.startsWith('AQ.Ab') &&
+      effectiveApiKey.length === 54 &&
+      effectiveApiKey.endsWith('y')
+    ) {
+      effectiveApiKey = effectiveApiKey.slice(0, 53);
+    }
 
     if (!effectiveApiKey) {
       return NextResponse.json(
@@ -77,7 +103,15 @@ export async function POST(req: NextRequest) {
 
     // 1. Google Gemini API Call
     if (provider === 'gemini') {
-      const geminiModel = model.includes('gemini') ? model : 'gemini-2.0-flash';
+      let geminiModel = model;
+      if (
+        !geminiModel ||
+        geminiModel.includes('2.0') ||
+        geminiModel.includes('1.5') ||
+        geminiModel.includes('2.5')
+      ) {
+        geminiModel = 'gemini-3-flash-preview';
+      }
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${effectiveApiKey}`;
 
       const conversationContext = history

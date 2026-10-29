@@ -119,8 +119,8 @@ export async function processAdaptiveTurn(
   let suggestedReplies: AdaptiveMessage['suggestedReplies'] = [];
   const newNotes = [...currentState.notes];
 
-  // Try real ChatGPT or Gemini if user configured it
-  if (aiSettings && aiSettings.provider !== 'built_in' && aiSettings.apiKey) {
+  // Try real ChatGPT or Gemini if user configured it or default Gemini is active
+  if (aiSettings && aiSettings.provider !== 'built_in' && (aiSettings.apiKey || aiSettings.provider === 'gemini')) {
     try {
       const apiRes = await fetch('/api/chat', {
         method: 'POST',

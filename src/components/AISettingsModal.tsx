@@ -25,10 +25,10 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
   onClose,
 }) => {
   const currentSettings: AISettings = stats.aiSettings || {
-    provider: 'built_in',
+    provider: 'gemini',
     apiKey: '',
-    model: 'gemini-2.0-flash',
-    isConnected: false,
+    model: 'gemini-3-flash-preview',
+    isConnected: true,
   };
 
   const [provider, setProvider] = useState<'built_in' | 'gemini' | 'openai'>(
@@ -50,7 +50,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
       return;
     }
 
-    if (!apiKey.trim()) {
+    if (!apiKey.trim() && provider === 'openai') {
       setTestResult({
         success: false,
         message: 'API 키를 입력해 주세요.',
@@ -162,7 +162,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
                   key={p.id}
                   onClick={() => {
                     setProvider(p.id as any);
-                    if (p.id === 'gemini') setModel('gemini-2.0-flash');
+                    if (p.id === 'gemini') setModel('gemini-3-flash-preview');
                     if (p.id === 'openai') setModel('gpt-4o-mini');
                     setTestResult(null);
                   }}
@@ -199,7 +199,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
               <div className="flex items-center justify-between mb-1">
                 <label className="text-xs font-bold text-stone-700 dark:text-stone-300 flex items-center gap-1.5 font-mono">
                   <Key className="w-3.5 h-3.5 text-[#D93829]" />
-                  {provider === 'gemini' ? 'Gemini API Key' : 'OpenAI API Key'} *
+                  {provider === 'gemini' ? 'Gemini API Key (선택/기본 연동 완료)' : 'OpenAI API Key *'}
                 </label>
                 <a
                   href={
@@ -220,7 +220,7 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder={
-                  provider === 'gemini' ? 'AIzaSy... (구글 계정 무료 발급)' : 'sk-proj-...'
+                  provider === 'gemini' ? 'AQ.Ab... 또는 AIzaSy... (구글 계정 무료 발급)' : 'sk-proj-...'
                 }
                 className="w-full px-3 py-2 bg-white dark:bg-stone-900 border border-[#DDD5C5] dark:border-stone-700 rounded-lg text-xs font-mono focus:outline-none focus:ring-1 focus:ring-stone-800"
               />
@@ -238,9 +238,10 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
               >
                 {provider === 'gemini' ? (
                   <>
-                    <option value="gemini-2.0-flash">gemini-2.0-flash (초고속 도쿄 표준어 추천)</option>
-                    <option value="gemini-1.5-flash">gemini-1.5-flash (안정적)</option>
-                    <option value="gemini-1.5-pro">gemini-1.5-pro (심층 분석 최고 성능)</option>
+                    <option value="gemini-3-flash-preview">gemini-3-flash-preview (최신 고속 플래시 · 기본 추천)</option>
+                    <option value="gemini-3.5-flash">gemini-3.5-flash (차세대 고성능)</option>
+                    <option value="gemini-flash-latest">gemini-flash-latest (항상 최신 Flash)</option>
+                    <option value="gemini-pro-latest">gemini-pro-latest (심층 최고 성능 Pro)</option>
                   </>
                 ) : (
                   <>

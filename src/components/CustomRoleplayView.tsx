@@ -111,7 +111,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
 
     // Call ChatGPT or Gemini if configured
     const aiConfig = stats.aiSettings;
-    if (aiConfig && aiConfig.provider !== 'built_in' && aiConfig.apiKey) {
+    if (aiConfig && aiConfig.provider !== 'built_in' && (aiConfig.apiKey || aiConfig.provider === 'gemini')) {
       try {
         const res = await fetch('/api/chat', {
           method: 'POST',

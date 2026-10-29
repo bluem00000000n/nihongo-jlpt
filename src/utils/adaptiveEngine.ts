@@ -129,9 +129,10 @@ export async function processAdaptiveTurn(
           provider: aiSettings.provider,
           apiKey: aiSettings.apiKey,
           model: aiSettings.model,
+          mode: 'adaptive',
           currentLevel: currentState.currentLevel,
           levelProgress: currentState.levelProgress,
-          history: history.slice(-6).map((h) => ({ sender: h.sender, japanese: h.japanese })),
+          history: history.slice(-4).map((h) => ({ sender: h.sender, japanese: h.japanese })),
           userMessage: text,
         }),
       });

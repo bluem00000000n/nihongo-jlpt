@@ -136,9 +136,10 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
             provider: aiConfig.provider,
             apiKey: aiConfig.apiKey,
             model: aiConfig.model,
+            mode: 'roleplay',
             currentLevel: selectedScenario.level,
             levelProgress: 50,
-            history: chatLog.slice(-6).map((c) => ({ sender: c.sender, japanese: c.japanese })),
+            history: chatLog.slice(-4).map((c) => ({ sender: c.sender, japanese: c.japanese })),
             userMessage: `[상황극: ${selectedScenario.title} | 내 역할: ${selectedScenario.userRole} | AI 역할: ${selectedScenario.aiRole}]\n\n${text}`,
           }),
         });

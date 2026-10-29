@@ -17,7 +17,7 @@ export const defaultStats: UserStats = {
   aiSettings: {
     provider: 'gemini',
     apiKey: '',
-    model: 'gemini-3-flash-preview',
+    model: 'gemini-3.5-flash-lite',
     isConnected: true,
   },
 };
@@ -47,7 +47,7 @@ export function loadUserStats(): UserStats {
         ...defaultStats.aiSettings,
         provider: 'gemini',
         apiKey: defaultStats.aiSettings?.apiKey || '',
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-3.5-flash-lite',
         isConnected: true,
       };
     } else if (
@@ -55,7 +55,7 @@ export function loadUserStats(): UserStats {
       stats.aiSettings.model?.includes('1.5') ||
       stats.aiSettings.model?.includes('2.5')
     ) {
-      stats.aiSettings.model = 'gemini-3-flash-preview';
+      stats.aiSettings.model = 'gemini-3.5-flash-lite';
     }
 
     return stats;

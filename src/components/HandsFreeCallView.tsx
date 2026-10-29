@@ -317,7 +317,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           return;
         }
 
-        // For interim speech: debounce 650ms of silence to automatically commit with high responsiveness
+        // For interim speech: debounce 450ms of silence to automatically commit with ultra-fast responsiveness
         if (interim.trim() && !isMutedRef.current) {
           if (silenceDebounceRef.current) clearTimeout(silenceDebounceRef.current);
           silenceDebounceRef.current = setTimeout(() => {
@@ -333,7 +333,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
               stopRecognitionSafely();
               handleIncomingUserSpeech(textToSend);
             }
-          }, 650);
+          }, 450);
         }
       };
 
@@ -421,7 +421,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     };
 
     setCallTranscripts((prev) => [...prev, userMsg]);
-    setMicStatusMsg('AI 강사가 답변을 생각하고 있습니다...');
+    setMicStatusMsg('⚡ AI 강사가 실시간 답변 중...');
 
     const aiConfig = stats.aiSettings;
     let replyJp = '';
@@ -437,13 +437,14 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
             provider: aiConfig.provider,
             apiKey: aiConfig.apiKey,
             model: aiConfig.model,
+            mode: 'call',
             currentLevel: 'N3',
             levelProgress: 50,
-            history: callTranscripts.slice(-6).map((c) => ({
+            history: callTranscripts.slice(-4).map((c) => ({
               sender: c.speaker,
               japanese: c.japanese,
             })),
-            userMessage: `[전화일본어 수업 진행 중]\n강사 캐릭터: ${selectedCharacter.name} (${selectedCharacter.gender === 'female' ? '여성' : '남성'}, ${selectedCharacter.ageGroup}, ${selectedCharacter.speechStyle})\n오늘의 대화 소재: ${selectedTopic.title} (${selectedTopic.japaneseTitle})\n\n수강생 발화: ${userText}`,
+            userMessage: `[전화 강사: ${selectedCharacter.name} (${selectedCharacter.gender === 'female' ? '여성' : '남성'}, ${selectedCharacter.speechStyle}) | 토픽: ${selectedTopic.title}]\n\n수강생 발화: ${userText}`,
           }),
         });
 

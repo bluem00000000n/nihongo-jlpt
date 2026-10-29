@@ -48,11 +48,17 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const micTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const silenceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTranscriptRef = useRef<string>('');
   const isMicOnRef = useRef<boolean>(false);
 
   isMicOnRef.current = isMicOn;
 
   const stopMicSafely = () => {
+    if (silenceTimeoutRef.current) {
+      clearTimeout(silenceTimeoutRef.current);
+      silenceTimeoutRef.current = null;
+    }
     if (micTimerRef.current) {
       clearInterval(micTimerRef.current);
       micTimerRef.current = null;
@@ -221,12 +227,17 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
     initWelcomeChat(lvl);
   };
 
-  // Pre-flight mic permission check & toggle with 10s countdown
+  // Pre-flight mic permission check & toggle with 10s countdown and auto-send
   const toggleMic = async () => {
     if (typeof window === 'undefined') return;
 
     if (isMicOnRef.current) {
+      const pendingText = lastTranscriptRef.current.trim() || inputText.trim();
+      lastTranscriptRef.current = '';
       stopMicSafely();
+      if (pendingText) {
+        handleSendMessage(pendingText);
+      }
       return;
     }
 
@@ -251,6 +262,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
     }
 
     stopMicSafely();
+    lastTranscriptRef.current = '';
 
     try {
       const rec = new SpeechRecognition();
@@ -266,7 +278,12 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         micTimerRef.current = setInterval(() => {
           setMicCountdown((prev) => {
             if (prev <= 1) {
+              const pendingText = lastTranscriptRef.current.trim();
+              lastTranscriptRef.current = '';
               stopMicSafely();
+              if (pendingText) {
+                handleSendMessage(pendingText);
+              }
               return 0;
             }
             return prev - 1;
@@ -279,8 +296,21 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         for (let i = 0; i < e.results.length; i++) {
           transcript += e.results[i][0].transcript;
         }
-        if (transcript.trim()) {
-          setInputText(transcript.trim());
+        const trimmed = transcript.trim();
+        if (trimmed) {
+          lastTranscriptRef.current = trimmed;
+          setInputText(trimmed);
+
+          // Real-time voice pause debounce (700ms): auto commit and send immediately
+          if (silenceTimeoutRef.current) clearTimeout(silenceTimeoutRef.current);
+          silenceTimeoutRef.current = setTimeout(() => {
+            if (lastTranscriptRef.current.trim() && isMicOnRef.current) {
+              const textToSend = lastTranscriptRef.current.trim();
+              lastTranscriptRef.current = '';
+              stopMicSafely();
+              handleSendMessage(textToSend);
+            }
+          }, 700);
         }
       };
 
@@ -293,7 +323,15 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       };
 
       rec.onend = () => {
-        stopMicSafely();
+        // If there was pending transcript on end, auto-send
+        if (lastTranscriptRef.current.trim() && isMicOnRef.current) {
+          const textToSend = lastTranscriptRef.current.trim();
+          lastTranscriptRef.current = '';
+          stopMicSafely();
+          handleSendMessage(textToSend);
+        } else {
+          stopMicSafely();
+        }
       };
 
       recognitionRef.current = rec;
@@ -603,9 +641,9 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
           ))}
 
           {isTyping && (
-            <div className="flex gap-2 items-center text-xs text-gray-500">
+            <div className="flex gap-2 items-center text-xs text-gray-500 font-medium">
               <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
-              <span>AI가 노트를 작성하고 있습니다...</span>
+              <span>⚡ AI 튜터가 실시간 답변을 작성하고 있습니다...</span>
             </div>
           )}
 

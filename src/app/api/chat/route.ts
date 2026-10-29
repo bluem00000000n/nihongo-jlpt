@@ -6,7 +6,8 @@ export async function POST(req: NextRequest) {
     let {
       provider = 'gemini',
       apiKey,
-      model = 'gemini-3-flash-preview',
+      model = 'gemini-3.5-flash-lite',
+      mode = 'adaptive', // 'call' | 'roleplay' | 'adaptive'
       currentLevel = 'N5',
       levelProgress = 15,
       history = [],
@@ -60,58 +61,87 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const systemPrompt = `당신은 사용자를 JLPT N5(기초)부터 N1(1급 합격)까지 단계별로 대화를 통해 성장시키는 친절하고 세련된 '도쿄 현지 원어민 일본어 튜터'입니다.
-현재 학습자의 급수 레벨은 【${currentLevel}】 단계이며, 다음 급수 승급까지의 진행률은 【${levelProgress}%】입니다.
+    // Fast & compact system prompts tailored by dialogue mode
+    let systemPrompt = '';
+    let maxOutputTokens = 260;
 
-[도쿄 표준 발음 및 어휘 기준 (東京標準語 / 共通語)]
-★ 중요: 모든 일본어 발화, 문장, 어휘, 억양 및 피드백은 100% NHK 방송 기준 '도쿄 표준어(東京標準語 / 共通語 / 首都圏方言)'만을 사용합니다.
-- 간사이벤(関西弁, 〜やねん, 〜へん) 등 지방 사투리나 부자연스러운 외국인 억양 표기는 일체 배제합니다.
-- 현대 도쿄 현지 20~30대 원어민이 실제로 쓰는 가장 자연스럽고 유창한 구어 표현을 사용하세요.
-
-[절대 엄수 품질 규칙]
-1. ★ 일본어는 단어 사이에 절대 공백(띄어쓰기)을 넣지 마세요! (わかち書き 절대 금지!)
-   - 나쁜 예: "わたし は にほん に いきます" (X)
-   - 좋은 예: "私は日本に行きます。" (O) - 한자와 가나를 적절히 섞어 띄어쓰기 없이 표기.
-2. ★ 문장 내에 "[이름]", "[장소]", "[会社名]" 등 미완성 대괄호 템플릿을 절대로 포함하지 마세요. 음성 합성기가 그대로 발음하여 기괴한 소리를 냅니다. 항상 100% 완성된 실제 대화 문장으로 출력하세요.
-3. ★ [사람처럼 또박또박 띄어말하기 / 쉼표(、) 호흡 필수]
-   - 진짜 일본인 원어민이 전화나 대면으로 말하듯, 문절/어절 단위로 적절한 쉼표(、)와 마침표(。), 느낌표(!), 물음표(?)를 충분히 넣으세요.
-   - 쉼표가 전혀 없으면 기계가 숨도 안 쉬고 다다다 말을 쏟아내어 매우 어색합니다. 사람이 숨을 고르듯 어절마다 쉼표(、)를 넣어 리듬감 있게 띄어말하도록 작성하세요.
-   - 좋은 예: "もしもし、お電話、ありがとうございます！今日は、お仕事のほう、いかがでしたか？"
-4. 기계 번역기 같은 어색하고 딱딱한 말투("おなまえは なんですか")를 버리고, 센스 있고 배려심 넘치는 원어민 강사다운 자연스러운 화법을 쓰세요.
-5. 한국어 번역 및 교정 피드백도 번역투가 아닌, 명쾌하고 자연스러운 한국어로 친절하게 설명하세요.
-
-[레벨별 대화 가이드라인]
-- N5 (왕초보/입문): 쉬운 단어와 짧은 1~2문장 위주. 〜です/ます, 〜てください, 기본 조사(は/が/を/に/で) 중심.
-- N4 (초급): 일상 표현, 희망(〜たい), 조건(〜たら), 수수동사(〜てくれる/もらう), 의무(〜なければならない).
-- N3 (중급): 일상 논리, 원인(〜おかげで/せいで), 이유 납득(〜わけだ), 의견 진술(〜と思う).
-- N2 (상급): 비즈니스 공식 표현, 불가피성(〜ざるを得ない), 공식 행사(〜に際して), 경어.
-- N1 (최고급 1급): 시사·논설·철학 최고봉 문형(〜たる者, 〜や否や, 〜極まりない, 〜余儀なくされる, 〜ことなしに).
+    if (mode === 'call') {
+      maxOutputTokens = 160;
+      systemPrompt = `당신은 도쿄 현지 원어민 일본어 전화 회화 강사입니다.
+진짜 일본인과 전화 통화하듯 문절마다 쉼표(、)를 넣어 자연스러운 호흡으로 대답하세요.
 
 [규칙]
-1. 사용자의 발화에 대해 현재 레벨(${currentLevel})에 맞는 도쿄 표준 일본어(共通語)로 대답하세요.
-2. 사용자의 문장에서 어색하거나 틀린 부분이 있다면, correction 필드에 도쿄 표준 발음/억양/문법에 맞춘 자연스러운 표현과 이유를 친절하게 교정해 주세요. 없으면 null로 두세요.
-3. 사용자가 다음 턴에 선택해 말할 수 있는 도쿄 표준 추천 답변 2~3개를 상황에 맞게 제시하세요.
-4. 사용자의 문장 완성도에 따라 progressDelta (15 ~ 35 사이 정수)를 부여하세요.
-5. 반드시 마크다운 블록 없이 순수한 JSON 포맷으로만 응답하세요:
-
+1. 100% 도쿄 표준어(東京共通語) 구어체로 1~2문장의 간결한 답변을 하세요.
+2. 일본어 단어 띄어쓰기 금지(わかち書き 절대 금지). 한자/가나 조합 사용.
+3. [이름] 등 미완성 대괄호 템플릿 절대 금지.
+4. 사용자의 문장에 어색함이나 오류가 있다면 correction에 도쿄 표준어로 교정하고, 없으면 null로 하세요.
+5. 마크다운 없이 순수 JSON만 응답:
 {
-  "japanese": "답변 일본어 문장 (띄어쓰기 없이 한자/가나 조합된 자연스러운 원어민 표현)",
-  "romaji": "로마자 발음 표기",
+  "japanese": "1~2문장 일본어 응답 (띄어쓰기 없이 쉼표 포함)",
   "korean": "자연스러운 한국어 번역",
   "correction": {
-    "originalText": "사용자가 한 말",
-    "improvedJapanese": "더 자연스러운 도쿄 표준 일본어",
+    "originalText": "학습자 발화",
+    "improvedJapanese": "더 자연스러운 도쿄 표준어",
+    "reading": "읽는 법",
+    "koreanMeaning": "한국어 뜻",
+    "feedbackPoint": "간결한 교정 팁"
+  } or null
+}`;
+    } else if (mode === 'roleplay') {
+      maxOutputTokens = 160;
+      systemPrompt = `당신은 상황극 상대 역할을 맡은 도쿄 현지 일본인입니다.
+상황에 몰입하여 1~2문장의 자연스러운 대화체로 답변하세요.
+
+[규칙]
+1. 100% 도쿄 표준어(東京共通語), 단어 띄어쓰기 금지(わかち書き 금지).
+2. 문절 쉼표(、)를 넣어 원어민 대화 리듬 유지.
+3. 미완성 대괄호 템플릿 금지.
+4. 교정 사항이 있으면 correction 제공, 없으면 null.
+5. 마크다운 없이 순수 JSON만 응답:
+{
+  "japanese": "역할에 맞는 1~2문장 일본어 대답",
+  "korean": "한국어 번역",
+  "correction": {
+    "originalText": "학습자 발화",
+    "improvedJapanese": "더 자연스러운 도쿄 표준어",
+    "reading": "읽는 법",
+    "koreanMeaning": "한국어 뜻",
+    "feedbackPoint": "간결한 교정 팁"
+  } or null
+}`;
+    } else {
+      // adaptive (1급 대화 및 튜터 모드)
+      maxOutputTokens = 260;
+      systemPrompt = `당신은 JLPT N5부터 N1까지 맞춤 지도하는 도쿄 현지 원어민 일본어 튜터입니다.
+현재 학습자 레벨: 【${currentLevel}】
+
+[핵심 규칙]
+1. 100% NHK 도쿄 표준어(東京共通語), 단어 사이 띄어쓰기 절대 금지(わかち書き 금지).
+2. 문절마다 쉼표(、)를 넣어 실제 사람처럼 또박또박 띄어말하는 호흡 유지.
+3. [이름] 등 미완성 템플릿 절대 금지.
+4. 현재 레벨(${currentLevel})에 어울리는 1~2문장의 간결하고 명확한 대답.
+5. 학습자가 다음 턴에 선택해 말할 수 있는 도쿄 표준 추천 답변 2개 제공.
+6. 마크다운 없이 순수 JSON만 응답:
+{
+  "japanese": "답변 일본어 문장 (띄어쓰기 없는 도쿄 표준어)",
+  "romaji": "로마자 발음",
+  "korean": "자연스러운 한국어 번역",
+  "correction": {
+    "originalText": "학습자 말",
+    "improvedJapanese": "교정 일본어",
     "reading": "읽는 법",
     "koreanMeaning": "뜻",
-    "feedbackPoint": "교정 이유 및 문법 팁"
+    "feedbackPoint": "교정 팁"
   } or null,
   "suggestedReplies": [
-    { "japanese": "추천 답변 1 (완성된 문장)", "korean": "한국어 뜻 1" },
-    { "japanese": "추천 답변 2 (완성된 문장)", "korean": "한국어 뜻 2" }
+    { "japanese": "추천 답변 1", "korean": "뜻 1" },
+    { "japanese": "추천 답변 2", "korean": "뜻 2" }
   ],
-  "progressDelta": 25,
-  "learnerObservation": "학습자의 문법/어휘 성취에 대한 짧은 한국어 메모 (예: N5 〜です 자기소개 안정적)"
+  "progressDelta": 25
 }`;
+    }
+
+
 
     // 1. Google Gemini API Call
     if (provider === 'gemini') {
@@ -122,32 +152,59 @@ export async function POST(req: NextRequest) {
         geminiModel.includes('1.5') ||
         geminiModel.includes('2.5')
       ) {
-        geminiModel = 'gemini-3-flash-preview';
+        geminiModel = 'gemini-3.5-flash-lite';
       }
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${effectiveApiKey}`;
 
-      const conversationContext = history
-        .slice(-6)
-        .map((m: any) => `${m.sender === 'user' ? '사용자' : 'AI'}: ${m.japanese}`)
-        .join('\n');
+      // Format multi-turn conversation
+      const conversationTurns = history.slice(-4).map((m: any) => ({
+        role: m.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: m.japanese }],
+      }));
 
-      const fullPrompt = `${systemPrompt}\n\n[이전 대화 기록]\n${conversationContext}\n\n사용자 발화: ${userMessage}\n\n위 규칙에 맞추어 반드시 JSON 구조로만 응답하세요:`;
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            temperature: 0.7,
-            thinkingConfig: {
-              thinkingBudget: 0,
-            },
-            maxOutputTokens: 500,
-          },
-        }),
+      // Add current turn
+      conversationTurns.push({
+        role: 'user',
+        parts: [{ text: userMessage }],
       });
+
+      const callGeminiWithModel = async (targetModel: string) => {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${effectiveApiKey}`;
+        const generationConfig: Record<string, any> = {
+          responseMimeType: 'application/json',
+          temperature: 0.5,
+          maxOutputTokens,
+        };
+
+        // Only models with reasoning capability support thinkingConfig
+        if (targetModel.includes('gemini-3-') || targetModel.includes('gemini-3.1-')) {
+          generationConfig.thinkingConfig = { thinkingBudget: 0 };
+        }
+
+        return await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: systemPrompt }] },
+            contents: conversationTurns,
+            generationConfig,
+          }),
+        });
+      };
+
+      let response = await callGeminiWithModel(geminiModel);
+
+      // Fast fallback to gemini-3-flash-preview or gemini-3.5-flash-lite if initial request failed
+      if (!response.ok) {
+        const fallbackModel =
+          geminiModel === 'gemini-3.5-flash-lite'
+            ? 'gemini-3-flash-preview'
+            : 'gemini-3.5-flash-lite';
+        console.warn(`Gemini model ${geminiModel} failed (${response.status}), retrying with ${fallbackModel}`);
+        const fallbackRes = await callGeminiWithModel(fallbackModel);
+        if (fallbackRes.ok) {
+          response = fallbackRes;
+        }
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -189,7 +246,8 @@ export async function POST(req: NextRequest) {
           model: openaiModel,
           messages,
           response_format: { type: 'json_object' },
-          temperature: 0.7,
+          temperature: 0.5,
+          max_tokens: maxOutputTokens,
         }),
       });
 

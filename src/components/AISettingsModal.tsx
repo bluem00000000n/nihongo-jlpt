@@ -238,7 +238,8 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({
               >
                 {provider === 'gemini' ? (
                   <>
-                    <option value="gemini-3-flash-preview">gemini-3-flash-preview (최신 고속 플래시 · 기본 추천)</option>
+                    <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (⚡초고속 1초대 플래시 라이트 · 대화 추천)</option>
+                    <option value="gemini-3-flash-preview">gemini-3-flash-preview (최신 플래시 · 기본형)</option>
                     <option value="gemini-3.5-flash">gemini-3.5-flash (차세대 고성능)</option>
                     <option value="gemini-flash-latest">gemini-flash-latest (항상 최신 Flash)</option>
                     <option value="gemini-pro-latest">gemini-pro-latest (심층 최고 성능 Pro)</option>

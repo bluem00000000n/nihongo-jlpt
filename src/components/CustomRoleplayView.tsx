@@ -38,6 +38,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
   onAddXP,
   onOpenAISettings,
 }) => {
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [selectedScenario, setSelectedScenario] = useState<CustomRoleplayScenario>(
     defaultRoleplayScenarios[0]
   );
@@ -54,14 +55,18 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    initScenario(selectedScenario);
-  }, [selectedScenario]);
-
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatLog, isTyping]);
 
-  const initScenario = (scenario: CustomRoleplayScenario) => {
+  useEffect(() => {
+    return () => {
+      speechService.stop();
+    };
+  }, []);
+
+  const startScenario = (scenario: CustomRoleplayScenario) => {
+    setSelectedScenario(scenario);
+    setIsPlaying(true);
     setChatLog([
       {
         sender: 'ai',
@@ -76,6 +81,16 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
     if (stats.soundEnabled) {
       setTimeout(() => speechService.speak(scenario.openingJapanese, 0.88), 300);
     }
+  };
+
+  const restartScenario = () => {
+    if (!selectedScenario) return;
+    startScenario(selectedScenario);
+  };
+
+  const exitToScenarioList = () => {
+    speechService.stop();
+    setIsPlaying(false);
   };
 
   const categories = ['ALL', '비즈니스 회의', '여행/호텔', '심층 토론', '일상/쇼핑'];
@@ -263,233 +278,293 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         }}
         featureName="맞춤형 상황극 음성 대화"
       />
-      {/* Top Mobile Card (LOFT Stationery Memo) */}
-      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5">
-        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500 font-bold">
-          <div className="flex items-center gap-1.5">
-            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">ROLEPLAY</span>
-            <span className="text-gray-800">REAL-LIFE SCENARIOS</span>
-          </div>
-          <span>TOTAL: 10 SCENARIOS</span>
-        </div>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
-              劇
-            </span>
-            <div>
-              <h2 className="text-base font-black text-gray-950 leading-tight">
-                실전 맞춤형 상황극 (Roleplay)
-              </h2>
-              <span className="text-[11px] text-gray-600 font-medium">
-                실제 일본에서 마주치는 10+ 리얼 상황
-              </span>
+      {/* 1. SCENARIO SELECTION & BRIEFING (When not playing) */}
+      {!isPlaying && (
+        <div className="space-y-4 animate-fade-in">
+          {/* Top Control Header */}
+          <div className="bg-[#FDFCF9] rounded-2xl p-4 border border-[#E2D9C8] shadow-xs space-y-3.5">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E8E0D2] text-[10px] font-mono text-[#7A6E63] font-bold">
+              <div className="flex items-center gap-1.5">
+                <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">ROLEPLAY</span>
+                <span className="text-[#2B2725]">REAL-LIFE SCENARIOS</span>
+              </div>
+              <span>TOTAL: {defaultRoleplayScenarios.length} SCENARIOS</span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-bold text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
+                  劇
+                </span>
+                <div>
+                  <h2 className="text-base font-black text-[#2B2725] leading-tight">
+                    실전 맞춤형 상황극 (Roleplay)
+                  </h2>
+                  <span className="text-[11px] text-[#7A6E63] font-medium">
+                    원하는 상황을 선택하여 대화를 시작하세요
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={handlePickRandomScenario}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border border-gray-900/15 text-xs font-black active:scale-95 transition-all shadow-xs"
+                title="실전 상황극 무작위 랜덤 뽑기"
+              >
+                <Shuffle className="w-3.5 h-3.5" />
+                <span>🎲 랜덤 추천</span>
+              </button>
+            </div>
+
+            {/* Category Filter Pills */}
+            <div className="grid grid-cols-3 sm:flex items-center gap-1.5 pt-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all text-center ${
+                    selectedCategory === cat
+                      ? 'bg-[#2B2725] text-[#FAF7F0] shadow-xs'
+                      : 'bg-[#FAF7F0] text-[#5A5047] border border-[#E2D9C8] hover:bg-[#F3ECE0]'
+                  }`}
+                >
+                  {cat === 'ALL' ? '전체 상황' : cat}
+                </button>
+              ))}
             </div>
           </div>
 
-          <button
-            onClick={handlePickRandomScenario}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 border border-gray-900/15 text-xs font-black active:scale-95 transition-all shadow-xs"
-            title="실전 상황극 무작위 랜덤 뽑기"
-          >
-            <Shuffle className="w-3.5 h-3.5" />
-            <span>🎲 랜덤 뽑기</span>
-          </button>
-        </div>
+          {/* Selected Scenario Briefing & Start Card */}
+          <div className="bg-[#FDFCF9] rounded-2xl border-2 border-[#E2D9C8] shadow-md p-5 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#E8E0D2]">
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-[#2B2725] text-[#FFE000]">
+                {selectedScenario.category} · {selectedScenario.level}
+              </span>
+              <span className="text-xs font-bold text-[#7A6E63]">
+                선택된 상황극
+              </span>
+            </div>
 
-        {/* Category Filter Pills (Stationery Index Tabs) */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-1">
-          {categories.map((cat) => (
+            <div>
+              <h3 className="text-lg font-black text-[#2B2725]">
+                {selectedScenario.title}
+              </h3>
+              <p className="text-xs text-[#5A5047] mt-1.5 leading-relaxed break-keep">
+                {selectedScenario.situation}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <div className="p-2.5 rounded-xl bg-[#FAF7F0] border border-[#E2D9C8] text-xs">
+                <span className="text-[10px] font-bold text-[#7A6E63] block">나의 역할</span>
+                <strong className="text-[#2B2725] font-black">{selectedScenario.userRole}</strong>
+              </div>
+              <div className="p-2.5 rounded-xl bg-[#FAF7F0] border border-[#E2D9C8] text-xs">
+                <span className="text-[10px] font-bold text-[#7A6E63] block">대화 상대</span>
+                <strong className="text-[#D93829] font-black">{selectedScenario.aiRole}</strong>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-950 leading-relaxed break-keep">
+              🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
+            </div>
+
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? 'bg-gray-950 text-white shadow-xs'
-                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-              }`}
+              onClick={() => startScenario(selectedScenario)}
+              className="w-full py-4 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm shadow-md border border-gray-900/15 flex items-center justify-center gap-2 transition-all active:scale-98"
             >
-              {cat === 'ALL' ? '전체 상황극' : cat}
+              <span>🎭 상황극 대화 시작하기</span>
+              <ChevronRight className="w-4 h-4 stroke-[2.5]" />
             </button>
-          ))}
-        </div>
+          </div>
 
-        {/* Horizontal Scenario Carousel */}
-        <div className="flex gap-2.5 overflow-x-auto pb-1 scrollbar-none">
-          {filteredScenarios.map((sc) => {
-            const isSelected = selectedScenario.id === sc.id;
-            return (
-              <button
-                key={sc.id}
-                onClick={() => setSelectedScenario(sc)}
-                className={`min-w-[190px] max-w-[210px] p-3 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between shrink-0 ${
-                  isSelected
-                    ? 'bg-[#FFE000] text-gray-950 border-gray-900 shadow-sm font-bold'
-                    : 'bg-white text-gray-800 border-gray-200 hover:border-gray-400'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md ${
-                        isSelected
-                          ? 'bg-gray-950 text-white'
-                          : 'bg-gray-100 text-gray-700 border border-gray-200'
-                      }`}
-                    >
-                      {sc.category} · {sc.level}
-                    </span>
-                  </div>
-                  <h4 className="text-xs font-black line-clamp-1">{sc.title}</h4>
-                  <p
-                    className={`text-[10px] mt-1 line-clamp-2 leading-relaxed ${
-                      isSelected ? 'text-gray-900 font-medium' : 'text-gray-500'
+          {/* Scenario Catalog Grid */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs text-[#7A6E63] font-bold px-1">
+              <span>상황극 목록 ({filteredScenarios.length}개)</span>
+              <span className="text-[11px]">카드를 터치하여 변경</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {filteredScenarios.map((sc) => {
+                const isSelected = selectedScenario.id === sc.id;
+                return (
+                  <button
+                    key={sc.id}
+                    onClick={() => setSelectedScenario(sc)}
+                    className={`p-3.5 rounded-xl border text-left transition-all flex flex-col justify-between ${
+                      isSelected
+                        ? 'bg-[#F5EFE3] text-[#2B2725] border-2 border-[#2B2725] shadow-xs'
+                        : 'bg-[#FDFCF9] text-[#2B2725] border-[#E2D9C8] hover:border-[#C8BCAB]'
                     }`}
                   >
-                    {sc.situation}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-[#FAF7F0] text-[#7A6E63] border border-[#E2D9C8]">
+                          {sc.category} · {sc.level}
+                        </span>
+                        {isSelected && (
+                          <span className="text-[10px] font-black text-[#D93829]">
+                            ✓ 선택됨
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-xs font-black line-clamp-1 text-[#2B2725] mt-1">{sc.title}</h4>
+                      <p className="text-[11px] text-[#5A5047] line-clamp-2 mt-1 break-keep">
+                        {sc.situation}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. MAIN ROLEPLAY CHAT BOX (Only when playing) */}
+      {isPlaying && (
+        <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm overflow-hidden flex flex-col animate-fade-in">
+          {/* Scenario Header Bar */}
+          <div className="p-3.5 sm:p-4 bg-[#F5EFE3] text-[#2B2725] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E2D9C8]">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={exitToScenarioList}
+                  className="px-2.5 py-1 rounded-lg bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] text-xs font-bold transition-colors shadow-2xs"
+                >
+                  ← 상황극 목록
+                </button>
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#5A5047] font-mono border border-[#E2D9C8]">
+                  내 역할: {selectedScenario.userRole}
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#FAF7F0] rounded-md text-[#D93829] font-mono border border-[#E2D9C8]">
+                  상대: {selectedScenario.aiRole}
+                </span>
+              </div>
+              <h3 className="text-sm sm:text-base font-black tracking-tight text-[#2B2725]">{selectedScenario.title}</h3>
+              <p className="text-xs text-amber-950 bg-amber-50/80 border border-amber-200/80 rounded-lg p-2 max-w-xl font-medium break-keep">
+                🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 self-end sm:self-center">
+              <button
+                onClick={handleFinishRoleplay}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-xs transition-all border border-gray-900/15"
+              >
+                <Award className="w-3.5 h-3.5" />
+                완료 & 리포트
+              </button>
+              <button
+                onClick={restartScenario}
+                className="p-2 rounded-xl bg-[#FAF7F0] hover:bg-[#F3ECE0] text-[#2B2725] border border-[#E2D9C8] transition-colors"
+                title="상황극 다시 시작"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Message Stream */}
+          <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-[#FAF7F0] loft-grid-bg">
+            {chatLog.map((chat, idx) => (
+              <div
+                key={idx}
+                className={`flex gap-2.5 items-start animate-fade-in ${
+                  chat.sender === 'user' ? 'flex-row-reverse' : ''
+                }`}
+              >
+                <div
+                  className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold shrink-0 shadow-xs ${
+                    chat.sender === 'user'
+                      ? 'bg-[#FFE000] text-gray-950 border border-gray-900/30'
+                      : 'bg-[#D93829] text-white font-serif'
+                  }`}
+                >
+                  {chat.sender === 'user' ? '私' : '相'}
+                </div>
+
+                <div
+                  className={`max-w-[85%] p-3.5 rounded-xl space-y-1 shadow-xs ${
+                    chat.sender === 'user'
+                      ? 'bg-amber-50 text-gray-950 border border-amber-300 rounded-tr-xs font-bold'
+                      : 'bg-white text-gray-950 border border-gray-200 border-l-4 border-l-[#D93829] rounded-tl-xs'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`text-[10px] font-mono font-bold ${chat.sender === 'user' ? 'text-amber-800' : 'text-gray-500'}`}>
+                      {chat.sender === 'user' ? selectedScenario.userRole : selectedScenario.aiRole}
+                    </span>
+                    {chat.sender === 'ai' && (
+                      <button
+                        onClick={() => speechService.speak(chat.japanese, 0.88)}
+                        className="p-1 rounded text-gray-400 hover:text-gray-700"
+                      >
+                        <Volume2 className="w-3.5 h-3.5 text-gray-600" />
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-sm font-bold leading-relaxed break-keep break-words text-[#1C1917]">{chat.japanese}</p>
+                  <p className={`text-xs break-keep break-words mt-1 ${chat.sender === 'user' ? 'text-amber-900 font-medium' : 'text-gray-600'}`}>
+                    {chat.korean}
                   </p>
                 </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div className="flex gap-2 items-center text-xs text-gray-500 animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
+                <span>{selectedScenario.aiRole}가 답변을 작성하고 있습니다...</span>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Bar */}
+          <div className="p-2.5 bg-[#FDFCF9] border-t border-[#E2D9C8]">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendMessage();
+              }}
+              className="flex items-center gap-1.5"
+            >
+              <button
+                type="button"
+                onClick={toggleMic}
+                className={`p-2.5 rounded-lg transition-all border ${
+                  isMicOn
+                    ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+                title="음성으로 말하기"
+              >
+                {isMicOn ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </button>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Main Roleplay Chat Box (LOFT Notebook Page) */}
-      <div className="bg-[#FDFCF9] rounded-2xl border border-[#E2D9C8] shadow-sm overflow-hidden flex flex-col">
-        {/* Scenario Header Bar */}
-        <div className="p-4 bg-[#F5EFE3] text-[#1C1917] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#E5DEC9]">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/80 rounded-md text-gray-800 font-mono border border-[#E2D9C8]">
-                내 역할: {selectedScenario.userRole}
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-white/80 rounded-md text-gray-800 font-mono border border-[#E2D9C8]">
-                상대: {selectedScenario.aiRole}
-              </span>
-            </div>
-            <h3 className="text-base font-black tracking-tight text-gray-950">{selectedScenario.title}</h3>
-            <p className="text-xs text-amber-950 bg-amber-50/80 border border-amber-200/80 rounded-lg p-2 mt-1.5 max-w-xl font-medium">
-              🎯 <strong className="font-bold text-amber-950">미션 목표: </strong>{selectedScenario.missionGoal}
-            </p>
-          </div>
+              <input
+                type="text"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={`[${selectedScenario.userRole}] 역할로 일본어로 답변`}
+                className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
+              />
 
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleFinishRoleplay}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-xs transition-all border border-gray-900/15"
-            >
-              <Award className="w-3.5 h-3.5" />
-              완료 & 리포트
-            </button>
-            <button
-              onClick={() => initScenario(selectedScenario)}
-              className="p-2 rounded-xl bg-white hover:bg-gray-100 text-gray-700 border border-[#E2D9C8] transition-colors"
-              title="상황극 다시 시작"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
+              <button
+                type="submit"
+                disabled={!inputText.trim() || isTyping}
+                className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-gray-900/20 flex items-center justify-center"
+              >
+                <Send className="w-4 h-4" />
+              </button>
+            </form>
           </div>
         </div>
-
-        {/* Message Stream */}
-        <div className="p-4 space-y-3.5 max-h-[460px] overflow-y-auto bg-[#FAF7F0] loft-grid-bg">
-          {chatLog.map((chat, idx) => (
-            <div
-              key={idx}
-              className={`flex gap-2.5 items-start animate-fade-in ${
-                chat.sender === 'user' ? 'flex-row-reverse' : ''
-              }`}
-            >
-              <div
-                className={`w-7 h-7 rounded-md flex items-center justify-center text-xs font-bold shrink-0 shadow-xs ${
-                  chat.sender === 'user'
-                    ? 'bg-[#FFE000] text-gray-950 border border-gray-900/30'
-                    : 'bg-[#D93829] text-white font-serif'
-                }`}
-              >
-                {chat.sender === 'user' ? '私' : '相'}
-              </div>
-
-              <div
-                className={`max-w-[85%] p-3.5 rounded-xl space-y-1 shadow-xs ${
-                  chat.sender === 'user'
-                    ? 'bg-amber-50 text-gray-950 border border-amber-300 rounded-tr-xs font-bold'
-                    : 'bg-white text-gray-950 border border-gray-200 border-l-4 border-l-[#D93829] rounded-tl-xs'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <span className={`text-[10px] font-mono font-bold ${chat.sender === 'user' ? 'text-amber-800' : 'text-gray-500'}`}>
-                    {chat.sender === 'user' ? selectedScenario.userRole : selectedScenario.aiRole}
-                  </span>
-                  {chat.sender === 'ai' && (
-                    <button
-                      onClick={() => speechService.speak(chat.japanese, 0.88)}
-                      className="p-1 rounded text-gray-400 hover:text-gray-700"
-                    >
-                      <Volume2 className="w-3.5 h-3.5 text-gray-600" />
-                    </button>
-                  )}
-                </div>
-                <p className="text-sm font-bold leading-relaxed break-keep break-words text-[#1C1917]">{chat.japanese}</p>
-                <p className={`text-xs break-keep break-words mt-1 ${chat.sender === 'user' ? 'text-amber-900 font-medium' : 'text-gray-600'}`}>
-                  {chat.korean}
-                </p>
-              </div>
-            </div>
-          ))}
-
-          {isTyping && (
-            <div className="flex gap-2 items-center text-xs text-gray-500 animate-pulse">
-              <span className="w-2 h-2 rounded-full bg-[#D93829] animate-ping" />
-              <span>{selectedScenario.aiRole}가 답변을 작성하고 있습니다...</span>
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Bar */}
-        <div className="p-2.5 bg-[#FDFCF9] border-t border-[#E2D9C8]">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSendMessage();
-            }}
-            className="flex items-center gap-1.5"
-          >
-            <button
-              type="button"
-              onClick={toggleMic}
-              className={`p-2.5 rounded-lg transition-all border ${
-                isMicOn
-                  ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-              title="음성으로 말하기"
-            >
-              {isMicOn ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-            </button>
-
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder={`[${selectedScenario.userRole}] 역할로 일본어로 답변`}
-              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
-            />
-
-            <button
-              type="submit"
-              disabled={!inputText.trim() || isTyping}
-              className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-extrabold rounded-lg shadow-xs transition-all active:scale-95 border border-gray-900/20 flex items-center justify-center"
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
-        </div>
-      </div>
+      )}
 
       {/* Comprehensive Report Modal (LOFT Stationery Evaluation Sheet - Pure White) */}
       {finalReport && (

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { hiraganaData, katakanaData } from '@/data/kana';
 import { KanaCharacter, UserStats } from '@/types';
 import { speechService } from '@/utils/speech';
-import { Volume2, Sparkles, HelpCircle, Check, Shuffle } from 'lucide-react';
+import { Volume2, Sparkles, HelpCircle, Check, Shuffle, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 interface KanaViewProps {
@@ -183,10 +183,10 @@ export const KanaView: React.FC<KanaViewProps> = ({ stats, onAddXP }) => {
               </p>
               <button
                 onClick={pickNewQuizCard}
-                className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all"
+                className="w-full py-3.5 bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm rounded-xl flex items-center justify-center gap-2 border border-gray-900/15 shadow-sm active:scale-98 transition-all"
               >
                 <span>다음 가나 문제</span>
-                <Shuffle className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             </div>
           )}

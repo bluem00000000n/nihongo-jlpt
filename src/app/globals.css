@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F8F6F0;
-  --foreground: #22201D;
+  --background: #FFFFFF;
+  --foreground: #111827;
   --loft-yellow: #FFE000;
-  --loft-cream: #FDFCF9;
-  --loft-kraft: #EFE9DC;
-  --loft-grid: rgba(180, 160, 135, 0.14);
-  --loft-rule: rgba(180, 160, 135, 0.22);
-  --loft-ink: #1C1917;
-  --loft-hanko: #D93829;
+  --loft-cream: #FFFFFF;
+  --loft-kraft: #F9FAFB;
+  --loft-grid: rgba(0, 0, 0, 0.035);
+  --loft-rule: rgba(0, 0, 0, 0.07);
+  --loft-ink: #111827;
+  --loft-hanko: #DC2626;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -19,17 +20,19 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Force crisp clean white background regardless of system dark mode preference */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #181715;
-    --foreground: #ECE6DA;
-    --loft-yellow: #F5CC00;
-    --loft-cream: #201F1C;
-    --loft-kraft: #2A2823;
-    --loft-grid: rgba(220, 205, 180, 0.07);
-    --loft-rule: rgba(220, 205, 180, 0.12);
-    --loft-ink: #EDE8DD;
-    --loft-hanko: #E05345;
+    --background: #FFFFFF;
+    --foreground: #111827;
+    --loft-yellow: #FFE000;
+    --loft-cream: #FFFFFF;
+    --loft-kraft: #F9FAFB;
+    --loft-grid: rgba(0, 0, 0, 0.035);
+    --loft-rule: rgba(0, 0, 0, 0.07);
+    --loft-ink: #111827;
+    --loft-hanko: #DC2626;
+    color-scheme: light;
   }
 }
 

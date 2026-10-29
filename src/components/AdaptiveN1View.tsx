@@ -275,7 +275,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       />
 
       {/* Flagship Header: Mobile Adaptive Level Card (LOFT Stationery Memo Note) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3.5 relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5 relative overflow-hidden">
         {/* Top Stationery Tape Strip & Perforation */}
         <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
           <div className="flex items-center gap-1.5">
@@ -419,7 +419,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       )}
 
       {/* Main Conversation Card (LOFT Dot-Grid Notebook Page) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] overflow-hidden flex flex-col h-[520px]">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-[520px]">
         {/* Notebook Page Header Strip */}
         <div className="px-4 py-2 bg-[#F5EFE3] dark:bg-[#23211D] border-b border-[#E5DEC9] dark:border-stone-800 flex items-center justify-between text-[10px] font-mono text-stone-500">
           <div className="flex items-center gap-1.5">
@@ -556,7 +556,7 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
         </div>
 
         {/* Input Bar (Stationery Pencil Box Style) */}
-        <div className="p-2.5 bg-[#FAF7F0] dark:bg-[#1E1D1B] border-t border-[#E5DEC9] dark:border-stone-800">
+        <div className="p-2.5 bg-white border-t border-gray-200">
           <form
             onSubmit={(e) => {
               e.preventDefault();

@@ -23,6 +23,7 @@ import {
   RotateCcw,
   Zap,
   Shuffle,
+  ChevronRight,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -263,7 +264,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         featureName="맞춤형 상황극 음성 대화"
       />
       {/* Top Mobile Card (LOFT Stationery Memo) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3.5">
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3.5">
         <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
           <div className="flex items-center gap-1.5">
             <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT ROLEPLAY</span>
@@ -356,7 +357,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
       </div>
 
       {/* Main Roleplay Chat Box (LOFT Notebook Page) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
         {/* Scenario Header Bar */}
         <div className="p-4 bg-[#35312C] text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#25221E]">
           <div>
@@ -450,7 +451,7 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
 
         {/* Input Bar */}
-        <div className="p-2.5 bg-[#FAF7F0] dark:bg-[#1E1D1B] border-t border-[#E5DEC9] dark:border-stone-800">
+        <div className="p-2.5 bg-white border-t border-gray-200">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -490,55 +491,55 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
         </div>
       </div>
 
-      {/* Comprehensive Report Modal (LOFT Stationery Evaluation Sheet) */}
+      {/* Comprehensive Report Modal (LOFT Stationery Evaluation Sheet - Pure White) */}
       {finalReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto relative">
-            <div className="flex items-start justify-between pb-3 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full p-5 sm:p-6 space-y-4 max-h-[90vh] overflow-y-auto relative text-gray-900">
+            <div className="flex items-start justify-between pb-3 border-b border-gray-200">
               <div>
-                <span className="text-[10px] font-mono font-bold text-[#D93829] uppercase tracking-wider block">
+                <span className="text-[10px] font-mono font-bold text-red-600 uppercase tracking-wider block">
                   EVALUATION NOTE · 評価シート
                 </span>
-                <h3 className="text-base font-extrabold text-stone-900 dark:text-white mt-0.5">
+                <h3 className="text-base font-black text-gray-950 mt-0.5">
                   {selectedScenario.title}
                 </h3>
               </div>
               <button
                 onClick={() => setFinalReport(null)}
-                className="w-7 h-7 rounded-md bg-stone-200/70 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center text-xs font-bold hover:bg-stone-300"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold transition-colors"
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-3 rounded-xl bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-700 text-center shadow-xs">
-              <span className="text-[11px] text-stone-500 block font-mono">ACCURACY SCORE</span>
-              <strong className="text-2xl font-black text-[#D93829]">
+            <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-center shadow-xs">
+              <span className="text-xs text-gray-500 block font-mono font-bold">ACCURACY SCORE</span>
+              <strong className="text-2xl font-black text-red-600">
                 {finalReport.grammarAccuracyScore}점
               </strong>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#FEF9C3] dark:bg-[#2C2718] border border-[#FDE047] dark:border-yellow-900/60 text-xs text-stone-800 dark:text-stone-200 leading-relaxed shadow-xs">
-              <strong className="block font-bold text-amber-900 dark:text-amber-300 mb-1">【AI 총평 메모】</strong>
+            <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-950 leading-relaxed shadow-xs">
+              <strong className="block font-black text-amber-950 mb-1">【AI 총평 메모】</strong>
               {finalReport.aiSummary}
             </div>
 
             {finalReport.corrections.length > 0 && (
               <div className="space-y-2">
-                <span className="text-xs font-bold text-stone-700 dark:text-stone-300 block">
+                <span className="text-xs font-black text-gray-950 block">
                   교정 피드백 ({finalReport.corrections.length}건):
                 </span>
                 <div className="space-y-2 max-h-40 overflow-y-auto">
                   {finalReport.corrections.map((cor) => (
                     <div
                       key={cor.id}
-                      className="p-3 rounded-lg bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-700 text-xs space-y-1 shadow-xs"
+                      className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs space-y-1 shadow-xs"
                     >
                       <div className="flex items-start gap-1.5">
-                        <span className="text-stone-400 line-through">{cor.originalText}</span>
-                        <span className="text-[#D93829] font-bold">👉 {cor.improvedJapanese}</span>
+                        <span className="text-gray-400 line-through font-medium">{cor.originalText}</span>
+                        <span className="text-red-600 font-black">👉 {cor.improvedJapanese}</span>
                       </div>
-                      <p className="text-[11px] text-stone-500">{cor.feedbackPoint}</p>
+                      <p className="text-[11px] text-gray-600 font-medium">{cor.feedbackPoint}</p>
                     </div>
                   ))}
                 </div>
@@ -547,9 +548,10 @@ export const CustomRoleplayView: React.FC<CustomRoleplayViewProps> = ({
 
             <button
               onClick={() => setFinalReport(null)}
-              className="w-full py-2.5 bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs rounded-lg shadow-xs border border-stone-800/20"
+              className="w-full py-3.5 bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs rounded-xl shadow-sm border border-gray-900/15 active:scale-98 transition-all flex items-center justify-center gap-1.5"
             >
-              확인 및 리포트 닫기
+              <span>확인 및 리포트 닫기</span>
+              <ChevronRight className="w-4 h-4 stroke-[2.5]" />
             </button>
           </div>
         </div>

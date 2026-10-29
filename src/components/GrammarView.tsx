@@ -112,7 +112,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
   return (
     <div className="space-y-4">
       {/* Top filter and search bar (LOFT Stationery Header) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3">
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
         <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
           <div className="flex items-center gap-1.5">
             <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT GRAMMAR</span>
@@ -240,7 +240,7 @@ export const GrammarView: React.FC<GrammarViewProps> = ({
                 <p className="text-xs text-stone-600 dark:text-stone-400 mt-1 leading-snug">
                   {item.meaning}
                 </p>
-                <div className="mt-2 text-[11px] text-stone-500 bg-[#FAF7F0] dark:bg-stone-900/60 p-2 rounded-md border border-[#E5DEC9] dark:border-stone-800 font-mono">
+                <div className="mt-2 text-xs text-gray-600 bg-gray-50 p-2 rounded-lg border border-gray-200 font-mono">
                   접속: {item.connection}
                 </div>
               </div>

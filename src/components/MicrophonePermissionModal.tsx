@@ -101,48 +101,48 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
       <div
-        className="w-full max-w-lg bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-t-2xl sm:rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 flex flex-col max-h-[90vh] overflow-hidden transition-all duration-300"
+        className="w-full max-w-lg bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 flex flex-col max-h-[90vh] overflow-hidden text-gray-900 transition-all duration-300"
         role="dialog"
         aria-modal="true"
       >
         {/* Top Header */}
-        <div className="p-4 pb-3 border-b border-[#E5DEC9] dark:border-stone-800 flex items-center justify-between bg-[#F5EFE3] dark:bg-[#23211D]">
+        <div className="p-4 pb-3 border-b border-gray-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-[#FFE000] border border-stone-800/30 text-stone-900 flex items-center justify-center shadow-xs">
+            <div className="w-9 h-9 rounded-xl bg-[#FFE000] border border-gray-900/15 text-gray-950 flex items-center justify-center shadow-xs">
               <Mic className="w-5 h-5 stroke-[2.2]" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="text-sm font-extrabold text-stone-900 dark:text-stone-100 leading-tight">
+                <h3 className="text-sm font-black text-gray-950 leading-tight">
                   마이크 권한 설정 안내
                 </h3>
-                <span className="px-1 py-0.2 bg-[#D93829] text-white text-[9px] font-bold rounded-xs">
+                <span className="px-1.5 py-0.5 bg-red-600 text-white text-[9px] font-black rounded-md">
                   필수
                 </span>
               </div>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-gray-500 font-medium">
                 {featureName}을(를) 위한 음성 인식
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-md flex items-center justify-center text-stone-500 hover:text-stone-900 hover:bg-stone-200/60 transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-gray-950 hover:bg-gray-100 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 overflow-y-auto space-y-3.5 text-stone-800 dark:text-stone-200 text-xs">
+        <div className="p-4 overflow-y-auto space-y-3.5 text-gray-900 text-xs">
           {/* In-App Browser Warning Alert */}
           {isInAppBrowser && (
-            <div className="p-3 bg-[#FFF1F2] dark:bg-rose-950/40 border border-[#FECDD3] dark:border-rose-900/60 rounded-xl flex items-start gap-2.5 shadow-xs">
-              <AlertCircle className="w-4 h-4 text-[#D93829] shrink-0 mt-0.5" />
-              <div className="text-[11px] text-rose-950 dark:text-rose-300 leading-relaxed">
-                <span className="font-extrabold block text-xs mb-0.5">⚠️ 카카오톡/인앱 브라우저 감지</span>
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2.5 shadow-xs">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+              <div className="text-xs text-red-950 leading-relaxed">
+                <span className="font-black block text-xs mb-0.5">⚠️ 카카오톡/인앱 브라우저 감지</span>
                 인앱 브라우저에서는 마이크 음성 인식이 차단될 수 있습니다.
                 화면 우측 하단 <strong>[···]</strong> 메뉴에서 <strong>&apos;다른 브라우저(Safari/Chrome)로 열기&apos;</strong>를 권장합니다.
               </div>
@@ -150,20 +150,20 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
           )}
 
           {/* Intro Description */}
-          <div className="bg-white dark:bg-stone-900/70 p-3.5 rounded-xl border border-[#DDD5C5] dark:border-stone-800 text-[11px] text-stone-600 dark:text-stone-300 leading-relaxed shadow-xs">
+          <div className="bg-gray-50 p-3.5 rounded-xl border border-gray-200 text-xs text-gray-700 leading-relaxed shadow-xs font-medium">
             일본어 발음을 실시간으로 듣고 맞춤 피드백과 통화를 진행하기 위해 <strong>마이크 접근 권한</strong>이 필요합니다.
             권한은 오직 본 기기 내 실시간 일본어 대화에만 사용되며 외부로 저장되지 않습니다.
           </div>
 
           {/* OS Platform Selector Tabs */}
-          <div className="flex rounded-lg bg-[#EFE9DC] dark:bg-stone-850 p-1 text-xs font-semibold border border-[#D5CCBA] dark:border-stone-750">
+          <div className="flex rounded-xl bg-gray-100 p-1 text-xs font-bold border border-gray-200">
             <button
               type="button"
               onClick={() => setDeviceType('ios')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all ${
                 deviceType === 'ios'
-                  ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-white shadow-xs font-extrabold'
-                  : 'text-stone-500 hover:text-stone-900 dark:hover:text-white font-medium'
+                  ? 'bg-white text-gray-950 shadow-xs font-black'
+                  : 'text-gray-600 hover:text-gray-950 font-bold'
               }`}
             >
               <Apple className="w-3.5 h-3.5" />
@@ -172,10 +172,10 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
             <button
               type="button"
               onClick={() => setDeviceType('android')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg transition-all ${
                 deviceType === 'android'
-                  ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-white shadow-xs font-extrabold'
-                  : 'text-stone-500 hover:text-stone-900 dark:hover:text-white font-medium'
+                  ? 'bg-white text-gray-950 shadow-xs font-black'
+                  : 'text-gray-600 hover:text-gray-950 font-bold'
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
@@ -185,16 +185,16 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
 
           {/* iOS Guide */}
           {deviceType === 'ios' && (
-            <div className="bg-white dark:bg-stone-900/80 rounded-xl p-3.5 border border-[#DDD5C5] dark:border-stone-800 space-y-2.5 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-bold text-stone-900 dark:text-stone-100">
-                <span className="w-5 h-5 rounded-md bg-[#FAF7F0] border border-[#DDD5C5] flex items-center justify-center text-xs">
+            <div className="bg-gray-50 rounded-xl p-3.5 border border-gray-200 space-y-2.5 shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-black text-gray-950">
+                <span className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-xs">
                   🍎
                 </span>
                 <span>iPhone / iPad (Safari) 권한 허용 3단계:</span>
               </div>
-              <ol className="space-y-2 text-[11px] text-stone-600 dark:text-stone-300">
+              <ol className="space-y-2 text-xs text-gray-700 font-medium">
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     1
                   </span>
                   <span>
@@ -202,7 +202,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     2
                   </span>
                   <span>
@@ -210,7 +210,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     3
                   </span>
                   <span>
@@ -223,16 +223,16 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
 
           {/* Android Guide */}
           {deviceType === 'android' && (
-            <div className="bg-white dark:bg-stone-900/80 rounded-xl p-3.5 border border-[#DDD5C5] dark:border-stone-800 space-y-2.5 shadow-xs">
-              <div className="flex items-center gap-2 text-xs font-bold text-stone-900 dark:text-stone-100">
-                <span className="w-5 h-5 rounded-md bg-[#FAF7F0] border border-[#DDD5C5] flex items-center justify-center text-xs">
+            <div className="bg-gray-50 rounded-xl p-3.5 border border-gray-200 space-y-2.5 shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-black text-gray-950">
+                <span className="w-6 h-6 rounded-md bg-white border border-gray-200 flex items-center justify-center text-xs">
                   🤖
                 </span>
                 <span>Android (Chrome) 권한 허용 3단계:</span>
               </div>
-              <ol className="space-y-2 text-[11px] text-stone-600 dark:text-stone-300">
+              <ol className="space-y-2 text-xs text-gray-700 font-medium">
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     1
                   </span>
                   <span>
@@ -240,7 +240,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     2
                   </span>
                   <span>
@@ -248,7 +248,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-sm bg-[#FFE000] text-stone-900 font-extrabold font-mono flex items-center justify-center shrink-0 text-[10px]">
+                  <span className="w-4 h-4 rounded-md bg-[#FFE000] text-gray-950 font-black font-mono flex items-center justify-center shrink-0 text-[10px]">
                     3
                   </span>
                   <span>
@@ -261,15 +261,15 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
 
           {/* Error Message if Denied */}
           {errorMessage && (
-            <div className="p-3 bg-[#FFF1F2] dark:bg-rose-950/40 border border-[#FECDD3] dark:border-rose-900/60 rounded-xl text-xs text-rose-900 dark:text-rose-300 flex items-center gap-2 shadow-xs">
-              <MicOff className="w-4 h-4 text-[#D93829] shrink-0" />
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-900 flex items-center gap-2 shadow-xs font-bold">
+              <MicOff className="w-4 h-4 text-red-600 shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* Success indicator */}
           {requestState === 'granted' && (
-            <div className="p-3 bg-[#ECFDF5] dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 rounded-xl text-xs text-emerald-900 dark:text-emerald-300 flex items-center gap-2 font-extrabold animate-fade-in shadow-xs">
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center gap-2 font-black animate-fade-in shadow-xs">
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               <span>마이크 연결 완료! 대화를 시작합니다.</span>
             </div>
@@ -277,11 +277,11 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
         </div>
 
         {/* Footer Action Buttons */}
-        <div className="p-3.5 border-t border-[#E5DEC9] dark:border-stone-800 bg-[#F5EFE3] dark:bg-[#23211D] flex items-center gap-2">
+        <div className="p-3.5 border-t border-gray-200 bg-white flex items-center gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 py-2.5 px-3 rounded-lg border border-[#DDD5C5] dark:border-stone-700 text-xs font-semibold text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-850 hover:bg-[#F2ECE1] transition-colors"
+            className="flex-1 py-3 px-3 rounded-xl border border-gray-300 text-xs font-bold text-gray-800 bg-gray-50 hover:bg-gray-100 transition-colors"
           >
             닫기
           </button>
@@ -289,7 +289,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
             type="button"
             onClick={handleRequestPermission}
             disabled={requestState === 'requesting' || requestState === 'granted'}
-            className="flex-2 py-2.5 px-4 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 text-xs font-extrabold shadow-xs border border-stone-800/20 flex items-center justify-center gap-1.5 active:scale-98 transition-all disabled:opacity-50"
+            className="flex-2 py-3 px-4 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 text-xs font-black shadow-sm border border-gray-900/15 flex items-center justify-center gap-1.5 active:scale-98 transition-all disabled:opacity-50"
           >
             {requestState === 'requesting' ? (
               <>
@@ -303,7 +303,7 @@ export const MicrophonePermissionModal: React.FC<MicrophonePermissionModalProps>
               </>
             ) : (
               <>
-                <Mic className="w-4 h-4" />
+                <Mic className="w-4 h-4 stroke-[2.2]" />
                 <span>마이크 권한 허용하기</span>
               </>
             )}

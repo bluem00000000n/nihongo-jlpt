@@ -371,10 +371,10 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
 
                     <button
                       onClick={handleNextStep}
-                      className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/25 transition-all"
+                      className="w-full py-3.5 bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm rounded-xl flex items-center justify-center gap-2 border border-gray-900/15 shadow-sm active:scale-98 transition-all"
                     >
                       <span>다음 대화로 계속하기</span>
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                     </button>
                   </div>
                 )}
@@ -382,15 +382,15 @@ export const DialogueView: React.FC<DialogueViewProps> = ({
             ) : (
               /* Non-user line: Click to continue */
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-gray-500 font-medium">
                   상대방의 말을 듣고 이해한 후 다음으로 넘어가세요.
                 </span>
                 <button
                   onClick={handleNextStep}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/25 transition-all"
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs border border-gray-900/15 shadow-sm active:scale-98 transition-all"
                 >
                   <span>내 턴으로 넘어가기</span>
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
               </div>
             )}

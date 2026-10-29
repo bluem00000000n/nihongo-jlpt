@@ -85,37 +85,37 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
   return (
     <div className="max-w-md mx-auto space-y-4 pb-10">
       {/* Top Mobile Banner (LOFT Test Booklet Header) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-[10px] font-mono text-gray-500">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">LOFT EXAM</span>
-            <span>OFFICIAL JLPT STANDARD</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">LOFT EXAM</span>
+            <span className="font-bold text-gray-800">OFFICIAL JLPT STANDARD</span>
           </div>
-          <span>QUESTION SHEET</span>
+          <span className="font-bold">QUESTION SHEET</span>
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-md bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-[1px_2px_0px_rgba(0,0,0,0.15)]">
+            <span className="w-8 h-8 rounded-lg bg-[#D93829] text-white flex items-center justify-center font-serif font-black text-sm shadow-xs">
               試
             </span>
             <div>
               <div className="flex items-center gap-1.5">
-                <h2 className="text-base font-extrabold text-stone-900 dark:text-stone-100">
+                <h2 className="text-base font-black text-gray-950">
                   JLPT 공식 기출 테스트
                 </h2>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-xs bg-[#FFE000] text-stone-900 font-extrabold border border-stone-800/20 shadow-xs">
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[#FFE000] text-gray-950 font-black border border-gray-900/15 shadow-xs">
                   공식 기준
                 </span>
               </div>
-              <p className="text-[11px] text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-gray-600 font-medium">
                 문자·어휘, 문법 형식, 단문 독해 실전 문제풀이
               </p>
             </div>
           </div>
 
           <div className="text-right">
-            <span className="text-sm font-black text-[#D93829] font-mono">
+            <span className="text-sm font-black text-red-600 font-mono">
               {score}개 정답
             </span>
           </div>
@@ -132,10 +132,10 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
                 setSelectedOption(null);
                 setIsAnswerChecked(false);
               }}
-              className={`px-3 py-1 rounded-sm text-xs font-semibold whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-all ${
                 selectedLevel === lvl
-                  ? 'bg-[#FFE000] text-stone-900 font-extrabold shadow-xs border border-stone-800/30'
-                  : 'bg-white dark:bg-stone-850 text-stone-600 dark:text-stone-300 border border-[#DDD5C5] dark:border-stone-700 hover:bg-[#F4EFE4]'
+                  ? 'bg-[#FFE000] text-gray-950 font-black shadow-xs border border-gray-900/15'
+                  : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
               }`}
             >
               {lvl === 'ALL' ? '전체 급수' : lvl}
@@ -145,7 +145,7 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
       </div>
 
       {/* Main Question Card (LOFT Notebook Exam Page) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] p-4 sm:p-5 space-y-4">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4 sm:p-5 space-y-4">
         {/* Question Header & Authority Source */}
         <div className="flex items-center justify-between text-xs pb-2.5 border-b border-[#E5DEC9] dark:border-stone-800">
           <div className="flex items-center gap-1.5">
@@ -251,10 +251,10 @@ export const QuizChallengeView: React.FC<QuizChallengeViewProps> = ({
 
               <button
                 onClick={handleNext}
-                className="w-full py-2.5 rounded-lg bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1 hover:opacity-90 transition-opacity"
+                className="w-full py-3.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-xs flex items-center justify-center gap-1.5 border border-gray-900/15 shadow-sm active:scale-98 transition-all"
               >
                 <span>다음 기출문제 풀기</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 stroke-[2.5]" />
               </button>
             </div>
           )}

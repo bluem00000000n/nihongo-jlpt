@@ -34,6 +34,10 @@ import {
   History,
   Trash2,
   X,
+  Send,
+  Languages,
+  ChevronRight,
+  AlertCircle,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -60,7 +64,14 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   const [callDuration, setCallDuration] = useState<number>(0);
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [isAiSpeaking, setIsAiSpeaking] = useState<boolean>(false);
+  const [isListening, setIsListening] = useState<boolean>(false);
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState<boolean>(false);
+
+  // Microphone & Speech input state
+  const [inputLang, setInputLang] = useState<'ja-JP' | 'ko-KR'>('ja-JP');
+  const [interimTranscript, setInterimTranscript] = useState<string>('');
+  const [manualText, setManualText] = useState<string>('');
+  const [micStatusMsg, setMicStatusMsg] = useState<string>('');
 
   // Call Transcripts & History
   const [sessionTurns, setSessionTurns] = useState<number>(0);
@@ -73,6 +84,12 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const recognitionRef = useRef<any>(null);
+  const isAiSpeakingRef = useRef<boolean>(false);
+  const isMutedRef = useRef<boolean>(false);
+  const transcriptsEndRef = useRef<HTMLDivElement | null>(null);
+
+  isAiSpeakingRef.current = isAiSpeaking;
+  isMutedRef.current = isMuted;
 
   // Load persistent call history on mount
   useEffect(() => {
@@ -102,6 +119,11 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     };
   }, [callState]);
 
+  // Auto scroll transcript to bottom
+  useEffect(() => {
+    transcriptsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [callTranscripts, currentSubtitle, interimTranscript]);
+
   const formatTimer = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -117,7 +139,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         stream.getTracks().forEach((track) => track.stop());
 
-        // Audio Context unlock for iOS
+        // Audio Context unlock for iOS Safari
         try {
           const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
           if (AudioCtx) {
@@ -147,6 +169,8 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     setLatestCorrection(null);
     setFinalReport(null);
     setCallTranscripts([]);
+    setInterimTranscript('');
+    setMicStatusMsg('전화 연결 중...');
 
     setTimeout(async () => {
       setCallState('connected');
@@ -169,67 +193,140 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
       setCallTranscripts([initialMessage]);
       await speakAI(fullOpeningJp, fullOpeningKr);
-      startHandsFreeRecognition();
-    }, 1400);
+      startRecognitionSafely();
+    }, 1200);
   };
 
   // Speak AI via Tokyo standard voice matching character's gender
   const speakAI = async (jp: string, kr: string) => {
+    // Pause recognition while AI is speaking so AI does not hear itself
+    stopRecognitionSafely();
     setCurrentSubtitle({ speaker: selectedCharacter.name, text: jp, kr });
     setIsAiSpeaking(true);
+    setMicStatusMsg('강사 발화 중...');
+
     await speechService.speak(jp, 0.92, 1.0, selectedCharacter.gender);
+
     setIsAiSpeaking(false);
+    setMicStatusMsg('말씀해 주세요 (마이크 대기 중)');
   };
 
-  // Start continuous recognition
-  const startHandsFreeRecognition = () => {
+  // Stop recognition safely without errors
+  const stopRecognitionSafely = () => {
+    setIsListening(false);
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onend = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+  };
+
+  // Start recognition safely with interim feedback and cross-browser support
+  const startRecognitionSafely = () => {
     if (typeof window === 'undefined') return;
+    if (isMutedRef.current || isAiSpeakingRef.current) return;
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setIsPermissionModalOpen(true);
+      setMicStatusMsg('음성 인식을 지원하지 않는 브라우저입니다. 아래 텍스트 입력창을 사용해 주세요.');
       return;
     }
 
+    // Stop existing instance first
+    stopRecognitionSafely();
+
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = 'ja-JP';
-      recognition.interimResults = false;
-      recognition.continuous = true;
+      recognition.lang = inputLang;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      // On iOS Safari continuous can crash/abort, so false is safer and we cycle gracefully
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
+      recognition.continuous = !isIOS;
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        setMicStatusMsg(inputLang === 'ja-JP' ? '🎙️ 듣고 있습니다 (일본어로 말씀해 주세요)...' : '🎙️ 듣고 있습니다 (한국어로 말씀해 주세요)...');
+      };
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[event.results.length - 1][0].transcript;
-        if (transcript.trim() && !isMuted) {
-          handleIncomingUserSpeech(transcript.trim());
+        let interim = '';
+        let final = '';
+
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          const item = event.results[i];
+          if (item.isFinal) {
+            final += item[0].transcript;
+          } else {
+            interim += item[0].transcript;
+          }
+        }
+
+        if (interim) {
+          setInterimTranscript(interim);
+        }
+
+        if (final.trim() && !isMutedRef.current) {
+          setInterimTranscript('');
+          stopRecognitionSafely();
+          handleIncomingUserSpeech(final.trim());
         }
       };
 
       recognition.onerror = (event: any) => {
+        console.warn('SpeechRecognition error:', event.error);
         if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+          setMicStatusMsg('마이크 권한이 차단되었습니다. 마이크 버튼을 눌러 권한을 허용하세요.');
           setIsPermissionModalOpen(true);
+        } else if (event.error === 'no-speech') {
+          // Normal timeout when silence
+          setMicStatusMsg('말씀을 인식하지 못했습니다. 다시 말씀하시거나 [말하기]를 눌러주세요.');
         }
+        setIsListening(false);
       };
 
       recognition.onend = () => {
-        if (callState === 'connected' && !isMuted) {
-          try {
-            recognition.start();
-          } catch {}
+        setIsListening(false);
+        // If still in call, not muted, and AI not speaking, prompt user
+        if (callState === 'connected' && !isMutedRef.current && !isAiSpeakingRef.current) {
+          setMicStatusMsg('아래 [말하기]를 누르거나 답변을 입력하세요.');
         }
       };
 
       recognitionRef.current = recognition;
       recognition.start();
-    } catch (e) {
-      console.error(e);
-      setIsPermissionModalOpen(true);
+    } catch (e: any) {
+      console.warn('Recognition start exception:', e);
+      setIsListening(false);
+      setMicStatusMsg('마이크를 시작하려면 아래 [말하기] 버튼을 터치해 주세요.');
     }
   };
 
-  // Process incoming user speech
+  // Push-to-Talk or Tap-to-Talk toggle
+  const toggleListening = () => {
+    if (callState !== 'connected') return;
+    if (isListening) {
+      stopRecognitionSafely();
+      setMicStatusMsg('음성 인식을 일시 정지했습니다.');
+    } else {
+      if (isAiSpeaking) {
+        speechService.stop();
+        setIsAiSpeaking(false);
+      }
+      startRecognitionSafely();
+    }
+  };
+
+  // Process incoming user speech (or manual text fallback)
   const handleIncomingUserSpeech = async (userText: string) => {
+    if (!userText.trim()) return;
+
     setSessionTurns((prev) => prev + 1);
     setCurrentSubtitle({ speaker: '나 (수강생)', text: userText, kr: '실시간 음성 발화' });
 
@@ -243,6 +340,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     };
 
     setCallTranscripts((prev) => [...prev, userMsg]);
+    setMicStatusMsg('AI 강사가 답변을 생각하고 있습니다...');
 
     const aiConfig = stats.aiSettings;
     let replyJp = '';
@@ -290,15 +388,15 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
       }
     }
 
-    // Smart persona fallback response
+    // Smart persona fallback response if LLM was unavailable
     if (!replyJp) {
       const lower = userText.toLowerCase();
-      if (lower.includes('元気') || lower.includes('げんき') || lower.includes('おつかれ') || lower.includes('좋아')) {
-        replyJp = `それは良かったです！${selectedTopic.title}について、他にも普段気になっていることはありますか？`;
-        replyKr = `다행이네요! ${selectedTopic.title}에 대해 평소 다른 궁금한 점도 있으신가요?`;
-      } else if (lower.includes('仕事') || lower.includes('つかれた') || lower.includes('힘들')) {
-        replyJp = 'お仕事本当にお疲れ様です。お忙しい中日本語の通話練習、素晴らしい熱意ですね！';
-        replyKr = '일하시느라 정말 고생 많으셨어요. 바쁘신 와중에 일본어 전화 연습이라니 훌륭한 열정입니다!';
+      if (lower.includes('元気') || lower.includes('げんき') || lower.includes('おつかれ') || lower.includes('좋아') || lower.includes('안녕')) {
+        replyJp = `それは良かったです！${selectedTopic.title}について、普段どんなことをされていますか？`;
+        replyKr = `다행이네요! ${selectedTopic.title}에 대해 평소 어떤 걸 하고 계신가요?`;
+      } else if (lower.includes('仕事') || lower.includes('つかれた') || lower.includes('힘들') || lower.includes('바빠')) {
+        replyJp = 'お仕事本当にお疲れ様です！お忙しい中日本語の通話練習、素晴らしい熱意ですね。';
+        replyKr = '일하시느라 정말 고생 많으셨어요! 바쁘신 와중에 일본어 전화 연습이라니 훌륭한 열정입니다.';
         itemCorrection = {
           id: `cor-${Date.now()}`,
           originalText: userText,
@@ -309,8 +407,8 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
       } else {
-        replyJp = `なるほど！${selectedCharacter.name.includes('켄타') ? 'それすごく面白いね！' : '大変わかりやすいご説明ですね。'} ちなみに、週末はどんなご予定がありますか？`;
-        replyKr = `그렇군요! 알기 쉽게 잘 설명해 주셨어요. 덧붙여 이번 주말에는 어떤 계획이 있으신가요?`;
+        replyJp = `なるほど！${selectedCharacter.name.includes('켄타') ? 'それすごく面白いね！' : '大変わかりやすいご説明ですね。'} ちなみに、もっと詳しく教えていただけますか？`;
+        replyKr = `그렇군요! 알기 쉽게 잘 설명해 주셨어요. 덧붙여 조금 더 자세히 들려주실 수 있나요?`;
       }
     }
 
@@ -332,31 +430,48 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
     setCallTranscripts((prev) => [...prev, aiMsg]);
     await speakAI(replyJp, replyKr);
+
+    // After AI finishes speaking, resume listening
+    setTimeout(() => {
+      if (callState === 'connected' && !isMutedRef.current) {
+        startRecognitionSafely();
+      }
+    }, 400);
+  };
+
+  // Submit manual text fallback
+  const handleSendManualText = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualText.trim() || callState !== 'connected') return;
+    const text = manualText.trim();
+    setManualText('');
+    stopRecognitionSafely();
+    handleIncomingUserSpeech(text);
   };
 
   // Toggle Mute
   const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (!isMuted && recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
-    } else if (isMuted && callState === 'connected') {
-      startHandsFreeRecognition();
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    isMutedRef.current = nextMuted;
+    if (nextMuted) {
+      stopRecognitionSafely();
+      setMicStatusMsg('음소거 되었습니다.');
+    } else {
+      if (callState === 'connected' && !isAiSpeaking) {
+        startRecognitionSafely();
+      }
     }
   };
 
   // End Call, Generate Report & Persist to Storage
   const handleEndCall = () => {
     speechService.stop();
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
-    }
+    stopRecognitionSafely();
 
     setCallState('ended');
     setIsAiSpeaking(false);
+    setMicStatusMsg('통화가 종료되었습니다.');
 
     // Generate comprehensive session report
     const report = generateSessionReport(
@@ -417,40 +532,44 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   };
 
   return (
-    <div className="space-y-4 max-w-md mx-auto pb-10">
+    <div className="space-y-4 max-w-md mx-auto pb-12">
       {/* Microphone Permission Modal */}
       <MicrophonePermissionModal
         isOpen={isPermissionModalOpen}
         onClose={() => setIsPermissionModalOpen(false)}
         onGranted={() => {
           setIsPermissionModalOpen(false);
-          handleStartCall();
+          if (callState === 'connected') {
+            startRecognitionSafely();
+          } else {
+            handleStartCall();
+          }
         }}
-        featureName="전화일본어 통화"
+        featureName="전화일본어 실시간 통화"
       />
 
-      {/* Character Selector Modal */}
+      {/* Character Selector Modal (Pure White, Unified UI) */}
       {isCharacterModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 max-w-md w-full p-5 space-y-3.5 max-h-[88vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
-              <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.2 rounded-xs bg-[#FFE000] text-stone-900 text-[9px] font-extrabold shadow-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full p-5 space-y-4 max-h-[88vh] overflow-y-auto text-gray-900">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-[#FFE000] text-gray-950 text-[10px] font-black border border-gray-900/10">
                   TUTOR PERSONA
                 </span>
-                <h3 className="text-sm font-extrabold text-stone-900 dark:text-stone-100">
+                <h3 className="text-sm font-black text-gray-950">
                   전화 강사 캐릭터 지정
                 </h3>
               </div>
               <button
                 onClick={() => setIsCharacterModalOpen(false)}
-                className="w-7 h-7 rounded-md bg-stone-200/70 text-stone-600 flex items-center justify-center text-xs font-bold"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold transition-colors"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {phoneTutorCharacters.map((char) => {
                 const isSelected = selectedCharacter.id === char.id;
                 return (
@@ -460,26 +579,26 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
                       setSelectedCharacter(char);
                       setIsCharacterModalOpen(false);
                     }}
-                    className={`w-full p-3 rounded-xl border text-left transition-all flex items-start gap-3 ${
+                    className={`w-full p-3.5 rounded-xl border text-left transition-all flex items-start gap-3 ${
                       isSelected
-                        ? 'bg-[#FFE000] text-stone-900 border-stone-900 shadow-sm'
-                        : 'bg-white dark:bg-stone-850 text-stone-800 dark:text-stone-200 border-[#DDD5C5] dark:border-stone-750 hover:border-stone-800'
+                        ? 'bg-amber-50 border-2 border-[#FFE000] text-gray-950 shadow-sm'
+                        : 'bg-white border-gray-200 hover:border-gray-400 text-gray-900'
                     }`}
                   >
-                    <span className="text-2xl shrink-0 p-1 bg-white/70 rounded-lg border border-black/10">
+                    <span className="text-3xl shrink-0 p-1.5 bg-gray-50 rounded-xl border border-gray-200">
                       {char.avatarIcon}
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="font-extrabold text-sm">{char.name}</span>
-                        <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-xs ${
-                          isSelected ? 'bg-stone-900 text-white' : 'bg-[#FAF7F0] text-stone-700 border border-[#DDD5C5]'
+                        <span className="font-black text-sm text-gray-950">{char.name}</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                          isSelected ? 'bg-gray-950 text-white' : 'bg-gray-100 text-gray-700'
                         }`}>
                           {char.ageGroup} · {char.gender === 'female' ? '여성' : '남성'}
                         </span>
                       </div>
-                      <p className="text-[11px] font-medium opacity-90 mt-0.5">{char.role}</p>
-                      <p className="text-[10px] opacity-75 mt-0.5">{char.speechStyle}</p>
+                      <p className="text-xs font-bold text-gray-700 mt-1">{char.role}</p>
+                      <p className="text-[11px] text-gray-500 mt-0.5">{char.speechStyle}</p>
                     </div>
                   </button>
                 );
@@ -489,28 +608,28 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
       )}
 
-      {/* Topic Selector Modal */}
+      {/* Topic Selector Modal (Pure White, Unified UI) */}
       {isTopicModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 max-w-md w-full p-5 space-y-3.5 max-h-[88vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
-              <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.2 rounded-xs bg-[#FFE000] text-stone-900 text-[9px] font-extrabold shadow-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full p-5 space-y-4 max-h-[88vh] overflow-y-auto text-gray-900">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-[#FFE000] text-gray-950 text-[10px] font-black border border-gray-900/10">
                   CALL TOPIC
                 </span>
-                <h3 className="text-sm font-extrabold text-stone-900 dark:text-stone-100">
+                <h3 className="text-sm font-black text-gray-950">
                   통화 대화 주제 선택
                 </h3>
               </div>
               <button
                 onClick={() => setIsTopicModalOpen(false)}
-                className="w-7 h-7 rounded-md bg-stone-200/70 text-stone-600 flex items-center justify-center text-xs font-bold"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold transition-colors"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {phoneLessonTopics.map((top) => {
                 const isSelected = selectedTopic.id === top.id;
                 return (
@@ -520,19 +639,22 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
                       setSelectedTopic(top);
                       setIsTopicModalOpen(false);
                     }}
-                    className={`w-full p-3 rounded-xl border text-left transition-all ${
+                    className={`w-full p-3.5 rounded-xl border text-left transition-all ${
                       isSelected
-                        ? 'bg-[#FFE000] text-stone-900 border-stone-900 shadow-sm'
-                        : 'bg-white dark:bg-stone-850 text-stone-800 dark:text-stone-200 border-[#DDD5C5] dark:border-stone-750 hover:border-stone-800'
+                        ? 'bg-amber-50 border-2 border-[#FFE000] text-gray-950 shadow-sm'
+                        : 'bg-white border-gray-200 hover:border-gray-400 text-gray-900'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded-xs bg-black/5 font-bold">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-gray-100 text-gray-700">
                         {top.category} · {top.level}
                       </span>
                     </div>
-                    <h4 className="text-xs font-extrabold">{top.title}</h4>
-                    <p className="text-[10px] opacity-80 font-serif mt-0.5">{top.japaneseTitle}</p>
+                    <h4 className="text-sm font-black text-gray-950">{top.title}</h4>
+                    <p className="text-xs text-gray-600 font-medium mt-1">{top.japaneseTitle}</p>
+                    <p className="text-[11px] text-amber-700 font-bold mt-1">
+                      첫 질문: &ldquo;{top.starterQuestionKr}&rdquo;
+                    </p>
                   </button>
                 );
               })}
@@ -541,38 +663,40 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
         </div>
       )}
 
-      {/* Top Mobile Card: Tutor Persona & Today's Topic Setup (LOFT Note) */}
-      <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-3">
-        <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
+      {/* Top Mobile Card: Tutor Persona & Today's Topic Setup (Pure White Card) */}
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
+        <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-xs text-gray-500 font-bold">
           <div className="flex items-center gap-1.5">
-            <span className="px-1 py-0.2 bg-[#FFE000] text-black font-black text-[9px] rounded-xs shadow-xs">TELEPHONE JAPANESE</span>
-            <span>電話レッスン</span>
+            <span className="px-1.5 py-0.5 bg-[#FFE000] text-gray-950 font-black text-[9px] rounded-md shadow-xs">
+              TELEPHONE JAPANESE
+            </span>
+            <span className="text-gray-900 font-black">電話レッスン</span>
           </div>
           <button
             onClick={() => setIsHistoryDrawerOpen(!isHistoryDrawerOpen)}
-            className="flex items-center gap-1 font-extrabold text-[#D93829] hover:underline"
+            className="flex items-center gap-1 font-bold text-red-600 hover:underline"
           >
-            <History className="w-3 h-3" />
+            <History className="w-3.5 h-3.5" />
             <span>기록부 ({callHistory.length}건)</span>
           </button>
         </div>
 
         {/* Selected Tutor Character Strip */}
-        <div className="flex items-center justify-between bg-white dark:bg-stone-850 p-2.5 rounded-xl border border-[#DDD5C5] dark:border-stone-750 shadow-xs">
-          <div className="flex items-center gap-2.5">
-            <span className="text-2xl p-1 bg-[#FAF7F0] rounded-md border border-stone-200">
+        <div className="flex items-center justify-between bg-gray-50 p-3 rounded-xl border border-gray-200">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl p-1.5 bg-white rounded-xl border border-gray-200 shadow-xs">
               {selectedCharacter.avatarIcon}
             </span>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xs text-stone-900 dark:text-stone-100">
+                <span className="font-black text-sm text-gray-950">
                   {selectedCharacter.name}
                 </span>
-                <span className="text-[9px] px-1 py-0.2 rounded-xs bg-[#FFE000] text-stone-900 font-extrabold">
+                <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-[#FFE000] text-gray-950 font-black">
                   {selectedCharacter.ageGroup} · {selectedCharacter.gender === 'female' ? '여성' : '남성'}
                 </span>
               </div>
-              <p className="text-[10px] text-stone-500 mt-0.5 line-clamp-1">
+              <p className="text-xs font-bold text-gray-600 mt-0.5 line-clamp-1">
                 {selectedCharacter.role}
               </p>
             </div>
@@ -581,76 +705,78 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           <button
             onClick={() => setIsCharacterModalOpen(true)}
             disabled={callState === 'connected'}
-            className="px-2.5 py-1 rounded-md bg-[#FAF7F0] hover:bg-[#F2ECE1] border border-[#DDD5C5] text-[11px] font-bold text-stone-700 transition-colors shrink-0"
+            className="px-3 py-1.5 rounded-lg bg-white hover:bg-gray-100 border border-gray-300 text-xs font-bold text-gray-800 transition-colors shrink-0 shadow-xs disabled:opacity-50"
           >
             강사 변경
           </button>
         </div>
 
         {/* Selected Topic & AI Question Preview Strip */}
-        <div className="bg-white dark:bg-stone-850 p-2.5 rounded-xl border border-[#DDD5C5] dark:border-stone-750 shadow-xs space-y-1.5">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-extrabold text-stone-800 dark:text-stone-200 flex items-center gap-1">
-              <BookOpen className="w-3.5 h-3.5 text-[#D93829]" />
+        <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-2">
+          <div className="flex items-center justify-between text-xs">
+            <span className="font-black text-gray-900 flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-red-600" />
               오늘의 대화 소재 (AI가 먼저 질문)
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={handlePickRandomTopic}
                 disabled={callState === 'connected'}
-                className="text-[10px] text-stone-500 hover:text-stone-800 flex items-center gap-0.5"
+                className="text-xs font-bold text-gray-600 hover:text-gray-950 flex items-center gap-0.5 disabled:opacity-50"
                 title="랜덤 소재 뽑기"
               >
-                <Shuffle className="w-2.5 h-2.5" />
+                <Shuffle className="w-3 h-3" />
                 <span>랜덤</span>
               </button>
               <button
                 onClick={() => setIsTopicModalOpen(true)}
                 disabled={callState === 'connected'}
-                className="text-[10px] font-bold text-[#D93829] hover:underline"
+                className="text-xs font-bold text-red-600 hover:underline disabled:opacity-50"
               >
                 변경
               </button>
             </div>
           </div>
 
-          <div className="p-2 rounded-lg bg-[#FEF9C3] dark:bg-[#2C2718] border border-[#FDE047] dark:border-yellow-900/60 text-xs">
-            <span className="font-extrabold text-amber-900 dark:text-amber-200 block">
+          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+            <span className="font-black text-amber-950 block text-xs">
               📌 {selectedTopic.title}
             </span>
-            <p className="text-[10px] text-stone-600 dark:text-stone-400 mt-0.5 leading-snug">
+            <p className="text-xs text-amber-900 mt-1 leading-snug font-medium">
               첫 질문: &ldquo;{selectedTopic.starterQuestionKr}&rdquo;
             </p>
           </div>
         </div>
       </div>
 
-      {/* Main Calling Card (Sumi Ink Telephone Slate) */}
-      <div className="bg-[#24221F] text-stone-100 rounded-2xl border border-[#3A3631] shadow-xl p-5 flex flex-col justify-between min-h-[460px] relative overflow-hidden">
+      {/* Main Calling Card (Pure White with Crisp High-Contrast Display) */}
+      <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg p-5 flex flex-col justify-between min-h-[460px] relative overflow-hidden">
         {/* Top Info Bar */}
-        <div className="flex items-center justify-between text-xs text-stone-400 relative z-10 border-b border-stone-700/60 pb-3">
-          <div className="flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${callState === 'connected' ? 'bg-[#FFE000] animate-pulse' : 'bg-stone-500'}`} />
-            <span className="font-mono font-bold text-stone-200 tracking-wider text-[11px]">
+        <div className="flex items-center justify-between text-xs text-gray-600 pb-3 border-b border-gray-200">
+          <div className="flex items-center gap-2">
+            <span className={`w-2.5 h-2.5 rounded-full ${callState === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
+            <span className="font-mono font-bold text-gray-900 text-xs">
               {selectedCharacter.japaneseName} · {selectedCharacter.accentNote}
             </span>
           </div>
 
-          <div className="px-2.5 py-0.5 rounded-sm bg-stone-800 border border-stone-600/70 text-[11px] font-mono text-[#FFE000] font-bold">
+          <div className="px-3 py-1 rounded-md bg-gray-900 text-[#FFE000] font-mono font-black text-xs shadow-xs">
             {formatTimer(callDuration)}
           </div>
         </div>
 
         {/* Central Avatar & Call Status */}
-        <div className="text-center py-5 relative z-10 flex flex-col items-center justify-center">
+        <div className="text-center py-4 flex flex-col items-center justify-center">
           <div className="relative mb-3">
             <div
               className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all duration-300 border-2 ${
                 isAiSpeaking
-                  ? 'bg-[#D93829] border-[#FFE000] scale-105 shadow-xl shadow-black/50 ring-4 ring-[#FFE000]/30'
+                  ? 'bg-amber-100 border-[#FFE000] scale-105 shadow-xl ring-4 ring-[#FFE000]/40'
+                  : isListening
+                  ? 'bg-red-50 border-red-500 scale-105 ring-4 ring-red-500/20 shadow-md'
                   : callState === 'connected'
-                  ? 'bg-stone-800 border-emerald-500 ring-2 ring-emerald-500/20'
-                  : 'bg-stone-850 border-stone-700'
+                  ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20'
+                  : 'bg-gray-100 border-gray-300'
               }`}
             >
               <span className="text-4xl">{selectedCharacter.avatarIcon}</span>
@@ -658,46 +784,81 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
             {/* Speaking audio wave indicator */}
             {isAiSpeaking && (
-              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-xs bg-[#FFE000] text-[9px] font-black text-black shadow-md border border-stone-900 animate-bounce">
-                강사 발화 중
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-md bg-[#FFE000] text-[10px] font-black text-gray-950 shadow-md border border-gray-900 animate-bounce">
+                강사 발화 중 🔊
+              </span>
+            )}
+            {isListening && !isAiSpeaking && (
+              <span className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-md bg-red-600 text-[10px] font-black text-white shadow-md animate-pulse">
+                🎙️ 듣는 중...
               </span>
             )}
           </div>
 
-          <h3 className="text-lg font-extrabold text-white">{selectedCharacter.name}</h3>
-          <p className="text-xs text-stone-400 mt-0.5">
+          <h3 className="text-lg font-black text-gray-950">{selectedCharacter.name}</h3>
+          <p className="text-xs font-bold text-gray-600 mt-1">
             {callState === 'calling'
               ? '강사님께 전화 연결 중 (Ringing)...'
               : callState === 'connected'
-              ? '전화일본어 통화 중 (말씀하시면 강사가 답변합니다)'
+              ? isAiSpeaking
+                ? '강사님이 말씀하고 계십니다...'
+                : isListening
+                ? '🎙️ 지금 말씀하세요! (목소리를 실시간 감지 중입니다)'
+                : '말씀하시거나 아래 [말하기] 버튼을 터치해 주세요'
               : callState === 'ended'
               ? '수업이 종료되었습니다. 아래 리포트를 확인하세요.'
-              : '수업 준비가 완료되었습니다. 아래 통화 버튼을 누르세요.'}
+              : '수업 준비 완료! 아래 [전화일본어 시작]을 누르세요.'}
           </p>
 
+          {/* Microphone Live Status & Language Switcher */}
           {callState === 'connected' && (
-            <div className="mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-stone-800/90 text-[#FFE000] border border-stone-700 rounded-md text-[10px] font-mono font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FFE000] animate-pulse" />
-              <span>LIVE LESSON CALL</span>
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                onClick={() => setInputLang(inputLang === 'ja-JP' ? 'ko-KR' : 'ja-JP')}
+                className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 border border-gray-300 text-[11px] font-black text-gray-800 flex items-center gap-1 transition-colors"
+                title="음성 인식 언어 변경"
+              >
+                <Languages className="w-3.5 h-3.5 text-amber-600" />
+                <span>{inputLang === 'ja-JP' ? '🇯🇵 일본어 인식' : '🇰🇷 한국어 인식'}</span>
+                <span className="text-[9px] text-gray-500 font-normal">(전환)</span>
+              </button>
+
+              <div className="px-2.5 py-1 rounded-md bg-gray-100 border border-gray-200 text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${isListening ? 'bg-red-500 animate-ping' : 'bg-gray-400'}`} />
+                <span className="line-clamp-1">{micStatusMsg || (isListening ? '음성 수신 중' : '대기')}</span>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Real-time Subtitles / Latest Speech */}
-        <div className="relative z-10 my-2 min-h-[90px] flex flex-col justify-end">
-          {currentSubtitle ? (
-            <div className="bg-[#1C1A18]/90 border border-stone-700/80 rounded-xl p-3.5 backdrop-blur-sm animate-fade-in space-y-1">
-              <div className="flex items-center justify-between text-[11px] text-stone-400">
-                <span className="font-bold text-[#FFE000]">{currentSubtitle.speaker}</span>
-                <span className="font-mono text-[9px] text-stone-500">REALTIME SPEECH</span>
+        {/* Real-time Subtitles / Latest Speech & Live Transcript Bubble */}
+        <div className="my-2 min-h-[90px] flex flex-col justify-end space-y-2">
+          {interimTranscript && (
+            <div className="bg-amber-50 border-2 border-amber-400 rounded-xl p-3 animate-pulse shadow-sm">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-900 mb-0.5">
+                <span className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                  실시간 음성 인식 중...
+                </span>
+                <span className="font-mono text-[9px] text-amber-700">LIVE PREVIEW</span>
               </div>
-              <p className="text-sm font-semibold text-white leading-snug">{currentSubtitle.text}</p>
+              <p className="text-sm font-black text-gray-950 leading-snug">&ldquo;{interimTranscript}&rdquo;</p>
+            </div>
+          )}
+
+          {currentSubtitle ? (
+            <div className="bg-gray-50 border border-gray-300 rounded-xl p-3.5 space-y-1 shadow-xs">
+              <div className="flex items-center justify-between text-xs text-gray-600">
+                <span className="font-black text-gray-950">{currentSubtitle.speaker}</span>
+                <span className="font-mono text-[9px] font-bold text-gray-500">REALTIME SPEECH</span>
+              </div>
+              <p className="text-sm font-bold text-gray-950 leading-snug">{currentSubtitle.text}</p>
               {currentSubtitle.kr && (
-                <p className="text-xs text-stone-400 leading-snug">{currentSubtitle.kr}</p>
+                <p className="text-xs text-gray-600 leading-snug">{currentSubtitle.kr}</p>
               )}
             </div>
           ) : (
-            <div className="text-center py-3 text-xs text-stone-500">
+            <div className="text-center py-3 text-xs font-bold text-gray-400">
               {callState === 'connected' ? '강사님의 첫 질문을 듣고 답변해 보세요...' : '전화 연결 후 대화 내용이 실시간 표시됩니다.'}
             </div>
           )}
@@ -705,121 +866,160 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
         {/* Real-time Inline Feedback Pill */}
         {latestCorrection && callState === 'connected' && (
-          <div className="relative z-10 mb-2 bg-[#2D1B1B] border border-rose-900/60 rounded-xl p-2.5 text-xs animate-slide-up shadow-xs">
-            <div className="flex items-center gap-1.5 text-rose-300 font-bold mb-0.5 text-[11px]">
-              <Edit3 className="w-3 h-3" />
+          <div className="mb-2 bg-red-50 border border-red-200 rounded-xl p-3 text-xs animate-slide-up shadow-xs">
+            <div className="flex items-center gap-1.5 text-red-600 font-black mb-1 text-xs">
+              <Edit3 className="w-3.5 h-3.5" />
               <span>실시간 원어민 뉘앙스 교정</span>
             </div>
-            <div className="text-stone-300 text-[11px]">
-              👉 <span className="text-[#FFE000] font-bold">{latestCorrection.improvedJapanese}</span>
+            <div className="text-gray-900 text-xs font-medium">
+              👉 <span className="text-red-700 font-black text-sm">{latestCorrection.improvedJapanese}</span>
             </div>
-            <div className="text-[10px] text-stone-400 mt-0.5">{latestCorrection.feedbackPoint}</div>
+            <div className="text-[11px] text-gray-600 mt-1 font-medium">{latestCorrection.feedbackPoint}</div>
           </div>
         )}
 
+        {/* In-Call Text Input Fallback (Guaranteeing 100% voice/text response) */}
+        {callState === 'connected' && (
+          <form onSubmit={handleSendManualText} className="pt-2 pb-1 border-t border-gray-200">
+            <div className="flex items-center gap-1.5">
+              <input
+                type="text"
+                value={manualText}
+                onChange={(e) => setManualText(e.target.value)}
+                placeholder="마이크가 안될 때 직접 입력 (일본어/한국어)..."
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded-xl text-xs font-medium text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white"
+              />
+              <button
+                type="submit"
+                disabled={!manualText.trim()}
+                className="px-3.5 py-2 bg-[#FFE000] hover:bg-[#FACC15] disabled:opacity-40 text-gray-950 font-black text-xs rounded-xl border border-gray-900/10 shadow-xs flex items-center gap-1 transition-all"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>전송</span>
+              </button>
+            </div>
+          </form>
+        )}
+
         {/* Bottom Call Action Buttons */}
-        <div className="relative z-10 pt-3 border-t border-stone-800">
+        <div className="pt-3 border-t border-gray-200">
           {callState === 'idle' || callState === 'ended' ? (
             <button
               onClick={checkMicAndStartCall}
-              className="w-full py-3 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-sm flex items-center justify-center gap-2 shadow-md border border-stone-800/30 active:scale-98 transition-all"
+              className="w-full py-3.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm flex items-center justify-center gap-2 shadow-sm border border-gray-900/15 active:scale-98 transition-all"
             >
-              <Phone className="w-4.5 h-4.5 fill-current" />
+              <Phone className="w-5 h-5 fill-current" />
               <span>전화일본어 시작 ({selectedCharacter.name})</span>
             </button>
           ) : (
-            <div className="flex items-center justify-around gap-2.5">
+            <div className="flex items-center justify-between gap-2">
+              {/* Push to talk / Tap to talk main button */}
               <button
-                onClick={toggleMute}
-                className={`flex-1 py-2.5 rounded-lg flex items-center justify-center gap-1.5 text-xs font-bold transition-all border ${
-                  isMuted
-                    ? 'bg-amber-600/30 text-amber-300 border-amber-500'
-                    : 'bg-stone-800 text-stone-300 border-stone-700 hover:bg-stone-700'
+                onClick={toggleListening}
+                className={`flex-2 py-3 rounded-xl flex items-center justify-center gap-1.5 text-xs font-black shadow-sm transition-all border ${
+                  isListening
+                    ? 'bg-red-600 text-white border-red-700 animate-pulse'
+                    : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
                 }`}
               >
-                {isMuted ? <MicOff className="w-4 h-4 text-amber-400" /> : <Mic className="w-4 h-4" />}
+                <Mic className="w-4 h-4 stroke-[2.5]" />
+                <span>{isListening ? '말씀하시는 중 (터치시 종료)' : '🎙️ 지금 말하기 (터치)'}</span>
+              </button>
+
+              {/* Mute button */}
+              <button
+                onClick={toggleMute}
+                className={`flex-1 py-3 rounded-xl flex items-center justify-center gap-1 text-xs font-bold transition-all border ${
+                  isMuted
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200'
+                }`}
+              >
+                {isMuted ? <MicOff className="w-4 h-4 text-amber-600" /> : <MicOff className="w-4 h-4 text-gray-500" />}
                 <span>{isMuted ? '음소거 됨' : '음소거'}</span>
               </button>
 
+              {/* End call button */}
               <button
                 onClick={handleEndCall}
-                className="flex-1 py-2.5 rounded-lg bg-[#D93829] hover:bg-[#B92B1E] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition-all border border-[#B92B1E]"
+                className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs flex items-center justify-center gap-1 shadow-sm active:scale-98 transition-all border border-red-700"
               >
                 <PhoneOff className="w-4 h-4 fill-white" />
-                <span>통화 종료 및 리포트</span>
+                <span>종료</span>
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Real-time Call Transcript Log (Live Notebook) */}
+      {/* Real-time Call Transcript Log (Live Notebook in Pure White) */}
       {callTranscripts.length > 0 && (
-        <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-2.5">
-          <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500">
-            <span className="font-extrabold text-stone-700 dark:text-stone-300">
+        <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-gray-100 text-xs font-mono text-gray-500">
+            <span className="font-black text-gray-900 text-xs">
               📜 실시간 통화 녹취록 ({callTranscripts.length}건)
             </span>
-            <span>LIVE TRANSCRIPT</span>
+            <span className="text-[10px] font-bold">LIVE TRANSCRIPT</span>
           </div>
 
-          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
             {callTranscripts.map((msg) => (
               <div
                 key={msg.id}
-                className={`p-2.5 rounded-xl text-xs space-y-1 ${
+                className={`p-3 rounded-xl text-xs space-y-1 ${
                   msg.speaker === 'user'
-                    ? 'bg-[#FEF9C3] dark:bg-[#2C2718] border border-[#FDE047] ml-4'
-                    : 'bg-white dark:bg-stone-850 border border-[#DDD5C5] mr-4 border-l-4 border-l-[#D93829]'
+                    ? 'bg-amber-50 border border-amber-300 ml-5 text-gray-950 font-bold'
+                    : 'bg-gray-50 border border-gray-200 mr-5 border-l-4 border-l-red-600 text-gray-950'
                 }`}
               >
-                <div className="flex items-center justify-between text-[10px] text-stone-500 font-mono">
-                  <span className="font-bold text-stone-800 dark:text-stone-200">{msg.speakerName}</span>
-                  <span>{msg.timestamp}</span>
+                <div className="flex items-center justify-between text-[11px] font-bold text-gray-600">
+                  <span className="text-gray-900 font-black">{msg.speakerName}</span>
+                  <span className="font-mono text-[10px] text-gray-500">{msg.timestamp}</span>
                 </div>
-                <p className="font-semibold text-stone-900 dark:text-stone-100 leading-snug">{msg.japanese}</p>
+                <p className="font-black text-sm text-gray-950 leading-snug">{msg.japanese}</p>
                 {msg.korean && (
-                  <p className="text-[11px] text-stone-500 leading-snug">{msg.korean}</p>
+                  <p className="text-xs text-gray-600 leading-snug font-medium">{msg.korean}</p>
                 )}
                 {msg.correction && (
-                  <div className="mt-1 pt-1 border-t border-dashed border-rose-300 text-[11px] text-[#D93829]">
+                  <div className="mt-1.5 pt-1.5 border-t border-dashed border-red-200 text-xs text-red-700 font-bold">
                     👉 교정: {msg.correction.improvedJapanese} ({msg.correction.feedbackPoint})
                   </div>
                 )}
               </div>
             ))}
+            <div ref={transcriptsEndRef} />
           </div>
         </div>
       )}
 
-      {/* Comprehensive Session Report (Displayed after call ends) */}
+      {/* Comprehensive Session Report (Displayed after call ends - Pure White Card) */}
       {finalReport && (
-        <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl p-4 sm:p-5 border border-[#E2D9C8] dark:border-stone-800 shadow-[0_2px_8px_rgba(35,30,25,0.05)] space-y-4 animate-slide-up">
-          <div className="flex items-center justify-between pb-3 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
-            <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-md bg-[#FFE000] text-stone-900 border border-stone-800/30 flex items-center justify-center font-bold shadow-xs">
-                <Award className="w-4 h-4" />
+        <div className="bg-white rounded-2xl p-5 border-2 border-gray-200 shadow-md space-y-4 animate-slide-up">
+          <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+            <div className="flex items-center gap-2.5">
+              <span className="w-9 h-9 rounded-xl bg-[#FFE000] text-gray-950 border border-gray-900/10 flex items-center justify-center font-bold shadow-xs">
+                <Award className="w-5 h-5" />
               </span>
               <div>
-                <h3 className="text-base font-extrabold text-stone-900 dark:text-stone-100">
+                <h3 className="text-base font-black text-gray-950">
                   전화일본어 종합 분석 리포트
                 </h3>
-                <p className="text-[11px] text-stone-500 dark:text-stone-400 font-mono">
+                <p className="text-xs text-gray-500 font-medium">
                   강사: {selectedCharacter.name} · 주제: {selectedTopic.title}
                 </p>
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-xl font-black text-[#D93829] font-mono">
+              <div className="text-2xl font-black text-red-600 font-mono">
                 {finalReport.grammarAccuracyScore}점
               </div>
-              <span className="text-[10px] text-stone-500 font-mono">ACCURACY</span>
+              <span className="text-[10px] font-black text-gray-500 font-mono">ACCURACY</span>
             </div>
           </div>
 
-          <div className="p-3.5 bg-[#FEF9C3] dark:bg-[#2C2718] rounded-xl border border-[#FDE047] dark:border-yellow-900/60 text-xs text-stone-800 dark:text-stone-200 leading-relaxed shadow-xs">
-            <span className="font-extrabold block text-amber-900 dark:text-amber-300 mb-1">
+          <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 text-xs text-gray-900 leading-relaxed shadow-xs">
+            <span className="font-black block text-amber-950 mb-1 text-sm">
               【{selectedCharacter.name} 강사 피드백 메모】
             </span>
             {finalReport.aiSummary}
@@ -827,23 +1027,23 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
           {finalReport.corrections.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-xs font-extrabold text-stone-800 dark:text-stone-200 flex items-center gap-1.5">
-                <span className="loft-hanko text-[9px] px-1 py-0.2">添削</span>
+              <h4 className="text-xs font-black text-gray-950 flex items-center gap-1.5">
+                <span className="px-1.5 py-0.5 rounded-md bg-red-600 text-white text-[9px] font-bold">添削</span>
                 <span>수업 중 교정 피드백 ({finalReport.corrections.length}건)</span>
               </h4>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {finalReport.corrections.map((item, idx) => (
                   <div
                     key={item.id || idx}
-                    className="p-3 bg-white dark:bg-stone-850 rounded-lg border border-[#DDD5C5] dark:border-stone-700 text-xs space-y-1 shadow-xs"
+                    className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs space-y-1 shadow-xs"
                   >
-                    <div className="text-stone-400 line-through">
+                    <div className="text-gray-400 line-through font-medium">
                       수강생 발화: {item.originalText}
                     </div>
-                    <div className="font-extrabold text-[#D93829] dark:text-rose-400">
+                    <div className="font-black text-red-600 text-sm">
                       👉 원어민 추천: {item.improvedJapanese}
                     </div>
-                    <div className="text-[11px] text-stone-600 dark:text-stone-300">
+                    <div className="text-xs text-gray-700 font-medium">
                       이유: {item.feedbackPoint}
                     </div>
                   </div>
@@ -852,48 +1052,50 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
             </div>
           )}
 
+          {/* Unified Next Action Button */}
           <button
             onClick={checkMicAndStartCall}
-            className="w-full py-2.5 rounded-lg bg-[#FFE000] hover:bg-[#FACC15] text-stone-900 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-xs border border-stone-800/20 active:scale-98 transition-all"
+            className="w-full py-3.5 rounded-xl bg-[#FFE000] hover:bg-[#FACC15] text-gray-950 font-black text-sm flex items-center justify-center gap-2 shadow-sm border border-gray-900/15 active:scale-98 transition-all"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-4 h-4" />
             <span>다음 통화 수업 시작하기</span>
+            <ChevronRight className="w-4 h-4 stroke-[2.5]" />
           </button>
         </div>
       )}
 
-      {/* Persistent Call History Drawer / Note Modal */}
+      {/* Persistent Call History Modal (Pure White, Unified UI) */}
       {isHistoryDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-          <div className="bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 max-w-md w-full p-5 space-y-3.5 max-h-[88vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD5C5] dark:border-stone-800">
-              <div className="flex items-center gap-1.5">
-                <span className="px-1.5 py-0.2 rounded-xs bg-[#FFE000] text-stone-900 text-[9px] font-extrabold shadow-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 max-w-md w-full p-5 space-y-4 max-h-[88vh] overflow-y-auto text-gray-900">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-md bg-[#FFE000] text-gray-950 text-[10px] font-black border border-gray-900/10">
                   CALL ARCHIVE
                 </span>
-                <h3 className="text-sm font-extrabold text-stone-900 dark:text-stone-100">
+                <h3 className="text-sm font-black text-gray-950">
                   지난 전화일본어 통화 기록부
                 </h3>
               </div>
               <button
                 onClick={() => setIsHistoryDrawerOpen(false)}
-                className="w-7 h-7 rounded-md bg-stone-200/70 text-stone-600 flex items-center justify-center text-xs font-bold"
+                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {callHistory.length === 0 ? (
-              <div className="py-8 text-center text-xs text-stone-500">
+              <div className="py-8 text-center text-xs text-gray-500 font-medium">
                 아직 저장된 통화 기록이 없습니다. 통화를 진행하면 이곳에 자동 저장됩니다!
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs text-stone-500">
+                <div className="flex items-center justify-between text-xs text-gray-600 font-bold">
                   <span>총 {callHistory.length}회의 통화 녹취 보관 중</span>
                   <button
                     onClick={handleClearHistory}
-                    className="text-[10px] text-stone-400 hover:text-[#D93829] flex items-center gap-1"
+                    className="text-xs text-red-600 hover:underline flex items-center gap-1 font-bold"
                   >
                     <Trash2 className="w-3 h-3" />
                     <span>전체 삭제</span>
@@ -903,39 +1105,39 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
                 {callHistory.map((rec) => (
                   <div
                     key={rec.id}
-                    className="p-3.5 rounded-xl bg-white dark:bg-stone-850 border border-[#DDD5C5] dark:border-stone-750 shadow-xs space-y-2"
+                    className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 shadow-xs space-y-2"
                   >
-                    <div className="flex items-center justify-between text-xs pb-1.5 border-b border-stone-100 dark:border-stone-800">
+                    <div className="flex items-center justify-between text-xs pb-1.5 border-b border-gray-200">
                       <div>
-                        <span className="font-extrabold text-stone-900 dark:text-stone-100">{rec.characterName}</span>
-                        <span className="text-[10px] text-stone-500 font-mono ml-2">
+                        <span className="font-black text-gray-950 text-sm">{rec.characterName}</span>
+                        <span className="text-[11px] text-gray-500 font-mono ml-2">
                           {rec.date} {rec.time}
                         </span>
                       </div>
-                      <span className="font-mono font-extrabold text-xs text-[#D93829]">
+                      <span className="font-mono font-black text-sm text-red-600">
                         {rec.grammarScore}점
                       </span>
                     </div>
 
                     <div className="text-xs">
-                      <div className="text-[11px] font-bold text-stone-700 dark:text-stone-300">
+                      <div className="text-xs font-bold text-gray-800">
                         주제: {rec.topicTitle} ({Math.floor(rec.durationSeconds / 60)}분 {rec.durationSeconds % 60}초)
                       </div>
-                      <p className="text-[10px] text-stone-500 mt-1 line-clamp-2">
+                      <p className="text-xs text-gray-600 mt-1 line-clamp-2 leading-relaxed">
                         {rec.aiSummary}
                       </p>
                     </div>
 
                     {rec.messages && rec.messages.length > 0 && (
-                      <div className="mt-2 pt-2 border-t border-dashed border-stone-200 text-xs">
-                        <span className="text-[10px] font-bold text-stone-600 block mb-1">
+                      <div className="mt-2 pt-2 border-t border-dashed border-gray-200 text-xs">
+                        <span className="text-[11px] font-bold text-gray-700 block mb-1">
                           녹취 하이라이트:
                         </span>
                         <div className="space-y-1 max-h-32 overflow-y-auto">
                           {rec.messages.slice(0, 4).map((m, mIdx) => (
-                            <div key={mIdx} className="text-[11px] flex items-start gap-1">
-                              <span className="font-bold shrink-0 text-stone-600">{m.speakerName}:</span>
-                              <span className="text-stone-800 dark:text-stone-200 line-clamp-1">{m.japanese}</span>
+                            <div key={mIdx} className="text-xs flex items-start gap-1">
+                              <span className="font-bold shrink-0 text-gray-700">{m.speakerName}:</span>
+                              <span className="text-gray-950 font-medium line-clamp-1">{m.japanese}</span>
                             </div>
                           ))}
                         </div>

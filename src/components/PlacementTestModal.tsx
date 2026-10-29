@@ -130,8 +130,8 @@ export const PlacementTestModal: React.FC<PlacementTestModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-stone-900/60 backdrop-blur-xs animate-fade-in">
-      <div className="w-full max-w-md bg-[#FAF7F0] dark:bg-[#1E1D1B] rounded-t-2xl sm:rounded-2xl shadow-2xl border border-[#E2D9C8] dark:border-stone-800 p-5 flex flex-col max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div className="w-full max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl border border-gray-200 p-5 flex flex-col max-h-[90vh] overflow-hidden text-gray-900">
         {/* Top Header Strip */}
         <div className="flex items-center justify-between pb-2 border-b border-dashed border-[#DDD4C1] dark:border-stone-800 text-[10px] font-mono text-stone-500 mb-2">
           <div className="flex items-center gap-1.5">

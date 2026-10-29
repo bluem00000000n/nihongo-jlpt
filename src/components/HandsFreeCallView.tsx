@@ -205,7 +205,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     setIsAiSpeaking(true);
     setMicStatusMsg('강사 발화 중...');
 
-    await speechService.speak(jp, 0.92, 1.0, selectedCharacter.gender);
+    await speechService.speak(jp, 0.86, 1.0, selectedCharacter.gender);
 
     setIsAiSpeaking(false);
     setMicStatusMsg('말씀해 주세요 (마이크 대기 중)');

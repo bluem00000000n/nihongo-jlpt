@@ -40,12 +40,42 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
   const [inputText, setInputText] = useState<string>('');
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [isMicOn, setIsMicOn] = useState<boolean>(false);
+  const [micCountdown, setMicCountdown] = useState<number>(10);
   const [isPermissionModalOpen, setIsPermissionModalOpen] = useState<boolean>(false);
   const [isPlacementModalOpen, setIsPlacementModalOpen] = useState<boolean>(false);
   const [levelUpAlert, setLevelUpAlert] = useState<{ oldLevel: JLPTLevel; newLevel: JLPTLevel } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const micTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isMicOnRef = useRef<boolean>(false);
+
+  isMicOnRef.current = isMicOn;
+
+  const stopMicSafely = () => {
+    if (micTimerRef.current) {
+      clearInterval(micTimerRef.current);
+      micTimerRef.current = null;
+    }
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
+        recognitionRef.current.onerror = null;
+        recognitionRef.current.onend = null;
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
+    setIsMicOn(false);
+    setMicCountdown(10);
+  };
+
+  useEffect(() => {
+    return () => {
+      stopMicSafely();
+    };
+  }, []);
 
   // Load adaptive learner state on mount & prompt placement test if first time
   useEffect(() => {
@@ -191,13 +221,12 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
     initWelcomeChat(lvl);
   };
 
-  // Pre-flight mic permission check & toggle
+  // Pre-flight mic permission check & toggle with 10s countdown
   const toggleMic = async () => {
     if (typeof window === 'undefined') return;
 
-    if (isMicOn) {
-      recognitionRef.current?.stop();
-      setIsMicOn(false);
+    if (isMicOnRef.current) {
+      stopMicSafely();
       return;
     }
 
@@ -221,27 +250,56 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
       return;
     }
 
+    stopMicSafely();
+
     try {
       const rec = new SpeechRecognition();
       rec.lang = 'ja-JP';
-      rec.interimResults = false;
-      rec.onstart = () => setIsMicOn(true);
-      rec.onresult = (e: any) => {
-        const transcript = e.results[0][0].transcript;
-        setInputText(transcript);
-        setIsMicOn(false);
+      rec.interimResults = true;
+      rec.continuous = true;
+
+      rec.onstart = () => {
+        setIsMicOn(true);
+        setMicCountdown(10);
+
+        if (micTimerRef.current) clearInterval(micTimerRef.current);
+        micTimerRef.current = setInterval(() => {
+          setMicCountdown((prev) => {
+            if (prev <= 1) {
+              stopMicSafely();
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
       };
+
+      rec.onresult = (e: any) => {
+        let transcript = '';
+        for (let i = 0; i < e.results.length; i++) {
+          transcript += e.results[i][0].transcript;
+        }
+        if (transcript.trim()) {
+          setInputText(transcript.trim());
+        }
+      };
+
       rec.onerror = (e: any) => {
-        setIsMicOn(false);
+        console.warn('SpeechRecognition error:', e.error);
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
           setIsPermissionModalOpen(true);
         }
+        stopMicSafely();
       };
-      rec.onend = () => setIsMicOn(false);
+
+      rec.onend = () => {
+        stopMicSafely();
+      };
+
       recognitionRef.current = rec;
       rec.start();
     } catch {
-      setIsMicOn(false);
+      stopMicSafely();
       setIsPermissionModalOpen(true);
     }
   };
@@ -563,26 +621,37 @@ export const AdaptiveN1View: React.FC<AdaptiveN1ViewProps> = ({ stats, onAddXP }
             }}
             className="flex items-center gap-1.5"
           >
-            {/* Mic Speech Button */}
+            {/* Mic Speech Button with 10s Countdown */}
             <button
               type="button"
               onClick={toggleMic}
-              className={`p-2.5 rounded-lg transition-all border ${
+              className={`p-2 sm:p-2.5 rounded-lg transition-all border flex items-center justify-center gap-1.5 whitespace-nowrap shrink-0 shadow-xs ${
                 isMicOn
-                  ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse'
+                  ? 'bg-[#D93829] text-white border-[#B92B1E] animate-pulse px-2.5'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
               }`}
-              title={isMicOn ? '듣는 중... (터치 시 중단)' : '음성으로 말하기'}
+              title={isMicOn ? '음성 입력 중지' : '음성으로 말하기 (10초)'}
             >
-              {isMicOn ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {isMicOn ? (
+                <>
+                  <MicOff className="w-4 h-4 shrink-0" />
+                  <span className="text-xs font-black font-mono tracking-tight whitespace-nowrap">{micCountdown}초</span>
+                </>
+              ) : (
+                <Mic className="w-4 h-4 shrink-0" />
+              )}
             </button>
 
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              placeholder={`[${learnerState.currentLevel}] 일본어로 메모 작성`}
-              className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800"
+              placeholder={isMicOn ? `🎙️ 음성 듣는 중... (${micCountdown}초 후 종료)` : `[${learnerState.currentLevel}] 일본어로 메시지 작성`}
+              className={`flex-1 px-3 py-2 border rounded-lg text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-800 transition-all ${
+                isMicOn
+                  ? 'bg-amber-50/70 border-amber-300 placeholder:text-amber-900 font-bold'
+                  : 'bg-white border-gray-300 placeholder:text-gray-400'
+              }`}
             />
 
             <button

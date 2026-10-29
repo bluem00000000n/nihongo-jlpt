@@ -144,6 +144,7 @@ export async function POST(req: NextRequest) {
             thinkingConfig: {
               thinkingBudget: 0,
             },
+            maxOutputTokens: 500,
           },
         }),
       });

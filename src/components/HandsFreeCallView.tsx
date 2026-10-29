@@ -86,10 +86,17 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   const recognitionRef = useRef<any>(null);
   const isAiSpeakingRef = useRef<boolean>(false);
   const isMutedRef = useRef<boolean>(false);
+  const callStateRef = useRef<'idle' | 'calling' | 'connected' | 'ended'>('idle');
+  const silenceDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const autoRestartTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTranscriptRef = useRef<string>('');
+  const inputLangRef = useRef<'ja-JP' | 'ko-KR'>('ja-JP');
   const transcriptsEndRef = useRef<HTMLDivElement | null>(null);
 
+  callStateRef.current = callState;
   isAiSpeakingRef.current = isAiSpeaking;
   isMutedRef.current = isMuted;
+  inputLangRef.current = inputLang;
 
   // Load persistent call history on mount
   useEffect(() => {
@@ -163,6 +170,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   // Start Real Telephone Japanese Call Pattern
   const handleStartCall = () => {
     setCallState('calling');
+    callStateRef.current = 'calling';
     setCallDuration(0);
     setSessionTurns(0);
     setSessionCorrections([]);
@@ -170,10 +178,12 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     setFinalReport(null);
     setCallTranscripts([]);
     setInterimTranscript('');
+    lastTranscriptRef.current = '';
     setMicStatusMsg('전화 연결 중...');
 
     setTimeout(async () => {
       setCallState('connected');
+      callStateRef.current = 'connected';
 
       // Authentic telephone Japanese:
       // 1단계: 전화 안부 인사 + 2단계: 오늘의 토픽 소재 제시 및 첫 질문
@@ -193,7 +203,13 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
       setCallTranscripts([initialMessage]);
       await speakAI(fullOpeningJp, fullOpeningKr);
-      startRecognitionSafely();
+
+      // Start listening loop
+      setTimeout(() => {
+        if (callStateRef.current === 'connected' && !isMutedRef.current) {
+          startRecognitionSafely();
+        }
+      }, 300);
     }, 1200);
   };
 
@@ -203,19 +219,31 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     stopRecognitionSafely();
     setCurrentSubtitle({ speaker: selectedCharacter.name, text: jp, kr });
     setIsAiSpeaking(true);
+    isAiSpeakingRef.current = true;
     setMicStatusMsg('강사 발화 중...');
 
     await speechService.speak(jp, 0.86, 1.0, selectedCharacter.gender);
 
     setIsAiSpeaking(false);
+    isAiSpeakingRef.current = false;
     setMicStatusMsg('말씀해 주세요 (마이크 대기 중)');
   };
 
   // Stop recognition safely without errors
   const stopRecognitionSafely = () => {
     setIsListening(false);
+    if (silenceDebounceRef.current) {
+      clearTimeout(silenceDebounceRef.current);
+      silenceDebounceRef.current = null;
+    }
+    if (autoRestartTimeoutRef.current) {
+      clearTimeout(autoRestartTimeoutRef.current);
+      autoRestartTimeoutRef.current = null;
+    }
     if (recognitionRef.current) {
       try {
+        recognitionRef.current.onstart = null;
+        recognitionRef.current.onresult = null;
         recognitionRef.current.onend = null;
         recognitionRef.current.onerror = null;
         recognitionRef.current.stop();
@@ -224,10 +252,10 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     }
   };
 
-  // Start recognition safely with interim feedback and cross-browser support
+  // Start recognition safely with continuous feedback and auto-loop for hands-free call
   const startRecognitionSafely = () => {
     if (typeof window === 'undefined') return;
-    if (isMutedRef.current || isAiSpeakingRef.current) return;
+    if (callStateRef.current !== 'connected' || isMutedRef.current || isAiSpeakingRef.current) return;
 
     const SpeechRecognition =
       (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -242,17 +270,21 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
     try {
       const recognition = new SpeechRecognition();
-      recognition.lang = inputLang;
+      recognition.lang = inputLangRef.current;
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
 
-      // On iOS Safari continuous can crash/abort, so false is safer and we cycle gracefully
+      // Continuous mode
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
       recognition.continuous = !isIOS;
 
       recognition.onstart = () => {
         setIsListening(true);
-        setMicStatusMsg(inputLang === 'ja-JP' ? '🎙️ 듣고 있습니다 (일본어로 말씀해 주세요)...' : '🎙️ 듣고 있습니다 (한국어로 말씀해 주세요)...');
+        setMicStatusMsg(
+          inputLangRef.current === 'ja-JP'
+            ? '🎙️ 실시간 청취 중 (일본어로 말씀해 주세요)...'
+            : '🎙️ 실시간 청취 중 (한국어로 말씀해 주세요)...'
+        );
       };
 
       recognition.onresult = (event: any) => {
@@ -268,34 +300,82 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           }
         }
 
-        if (interim) {
-          setInterimTranscript(interim);
+        const candidate = (final || interim).trim();
+        if (candidate) {
+          lastTranscriptRef.current = candidate;
+          setInterimTranscript(candidate);
         }
 
+        // If browser provided final text immediately
         if (final.trim() && !isMutedRef.current) {
+          if (silenceDebounceRef.current) clearTimeout(silenceDebounceRef.current);
+          const textToSend = final.trim();
+          lastTranscriptRef.current = '';
           setInterimTranscript('');
           stopRecognitionSafely();
-          handleIncomingUserSpeech(final.trim());
+          handleIncomingUserSpeech(textToSend);
+          return;
+        }
+
+        // For interim speech: debounce 1.4s of silence to automatically commit
+        if (interim.trim() && !isMutedRef.current) {
+          if (silenceDebounceRef.current) clearTimeout(silenceDebounceRef.current);
+          silenceDebounceRef.current = setTimeout(() => {
+            if (
+              lastTranscriptRef.current.trim() &&
+              callStateRef.current === 'connected' &&
+              !isMutedRef.current &&
+              !isAiSpeakingRef.current
+            ) {
+              const textToSend = lastTranscriptRef.current.trim();
+              lastTranscriptRef.current = '';
+              setInterimTranscript('');
+              stopRecognitionSafely();
+              handleIncomingUserSpeech(textToSend);
+            }
+          }, 1400);
         }
       };
 
       recognition.onerror = (event: any) => {
         console.warn('SpeechRecognition error:', event.error);
         if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-          setMicStatusMsg('마이크 권한이 차단되었습니다. 마이크 버튼을 눌러 권한을 허용하세요.');
+          setMicStatusMsg('마이크 권한이 차단되었습니다. 권한을 허용해 주세요.');
           setIsPermissionModalOpen(true);
+          stopRecognitionSafely();
         } else if (event.error === 'no-speech') {
-          // Normal timeout when silence
-          setMicStatusMsg('말씀을 인식하지 못했습니다. 다시 말씀하시거나 [말하기]를 눌러주세요.');
+          // Expected on pauses; will auto-continue in onend
+          setMicStatusMsg('🎙️ 마이크 대기 중 (편하게 말씀하세요)...');
+        } else if (event.error === 'network') {
+          setMicStatusMsg('음성 네트워크 재연결 시도 중...');
         }
-        setIsListening(false);
       };
 
       recognition.onend = () => {
         setIsListening(false);
-        // If still in call, not muted, and AI not speaking, prompt user
-        if (callState === 'connected' && !isMutedRef.current && !isAiSpeakingRef.current) {
-          setMicStatusMsg('아래 [말하기]를 누르거나 답변을 입력하세요.');
+        // If there was pending transcript that user finished saying
+        if (
+          lastTranscriptRef.current.trim() &&
+          callStateRef.current === 'connected' &&
+          !isMutedRef.current &&
+          !isAiSpeakingRef.current
+        ) {
+          const textToSend = lastTranscriptRef.current.trim();
+          lastTranscriptRef.current = '';
+          setInterimTranscript('');
+          stopRecognitionSafely();
+          handleIncomingUserSpeech(textToSend);
+          return;
+        }
+
+        // Auto-restart loop in hands-free mode
+        if (callStateRef.current === 'connected' && !isMutedRef.current && !isAiSpeakingRef.current) {
+          if (autoRestartTimeoutRef.current) clearTimeout(autoRestartTimeoutRef.current);
+          autoRestartTimeoutRef.current = setTimeout(() => {
+            if (callStateRef.current === 'connected' && !isMutedRef.current && !isAiSpeakingRef.current) {
+              startRecognitionSafely();
+            }
+          }, 350);
         }
       };
 
@@ -304,20 +384,21 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     } catch (e: any) {
       console.warn('Recognition start exception:', e);
       setIsListening(false);
-      setMicStatusMsg('마이크를 시작하려면 아래 [말하기] 버튼을 터치해 주세요.');
+      setMicStatusMsg('마이크 대기 중...');
     }
   };
 
   // Push-to-Talk or Tap-to-Talk toggle
   const toggleListening = () => {
-    if (callState !== 'connected') return;
+    if (callStateRef.current !== 'connected') return;
     if (isListening) {
       stopRecognitionSafely();
       setMicStatusMsg('음성 인식을 일시 정지했습니다.');
     } else {
-      if (isAiSpeaking) {
+      if (isAiSpeakingRef.current) {
         speechService.stop();
         setIsAiSpeaking(false);
+        isAiSpeakingRef.current = false;
       }
       startRecognitionSafely();
     }
@@ -433,7 +514,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
 
     // After AI finishes speaking, resume listening
     setTimeout(() => {
-      if (callState === 'connected' && !isMutedRef.current) {
+      if (callStateRef.current === 'connected' && !isMutedRef.current) {
         startRecognitionSafely();
       }
     }, 400);
@@ -442,7 +523,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
   // Submit manual text fallback
   const handleSendManualText = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!manualText.trim() || callState !== 'connected') return;
+    if (!manualText.trim() || callStateRef.current !== 'connected') return;
     const text = manualText.trim();
     setManualText('');
     stopRecognitionSafely();
@@ -458,7 +539,7 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
       stopRecognitionSafely();
       setMicStatusMsg('음소거 되었습니다.');
     } else {
-      if (callState === 'connected' && !isAiSpeaking) {
+      if (callStateRef.current === 'connected' && !isAiSpeakingRef.current) {
         startRecognitionSafely();
       }
     }
@@ -470,7 +551,9 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
     stopRecognitionSafely();
 
     setCallState('ended');
+    callStateRef.current = 'ended';
     setIsAiSpeaking(false);
+    isAiSpeakingRef.current = false;
     setMicStatusMsg('통화가 종료되었습니다.');
 
     // Generate comprehensive session report
@@ -828,16 +911,24 @@ export const HandsFreeCallView: React.FC<HandsFreeCallViewProps> = ({
           {callState === 'connected' && (
             <div className="mt-2 flex items-center gap-2">
               <button
-                onClick={() => setInputLang(inputLang === 'ja-JP' ? 'ko-KR' : 'ja-JP')}
-                className="px-2.5 py-1 rounded-md bg-gray-100 hover:bg-gray-200 border border-gray-300 text-[11px] font-black text-gray-800 flex items-center gap-1 transition-colors"
+                onClick={() => {
+                  const next = inputLang === 'ja-JP' ? 'ko-KR' : 'ja-JP';
+                  setInputLang(next);
+                  inputLangRef.current = next;
+                  if (callStateRef.current === 'connected' && !isAiSpeakingRef.current && !isMutedRef.current) {
+                    stopRecognitionSafely();
+                    setTimeout(() => startRecognitionSafely(), 150);
+                  }
+                }}
+                className="px-2.5 py-1 rounded-md bg-[#FAF7F0] hover:bg-[#F3ECE0] border border-[#E2D9C8] text-[11px] font-black text-[#2B2725] flex items-center gap-1 transition-colors"
                 title="음성 인식 언어 변경"
               >
-                <Languages className="w-3.5 h-3.5 text-amber-600" />
+                <Languages className="w-3.5 h-3.5 text-[#D93829]" />
                 <span>{inputLang === 'ja-JP' ? '🇯🇵 일본어 인식' : '🇰🇷 한국어 인식'}</span>
-                <span className="text-[9px] text-gray-500 font-normal">(전환)</span>
+                <span className="text-[9px] text-[#7A6E63] font-normal">(전환)</span>
               </button>
 
-              <div className="px-2.5 py-1 rounded-md bg-gray-100 border border-gray-200 text-[11px] font-bold text-gray-700 flex items-center gap-1.5">
+              <div className="px-2.5 py-1 rounded-md bg-[#FAF7F0] border border-[#E2D9C8] text-[11px] font-bold text-[#5A5047] flex items-center gap-1.5">
                 <span className={`w-2 h-2 rounded-full ${isListening ? 'bg-red-500 animate-ping' : 'bg-gray-400'}`} />
                 <span className="line-clamp-1">{micStatusMsg || (isListening ? '음성 수신 중' : '대기')}</span>
               </div>
